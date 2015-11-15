@@ -3,6 +3,7 @@
 var test = require('tape');
 var detergent = require('../detergent.js');
 var mixer = require('../mixer.js');
+var hashCharEncoding = require('./hash-char-encoding.json');
 
 // ==============================
 // A REFERENCE TEST OBJECT TO GET THE OBJECT KEYS
@@ -41,9 +42,14 @@ test('invisible line breaks replaced', function (t) {
     })
   .forEach(function (elem){
     t.equal(detergent(
-      'a\u000Ab\u000Bc\u000C\u000D\u0085\u2028\u2029d', elem),
+      'a\u000Ab\u000Bc\u000C\u000D\u2028\u2029\u0003d', elem),
       'a\nb\nc\n\n\n\n\nd',
-      'invisible breaks into \\n\'s'
+      'unencoded invisible breaks into \\n\'s'
+    );
+    t.equal(detergent(
+      'a&#10;b&#11;c&#12;&#13;&#8232;&#8233;&#3;d', elem),
+      'a\nb\nc\n\n\n\n\nd',
+      'encoded invisible breaks into \\n\'s'
     );
   });
 
@@ -154,7 +160,7 @@ test('encode entities - pound sign', function (t) {
     })
   .forEach(function (elem){
     t.equal(detergent(
-      '£', elem),
+      '\u00A3', elem),
       '&pound;',
       'pound char converted into entity'
     );
@@ -164,8 +170,8 @@ test('encode entities - pound sign', function (t) {
     })
   .forEach(function (elem){
     t.equal(detergent(
-      '£', elem),
-      '£',
+      '\u00A3', elem),
+      '\u00A3',
       'pound char not converted into entity'
     );
   });
@@ -178,7 +184,7 @@ test('encode entities - m-dash', function (t) {
     })
   .forEach(function (elem){
     t.equal(detergent(
-      '—', elem),
+      '\u2014', elem),
       '&mdash;',
       'M dash char encoded into entity'
     );
@@ -188,8 +194,8 @@ test('encode entities - m-dash', function (t) {
     })
   .forEach(function (elem){
     t.equal(detergent(
-      '—', elem),
-      '—',
+      '\u2014', elem),
+      '\u2014',
       'M dash char not converted into entity'
     );
   });
@@ -261,7 +267,7 @@ test('contingency - stray unpaired surrogates', function (t) {
 });
 
 
-test('encode entities - größer', function (t) {
+test('encode entities - gr\u00F6\u00DFer', function (t) {
   mixer(sampleObj, {
     convertEntities: true
     })
@@ -896,7 +902,7 @@ test('convert double quotes into fancy ones', function (t) {
 // o.convertDashes
 // ==============================
 
-// following tests are according to the Butterick’s practical typography
+// following tests are according to the Butterick's practical typography
 // http://practicaltypography.com/hyphens-and-dashes.html
 
 // N dash - use case #1
@@ -921,7 +927,7 @@ test('convert dashes', function (t) {
   .forEach(function (elem){
     t.equal(detergent(
       '1880-1912, pages 330-39', elem),
-      '1880–1912, pages 330–39',
+      '1880\u20131912, pages 330\u201339',
       'converts dashes into N dashes - without entities'
     );
   });
@@ -962,6 +968,105 @@ test('convert dashes', function (t) {
   t.end();
 });
 
+// ==============================
+// checking all numeric entities encoded in hyphens-and-dashes
+// such as, for example, &#118; or &#39; - range 0-255
+// ==============================
+
+test('numeric entities', function (t) {
+
+  t.equal(detergent(
+    'aaaaaaa aaaaaaaaa aaaaaaaaaa&#160;bbbb'),
+    'aaaaaaa aaaaaaaaa aaaaaaaaaa&nbsp;bbbb',
+    'numeric entities'
+  );
+  t.equal(detergent(
+    'aaaaaaa aaaaaaaaa aaaaaaaaaa&nbsp;bbbb'),
+    'aaaaaaa aaaaaaaaa aaaaaaaaaa&nbsp;bbbb',
+    'named entities'
+  );
+  t.equal(detergent(
+    'aaaaaaa aaaaaaaaa aaaaaaaaa\xa0bbbb'),
+    'aaaaaaa aaaaaaaaa aaaaaaaaa&nbsp;bbbb',
+    'non-encoded entities'
+  );
+
+  // OK
+  // mixer(sampleObj, {
+  //     removeWidows : true,
+  //     convertEntities : true,
+  //     convertDashes : true,
+  //     replaceLineBreaks : true,
+  //     removeLineBreaks : false,
+  //     useXHTML : true,
+  //     convertApostrophes : true,
+  //     removeSoftHyphens : true,
+  //     dontEncodeNonLatin : true,
+  //     keepBoldEtc : true
+  //   })
+  // .forEach(function (elem1){
+  //   t.equal(detergent(
+  //     'aaaaaaa bbbbbbb cccccccc&#160;ddddddddd', elem1),
+  //     'aaaaaaa bbbbbbb cccccccc&nbsp;ddddddddd',
+  //     'non-breaking space &#160;'
+  //   );
+  // });
+
+  // mixer(sampleObj, {
+  //       removeWidows : false,
+  //       convertEntities : true,
+  //       convertDashes : true,
+  //       replaceLineBreaks : true,
+  //       removeLineBreaks : false,
+  //       useXHTML : true,
+  //       convertApostrophes : true,
+  //       removeSoftHyphens : true,
+  //       dontEncodeNonLatin : true,
+  //       keepBoldEtc : true
+  //   })
+  // .forEach(function (elem1){
+  //   t.equal(detergent(
+  //     'a&#160;b', elem1),
+  //     'a&nbsp;b',
+  //     'non-breaking space &#160;'
+  //   );
+  // });
+
+
+  mixer(sampleObj, {
+      convertEntities: true,
+      useXHTML: true,
+      convertApostrophes: false,
+      removeSoftHyphens: false,
+      removeWidows: false
+    })
+  .forEach(function (elem1){
+    hashCharEncoding.forEach(function(elem2){
+      t.equal(detergent(
+        elem2[0], elem1),
+        elem2[3],
+        (elem2[1]+' ('+elem2[0]+')')
+      );
+    });
+  });
+  mixer(sampleObj, {
+    convertEntities: false,
+    useXHTML: true,
+    convertApostrophes: false,
+    removeSoftHyphens: false
+    })
+  .forEach(function (elem1){
+    hashCharEncoding.forEach(function(elem2){
+      t.equal(detergent(
+        elem2[0], elem1),
+        elem2[2],
+        (elem2[1]+' ('+elem2[0]+')')
+      );
+    });
+  });
+
+  t.end();
+});
 
 // ref: fuzzysearch
 

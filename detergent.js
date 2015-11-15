@@ -33,20 +33,20 @@ function detergent(textToClean, options) {
   var invisibleCharacters = [
     // C0 group. All, except: line feed u000A, vertical tab u000B, form feed u000C, carriage return u000D, ETX u0003 (Photoshop/Illustrator uses them) and tab u0009.
     '\u0000', '\u0001', '\u0002', '\u0004', '\u0005', '\u0006', '\u0007', '\u0008',
-    '\u000E', '\u000F',
+    '\u000e', '\u000f',
     '\u0010', '\u0011', '\u0012', '\u0013', '\u0014', '\u0015', '\u0016', '\u0017', '\u0018', '\u0019',
-    '\u001A', '\u001B', '\u001C', '\u001D', '\u001E', '\u001F',
+    '\u001a', '\u001b', '\u001c', '\u001d', '\u001e', '\u001f',
     // gap - space is not in, but delete 007F will be removed
-    '\u007F',
+    '\u007f',
     // C1 group
     '\u0080', '\u0081', '\u0082', '\u0083', '\u0084', '\u0086', '\u0087', '\u0088', '\u0089',
-    '\u008A', '\u008B', '\u008C', '\u008D', '\u008E', '\u008F',
+    '\u008a', '\u008b', '\u008c', '\u008d', '\u008e', '\u008f',
     '\u0090', '\u0091', '\u0092', '\u0093', '\u0094', '\u0095', '\u0096', '\u0097', '\u0098', '\u0099',
-    '\u009A', '\u009B', '\u009C', '\u009D', '\u009E', '\u009F'
+    '\u009a', '\u009b', '\u009c', '\u009d', '\u009e', '\u009f'
   ];
 
   var lineBreakCharacters = [
-    '\u000A', '\u000B', '\u000C', '\u000D', '\u0085', '\u2028', '\u2029', '\u0003'
+    '\u000a', '\u000b', '\u000c', '\u000d', '\u0085', '\u2028', '\u2029', '\u0003'
   ]; // CR+LF, (U+000D and U+000A) combination will yield two line breaks on Detergent.
 
   // FUNCTIONS
@@ -131,15 +131,10 @@ function detergent(textToClean, options) {
   }
 
   function doCollapseWhiteSpace(inputString) {
-    // we need to retain the line breaks, while using collapseWhitespace() from String JS.
-    var outputString = '';
-    var linesArray = S(inputString).lines();
-    var linesArray2 = [];
-    linesArray.forEach(function(elem){
-      elem = S(elem).collapseWhitespace().s;
-      linesArray2.push(elem);
-    });
-    outputString = linesArray2.join('\n');
+    var outputString = inputString;
+    while (S(outputString).contains('  ')){
+        outputString = S(outputString).replaceAll('  ', ' ').s;
+    }
     return outputString;
   }
 
@@ -232,10 +227,6 @@ function detergent(textToClean, options) {
     inputString = inputString.trim();
     var outputString;
 
-    // if(S(inputString).contains('.')){
-    //
-    // }
-
     //var paragraphsArray = inputString.split('\n');
     var paragraphsArray = S(inputString).lines();
     var newParasArray = paragraphsArray.map(function(elem,index,array) {
@@ -288,7 +279,13 @@ function detergent(textToClean, options) {
   //            ▐  ████▀███▄█▄▌
   //          ▐ ▌  █▀▌  ▐▀▌▀█▀
   //           ▀   ▌ ▌  ▐ ▌
-  //               █ █  ▐▌█ bugz be gone
+  //               █ █  ▐▌█ me eatz bugz az snakz
+
+  // ================= xx =================
+
+  // decode entities
+  //cleanedText = S(cleanedText).decodeHTMLEntities().s;
+  cleanedText = he.decode(cleanedText);
 
   // ================= xx =================
 
@@ -321,6 +318,11 @@ function detergent(textToClean, options) {
 
   // replace the tabs with spaces
   cleanedText = S(cleanedText).replaceAll('\u0009', ' ').s;
+  cleanedText = S(cleanedText).replaceAll('\t', ' ').s;
+
+  // ================= xx =================
+
+  cleanedText = doCollapseWhiteSpace(cleanedText);
 
   // ================= xx =================
 
@@ -338,11 +340,6 @@ function detergent(textToClean, options) {
 
   // ================= xx =================
 
-  // decode entities
-  cleanedText = S(cleanedText).decodeHTMLEntities().s;
-
-  // ================= xx =================
-
   // BR's also
   cleanedText = doDecodeBRs(cleanedText);
 
@@ -355,11 +352,6 @@ function detergent(textToClean, options) {
 
   // trim leading and trailing white space
   cleanedText = doTrim(cleanedText);
-
-  // ================= xx =================
-
-  // remove multiple spaces on one line
-  cleanedText = doCollapseWhiteSpace(cleanedText);
 
   // ================= xx =================
 
@@ -396,6 +388,11 @@ function detergent(textToClean, options) {
 
   // ================= xx =================
 
+  // remove multiple spaces on one line
+  // cleanedText = doCollapseWhiteSpace(cleanedText);
+
+  // ================= xx =================
+
   // optionally, replace line breaks with BR (on by default)
   if ((o.replaceLineBreaks=== true) && (o.removeLineBreaks === false)) {
     if (o.useXHTML){
@@ -412,14 +409,17 @@ function detergent(textToClean, options) {
     cleanedText = doDecodeBRs(cleanedText);
     cleanedText = S(cleanedText).replaceAll('\n', ' ').s;
     // deflate all multiple spaces into single-one
-    while (S(cleanedText).contains('  ')){
-        cleanedText = S(cleanedText).replaceAll('  ', ' ').s;
-    }
     //cleanedText = S(cleanedText).collapseWhitespace().s;
   }
 
   // also, restore single apostrophes if any were encoded:
   cleanedText = S(cleanedText).replaceAll('&apos;', '\'').s;
+
+  // ================= xx =================
+
+  cleanedText = doCollapseWhiteSpace(cleanedText);
+
+  // ================= xx =================
 
   return cleanedText;
 }
