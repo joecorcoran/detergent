@@ -72,10 +72,10 @@ function detergent(textToClean, options) {
   function encryptBoldItalic(inputString) {
     var outputString = inputString;
 
-    // opening B tag, including < B >, < b > and <b   >. No attributes allowed
-    outputString = outputString.replace(/<\s*b\s*>/igm, '%$%b%$%');
+    // opening B tag, including < B >, < b > and <b   >. Attributes allowed
+    outputString = outputString.replace(/<(?!\s*br)(\s*b\s*[^/>]*)>/igm, '%$%b%$%');
     // closing B tag. No attributes allowed:
-    outputString = outputString.replace(/<\s*[\/]\s*b\s*>/igm, '%$%/b%$%');
+    outputString = outputString.replace(/<\s*\/\s*b[^>]*>/igm, '%$%/b%$%');
     // wrong slash on closing B tag:
     outputString = outputString.replace(/<\s*b\s*[\/]\s*>/igm, '%$%/b%$%');
 
@@ -213,13 +213,6 @@ function detergent(textToClean, options) {
     }
     return outputString;
   }
-
-  // function doConvert(inputString) {
-  //   var outputString = he.encode(String(inputString), {
-  //     'useNamedReferences': true
-  //   });
-  //   return outputString;
-  // }
 
   function doRemoveWidows(inputString) {
 

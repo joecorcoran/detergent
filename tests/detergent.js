@@ -548,12 +548,12 @@ test('retaining b tags', function (t) {
     })
   .forEach(function (elem){
     t.equal(detergent(
-      'test text is being <b>set in bold</b> here', elem),
+      'test text is being <b class="test" id="br">set in bold</b> here', elem),
       'test text is being <b>set in bold</b> here',
       'B tag is retained - clean'
     );
     t.equal(detergent(
-      'test text is being < b >set in bold< /  b > here', elem),
+      'test text is being < b tralala >set in bold< /  b > here', elem),
       'test text is being <b>set in bold</b> here',
       'B tag is retained - with spaces'
     );
