@@ -72,7 +72,7 @@ test('invisible line breaks replaced', function (t) {
   .forEach(function (elem){
     t.equal(detergent(
       'a\u000Ab\u000Bc\u000C\u000D\u0085\u2028\u2029d', elem),
-      'a<br />b<br />c<br /><br /><br /><br /><br />d',
+      'a<br />\nb<br />\nc<br />\n<br />\n<br />\n<br />\n<br />\nd',
       'replace breaks into XHTML BR\'s'
     );
   });
@@ -85,7 +85,7 @@ test('invisible line breaks replaced', function (t) {
   .forEach(function (elem){
     t.equal(detergent(
       'a\u000Ab\u000Bc\u000C\u000D\u0085\u2028\u2029d', elem),
-      'a<br>b<br>c<br><br><br><br><br>d',
+      'a<br>\nb<br>\nc<br>\n<br>\n<br>\n<br>\n<br>\nd',
       'replace breaks into HTML BR\'s'
     );
   });
@@ -365,7 +365,7 @@ test('remove widows - two BRs 1', function (t) {
   .forEach(function (elem){
     t.equal(detergent(
       'aaa bbb ccc ddd\n\neee fff ggg hhh', elem),
-      'aaa bbb ccc&nbsp;ddd<br /><br />eee fff ggg&nbsp;hhh',
+      'aaa bbb ccc&nbsp;ddd<br />\n<br />\neee fff ggg&nbsp;hhh',
       'remove widows - two line breaks with encoding BR in XHTML'
     );
   });
@@ -382,7 +382,7 @@ test('remove widows - two BRs 2', function (t) {
   .forEach(function (elem){
     t.equal(detergent(
       'aaa bbb ccc ddd\n\neee fff ggg hhh', elem),
-      'aaa bbb ccc&nbsp;ddd<br><br>eee fff ggg&nbsp;hhh',
+      'aaa bbb ccc&nbsp;ddd<br>\n<br>\neee fff ggg&nbsp;hhh',
       'two BR\'s, widows with NBSP and HTML BR'
     );
   });
@@ -452,7 +452,7 @@ test('remove widows - one BR', function (t) {
 test('default set - \\n replacement with BR', function (t) {
   t.equal(detergent(
     'aaa\n\nbbb\n\nccc'),
-    'aaa<br /><br />bbb<br /><br />ccc',
+    'aaa<br />\n<br />\nbbb<br />\n<br />\nccc',
     '\\n type replaced with <br />');
   t.end();
 });
@@ -460,7 +460,7 @@ test('default set - \\n replacement with BR', function (t) {
 test('default set - HTML BR replacement with XHTML BR', function (t) {
   t.equal(detergent(
     'aaa<br>bbb<br>ccc'),
-    'aaa<br />bbb<br />ccc',
+    'aaa<br />\nbbb<br />\nccc',
     '<br> replaced with <br />');
   t.end();
 });
@@ -468,7 +468,7 @@ test('default set - HTML BR replacement with XHTML BR', function (t) {
 test('default set - dirty BRs', function (t) {
   t.equal(detergent(
     'aaa<BR />< BR>bbb< BR ><BR>ccc< br >< Br>ddd'),
-    'aaa<br /><br />bbb<br /><br />ccc<br /><br />ddd',
+    'aaa<br />\n<br />\nbbb<br />\n<br />\nccc<br />\n<br />\nddd',
     'various dirty BRs replaced with <br />');
   t.end();
 });
@@ -506,7 +506,7 @@ test('replace all ETX symbols with BR', function (t) {
   .forEach(function (elem){
     t.equal(detergent(
       'first\u0003second', elem),
-      'first<br />second',
+      'first<br />\nsecond',
       'replaces ETX with XHTML BR'
     );
   });
@@ -518,7 +518,7 @@ test('replace all ETX symbols with BR', function (t) {
   .forEach(function (elem){
     t.equal(detergent(
       'first\u0003second', elem),
-      'first<br>second',
+      'first<br>\nsecond',
       'replaces ETX with HTML BR'
     );
   });
@@ -782,7 +782,7 @@ test('replace \\n line breaks with BR', function (t) {
   .forEach(function (elem){
     t.equal(detergent(
       '\n\n\ntralala\ntralala2\n\ntralala3\n\n\ntralala4\n\n\n', elem),
-      'tralala<br />tralala2<br /><br />tralala3<br /><br /><br />tralala4',
+      'tralala<br />\ntralala2<br />\n<br />\ntralala3<br />\n<br />\n<br />\ntralala4',
       'converts line breaks into XHTML BR\'s'
     );
   });
@@ -795,7 +795,7 @@ test('replace \\n line breaks with BR', function (t) {
   .forEach(function (elem){
     t.equal(detergent(
       '\n\ntralala\ntralala2\n\ntralala3\n\n\ntralala4\n\n\n\n', elem),
-      'tralala<br>tralala2<br><br>tralala3<br><br><br>tralala4',
+      'tralala<br>\ntralala2<br>\n<br>\ntralala3<br>\n<br>\n<br>\ntralala4',
       'converts line breaks into HTML BR\'s'
     );
   });

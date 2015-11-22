@@ -389,9 +389,9 @@ function detergent(textToClean, options) {
   // optionally, replace line breaks with BR (on by default)
   if ((o.replaceLineBreaks=== true) && (o.removeLineBreaks === false)) {
     if (o.useXHTML){
-      cleanedText = S(cleanedText).replaceAll('\n', '<br />').s;
+      cleanedText = S(cleanedText).replaceAll('\n', '<br />\n').s;
     }else{
-      cleanedText = S(cleanedText).replaceAll('\n', '<br>').s;
+      cleanedText = S(cleanedText).replaceAll('\n', '<br>\n').s;
     }
   }
 
