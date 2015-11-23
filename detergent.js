@@ -21,10 +21,10 @@ function detergent(textToClean, options) {
   if (o.removeWidows === void 0) { o.removeWidows = true; }
   if (o.convertEntities === void 0) { o.convertEntities = true; }
   if (o.convertDashes === void 0) { o.convertDashes = true; }
+  if (o.convertApostrophes === void 0) { o.convertApostrophes = true; }
   if (o.replaceLineBreaks === void 0) { o.replaceLineBreaks = true; }
   if (o.removeLineBreaks === void 0) { o.removeLineBreaks = false; }
   if (o.useXHTML === void 0) { o.useXHTML = true; }
-  if (o.convertApostrophes === void 0) { o.convertApostrophes = true; }
   if (o.removeSoftHyphens === void 0) { o.removeSoftHyphens = true; }
   if (o.dontEncodeNonLatin === void 0) { o.dontEncodeNonLatin = true; }
   if (o.keepBoldEtc === void 0) { o.keepBoldEtc = true; }
