@@ -8,7 +8,7 @@ Detergent is a JavaScript library that prepares text to be pasted into email HTM
 
 Clients can provide text for email newsletters in various forms. Adobe Products (PS, IL for example) are notorious for adding invisible characters such as ETX as line breaks. Ideally, we need a tool to replace them with `<BR>`'s. To my best knowledge no tool on the market can do that currently besides Detergent.
 
-Email messages' RAW source is in ASCII. If you use any other characters in your email newsletter outside of it, you need to encode them. Ideally, we need a tool to encode all the special characters within Unicode, including astral-ones (such as `𝌆`). There are few character converters but some either fail at high-end of Unicode; or [don't](http://textcleaner.lutesonline.com/) offer the option to encode using named entities or [both](http://www.emailonacid.com/character_converter/).
+Email messages' RAW source is in ASCII. If you use any other characters in your email newsletter outside of it, you need to encode them. Ideally, we need a tool to encode all the special characters within Unicode, including astral-ones (such as &#119558;). There are few character converters but some either fail at high-end of Unicode; or [don't](http://textcleaner.lutesonline.com/) offer the option to encode using named entities or [both](http://www.emailonacid.com/character_converter/).
 
 If you take care to encode your copy, your converter must be smart-enough to:
 * strip the HTML, retaining bold/italic/strong/em tags
@@ -21,16 +21,16 @@ Optionally, you can customize the Detergent's functionality by providing an opti
 
 ```js
 detergent('text to clean', {
-  removeWidows: true,						// replace the last space in paragraph with &nbsp;
-	convertEntities: true,				// encode all non-ASCII chars
-	convertDashes: true,					// typographically-correct the n/m-dashes
-	convertApostrophes: true,			// typographically-correct the apostrophes
-	replaceLineBreaks: true,			// replace all line breaks with BR's
-	removeLineBreaks: false,			// put everything on one line
-	useXHTML: true,								// add closing slashes on BR's
-	removeSoftHyphens: true,			// remove character which encodes to &#173; or &shy;
-	dontEncodeNonLatin: true,			// skip non-latin character encoding
-	keepBoldEtc: true							// any bold, strong, i or em tags are stripped of attributes and retained
+  removeWidows: true,             // replace the last space in paragraph with &nbsp;
+  convertEntities: true,          // encode all non-ASCII chars
+  convertDashes: true,            // typographically-correct the n/m-dashes
+  convertApostrophes: true,       // typographically-correct the apostrophes
+  replaceLineBreaks: true,        // replace all line breaks with BR's
+  removeLineBreaks: false,        // put everything on one line
+  useXHTML: true,                 // add closing slashes on BR's
+  removeSoftHyphens: true,        // remove character which encodes to &#173; or &shy;
+  dontEncodeNonLatin: true,       // skip non-latin character encoding
+  keepBoldEtc: true               // any bold, strong, i or em tags are stripped of attributes and retained
 });
 ```
 
