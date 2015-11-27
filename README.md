@@ -2,18 +2,26 @@
 
 # Detergent
 
+[![dependencies](https://david-dm.org/code-and-send/detergent.svg)](https://david-dm.org/code-and-send/detergent)
+
 Detergent is a JavaScript library that prepares text to be pasted into email HTML code. There is also a front-end shell (internally called "the plastic") on [Detergent.io](http://detergent.io) with all current features implemented.
 
 ## Rationale
 
-Clients can provide text for email newsletters in various forms. Adobe Products (PS, IL for example) are notorious for adding invisible characters such as ETX as line breaks. Ideally, we need a tool to replace them with `<BR>`'s. To my best knowledge no tool on the market can do that currently besides Detergent.
+Let's say you are an agency and you have clients that pay you to create email newsletters for them. Newsletters are filled with text, and that text can be given to you in various file formats. Adobe products (Photoshop and Illustrator, for example) are notorious for adding invisible characters such as ETX as line breaks. Ideally, we need a tool to replace them with `<BR>`'s. To the best of my knowledge, no tool on the market can do that currently besides Detergent. Other cleaners either strip ETX'es (wasting your time) or ignore them (causing rendering problems later).
 
-Email messages' RAW source is in ASCII. If you use any other characters in your email newsletter outside of it, you need to encode them. Ideally, we need a tool to encode all the special characters within Unicode, including astral-ones (such as &#119558;). There are few character converters but some either fail at high-end of Unicode; or [don't](http://textcleaner.lutesonline.com/) offer the option to encode using named entities or [both](http://www.emailonacid.com/character_converter/).
+Sometimes the text you copy-paste into your email code can contain other invisible characters from the Unicode range. Detergent cleans them all.
+
+Email messages' RAW source is in ASCII. If you use any other characters in your email newsletter outside of ASCII, you need to encode them - either do it manually using [Detergent](http://detergent.io) (the best way) or rely on your ESP to do it for you (risky).
+
+Ideally, we need a tool to encode all the special characters within Unicode, including astral-ones (such as &#119558; or emoji's in general). There are few character converters on the Internet but some either [fail](http://www.emailonacid.com/character_converter/) at encoding astral characters and emoji's; or [don't](http://textcleaner.lutesonline.com/) offer the option to encode using named entities. Latter makes it impossible to proof-read the emails before sending.
 
 If you take care to encode your copy, your converter must be smart-enough to:
 * strip the HTML, retaining bold/italic/strong/em tags
 * offer to typographically-correct the text (to set typographically-correct dashes, quotes etc.)
 * skip the entity encoding on non-latin characters because there is not point to work on soup of entities — email will surely be sent in UTF-8 anyway. Yet, unencoded pound signs will trigger email code linters, so proper converter should encode what is _usually_ encoded (although, technically, not required in non-latin email).
+
+Detergent does all of this, and comes in two shapes: [NPM library](https://www.npmjs.com/package/detergent) and web app (http://detergent.io).
 
 ## API
 
@@ -52,14 +60,14 @@ detergent('clean this text £',{
 
 ## Contributing & testing
 
-Test, flush the repo onto your HDD, and test the Detergent via Tap and Faucet. There will be more than 40K tests, mind you.
+Flush the repo onto your SSD and have a butchers at tests/detergent.js. It's very minimalistic testing setup using [Tape](https://ponyfoo.com/articles/testing-javascript-modules-with-tape). Faucet helps to gang the tests, so each one sits on one line. Without Faucet you would get more than 40,000 lines of console output, all beastly in black and white.
 
 ```bash
 node tests/detergent.js | faucet
 ```
 
-If you want to contribute, you're more than welcome to do so. Please write tests for all the code you wish add. All help is welcome, including documentation improvement, new features and tightening tests even more.
+If you want to contribute, please do. If it's code contribution, please supplement tests/detergent.js with tests covering your code.
 
 ## Licence
 
-MIT
+MIT © Roy Reveltas
