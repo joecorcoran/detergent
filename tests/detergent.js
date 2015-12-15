@@ -2,7 +2,7 @@
 
 var test = require('tape');
 var detergent = require('../detergent.js');
-var mixer = require('../mixer.js');
+var mixer = require('object-boolean-combinations');
 var hashCharEncoding = require('./hash-char-encoding.json');
 
 // ==============================
