@@ -2,7 +2,7 @@
 
 # Detergent
 
-[![dependencies](https://david-dm.org/code-and-send/detergent.svg)](https://david-dm.org/code-and-send/detergent)
+[![Build Status](https://travis-ci.org/code-and-send/detergent.svg?branch=master)](https://travis-ci.org/code-and-send/detergent) [![Dependency Status](https://david-dm.org/code-and-send/detergent.svg)](https://david-dm.org/code-and-send/detergent) [![devDependency Status](https://david-dm.org/code-and-send/detergent/dev-status.svg)](https://david-dm.org/code-and-send/detergent#info=devDependencies)
 
 Detergent is a JavaScript library that prepares text to be pasted into email HTML code. There is also a front-end shell (internally called "the plastic") on [Detergent.io](http://detergent.io) with all current features implemented.
 
