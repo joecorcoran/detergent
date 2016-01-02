@@ -14,7 +14,7 @@ Sometimes the text you copy-paste into your email code can contain other invisib
 
 Email messages' RAW source is in ASCII. If you use any other characters in your email newsletter outside of ASCII, you need to encode them - either do it manually using [Detergent](http://detergent.io) (the best way) or rely on your ESP to do it for you (risky).
 
-Ideally, we need a tool to encode all the special characters within Unicode, including astral-ones (such as &#119558; or emoji's in general). There are few character converters on the Internet but some either [fail](http://www.emailonacid.com/character_converter/) at encoding astral characters and emoji's; or [don't](http://textcleaner.lutesonline.com/) offer the option to encode using named entities. Latter makes it impossible to proof-read the emails before sending.
+Ideally, we need a tool to encode all the special characters within Unicode, including astral-ones (such as &#119558; or emoji's in general). There are few character converters on the Internet but some either [fail](http://www.emailonacid.com/character_converter/) at encoding astral characters and emoji's; or don't offer the option to encode using named entities. Latter makes it impossible to proof-read the emails before sending.
 
 If you take care to encode your copy, your converter must be smart-enough to:
 * strip the HTML, retaining bold/italic/strong/em tags
