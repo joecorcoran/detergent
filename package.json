@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/code-and-send/detergent.git"
+    "url": "git://github.com/code-and-send/detergent.git"
   },
   "keywords": [
     "detergent",
