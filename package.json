@@ -38,8 +38,7 @@
   },
   "devDependencies": {
     "faucet": "^0.0.1",
-    "lodash": "^3.10.1",
     "object-boolean-combinations": "^1.0.2",
-    "tape": "^4.2.1"
+    "tape": "^4.2.2"
   }
 }
