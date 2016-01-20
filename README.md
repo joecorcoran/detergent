@@ -1,4 +1,4 @@
-![Detergent](http://cdn.detergent.io/images/code-and-send-detergent-io_108x204.gif)
+![Detergent](https://detergent.io/images/code-and-send-detergent-io_108x204.gif)
 
 # Detergent
 
