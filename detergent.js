@@ -123,11 +123,37 @@ function detergent(textToClean, options) {
     return outputString;
   }
 
-  function doTrim(inputString) {
-    var outputString = inputString;
-    outputString = S(outputString).trimLeft().s;
-    outputString = S(outputString).trimRight().s;
-    return outputString;
+  /**
+   * trimEdges - remove spaces from the front and end of each line
+   * @param input {string} incoming string
+   * @return {string}
+   */
+  function trimTrailingSpaces(input){
+    var lines = S(input).lines();
+    for (var i = 0, len = lines.length; i < len; i++) {
+      while (S(lines[i]).right(1).s === ' '){
+        lines[i] = S(lines[i]).chompRight(' ').s;
+      }
+      while (S(lines[i]).left(1).s === ' '){
+        lines[i] = S(lines[i]).chompLeft(' ').s;
+      }
+    }
+    return lines.join('\n');
+  }
+
+  /**
+   * trimEdges - remove spaces from the front and end of each line
+   * @param input {string} incoming string
+   * @return {string}
+   */
+  function trimTrailingLineBreaks(input){
+    while (S(input).right(1).s === '\n'){
+      input = S(input).chompRight('\n').s;
+    }
+    while (S(input).left(1).s === '\n'){
+      input = S(input).chompLeft('\n').s;
+    }
+    return input;
   }
 
   function doCollapseWhiteSpace(inputString) {
@@ -267,18 +293,21 @@ function detergent(textToClean, options) {
 
   //
   //       T H E    P I P E L I N E
-
-  //             ▄▄ ▄████▄▐▄▄▄▌
-  //            ▐  ████▀███▄█▄▌
-  //          ▐ ▌  █▀▌  ▐▀▌▀█▀
-  //           ▀   ▌ ▌  ▐ ▌
-  //               █ █  ▐▌█ me eatz bugz az snakz
+  //
 
   // ================= xx =================
 
   // decode entities
   //cleanedText = S(cleanedText).decodeHTMLEntities().s;
   cleanedText = he.decode(cleanedText);
+
+  // ================= xx =================
+
+  // replace all occurencies of broken "&nbsp;" (where one char is missing) with a space
+
+  cleanedText = S(cleanedText).replaceAll('nbsp;', ' ').s;
+  // there is safeguard for "text&nbsptext" already thanks to Mathias' he.js
+
 
   // ================= xx =================
 
@@ -316,6 +345,7 @@ function detergent(textToClean, options) {
   // ================= xx =================
 
   cleanedText = doCollapseWhiteSpace(cleanedText);
+  cleanedText = trimTrailingSpaces(cleanedText);
 
   // ================= xx =================
 
@@ -338,13 +368,24 @@ function detergent(textToClean, options) {
 
   // ================= xx =================
 
+  // trim leading and trailing line breaks
+  cleanedText = trimTrailingLineBreaks(cleanedText);
+
+  // ================= xx =================
+
   // now BR's are secure, let's strip all the remaining HTML
   cleanedText = S(cleanedText).stripTags().s;
 
   // ================= xx =================
 
-  // trim leading and trailing white space
-  cleanedText = doTrim(cleanedText);
+  // trim leading and trailing white space on each line
+  cleanedText = trimTrailingSpaces(cleanedText);
+
+  // ================= xx =================
+
+  // replace the tabs with spaces
+  cleanedText = S(cleanedText).replaceAll('\u0009', ' ').s;
+  cleanedText = S(cleanedText).replaceAll('\t', ' ').s;
 
   // ================= xx =================
 
@@ -381,11 +422,6 @@ function detergent(textToClean, options) {
 
   // ================= xx =================
 
-  // remove multiple spaces on one line
-  // cleanedText = doCollapseWhiteSpace(cleanedText);
-
-  // ================= xx =================
-
   // optionally, replace line breaks with BR (on by default)
   if ((o.replaceLineBreaks=== true) && (o.removeLineBreaks === false)) {
     if (o.useXHTML){
@@ -402,7 +438,7 @@ function detergent(textToClean, options) {
     cleanedText = doDecodeBRs(cleanedText);
     cleanedText = S(cleanedText).replaceAll('\n', ' ').s;
     // deflate all multiple spaces into single-one
-    //cleanedText = S(cleanedText).collapseWhitespace().s;
+    // cleanedText = S(cleanedText).collapseWhitespace().s;
   }
 
   // also, restore single apostrophes if any were encoded:
@@ -410,7 +446,16 @@ function detergent(textToClean, options) {
 
   // ================= xx =================
 
+  // fix clearly wrong things, such as space-full stop occurencies:
+  cleanedText = S(cleanedText).replaceAll(' .', '.').s;
+  // space-comma as well:
+  cleanedText = S(cleanedText).replaceAll(' ,', ',').s;
+
+  // ================= xx =================
+
   cleanedText = doCollapseWhiteSpace(cleanedText);
+  cleanedText = trimTrailingSpaces(cleanedText);
+  cleanedText = trimTrailingLineBreaks(cleanedText);
 
   // ================= xx =================
 

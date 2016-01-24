@@ -441,6 +441,23 @@ test('remove widows - one BR', function (t) {
   });
   t.end();
 });
+test('remove widows - trailing space', function (t) {
+  mixer(sampleObj, {
+      removeWidows: true,
+      convertEntities: true,
+      replaceLineBreaks: true,
+      removeLineBreaks: false,
+      useXHTML: false
+    })
+  .forEach(function (elem){
+    t.equal(detergent(
+      'aaa bbb ccc ddd. \n\neee fff ggg hhh', elem),
+      'aaa bbb ccc&nbsp;ddd.<br>\n<br>\neee fff ggg&nbsp;hhh',
+      'line-dot-space-brbr-line'
+    );
+  });
+  t.end();
+});
 
 
 // TODO: widows with trailing white space before last full stop
@@ -991,48 +1008,6 @@ test('numeric entities', function (t) {
     'non-encoded entities'
   );
 
-  // OK
-  // mixer(sampleObj, {
-  //     removeWidows : true,
-  //     convertEntities : true,
-  //     convertDashes : true,
-  //     replaceLineBreaks : true,
-  //     removeLineBreaks : false,
-  //     useXHTML : true,
-  //     convertApostrophes : true,
-  //     removeSoftHyphens : true,
-  //     dontEncodeNonLatin : true,
-  //     keepBoldEtc : true
-  //   })
-  // .forEach(function (elem1){
-  //   t.equal(detergent(
-  //     'aaaaaaa bbbbbbb cccccccc&#160;ddddddddd', elem1),
-  //     'aaaaaaa bbbbbbb cccccccc&nbsp;ddddddddd',
-  //     'non-breaking space &#160;'
-  //   );
-  // });
-
-  // mixer(sampleObj, {
-  //       removeWidows : false,
-  //       convertEntities : true,
-  //       convertDashes : true,
-  //       replaceLineBreaks : true,
-  //       removeLineBreaks : false,
-  //       useXHTML : true,
-  //       convertApostrophes : true,
-  //       removeSoftHyphens : true,
-  //       dontEncodeNonLatin : true,
-  //       keepBoldEtc : true
-  //   })
-  // .forEach(function (elem1){
-  //   t.equal(detergent(
-  //     'a&#160;b', elem1),
-  //     'a&nbsp;b',
-  //     'non-breaking space &#160;'
-  //   );
-  // });
-
-
   mixer(sampleObj, {
       convertEntities: true,
       useXHTML: true,
@@ -1068,6 +1043,39 @@ test('numeric entities', function (t) {
   t.end();
 });
 
-// ref: fuzzysearch
+// ==============================
+// Clearly errors
+// ==============================
+
+test('multiple lines & obvious errors in the text', function (t) {
+  t.equal(detergent(
+    'a .\na'),
+    'a.<br />\na',
+    'space - full stop - line break'
+  );
+  t.equal(detergent(
+    'a. \na'),
+    'a.<br />\na',
+    'full stop - space - line break'
+  );
+  t.equal(detergent(
+    'a . \na'),
+    'a.<br />\na',
+    'space - full stop - space - line break'
+  );
+  t.equal(detergent(
+    'a , \na'),
+    'a,<br />\na',
+    'space - comma - space - line break'
+  );
+  t.end();
+});
+
+// ==============================
+// etc
+// ==============================
+
+
+// ref: fuzzysearch @ npm
 
 // node tests/detergent.js | faucet
