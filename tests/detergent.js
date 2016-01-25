@@ -990,7 +990,7 @@ test('convert dashes', function (t) {
 // such as, for example, &#118; or &#39; - range 0-255
 // ==============================
 
-test('numeric entities', function (t) {
+test.skip('numeric entities', function (t) {
 
   t.equal(detergent(
     'aaaaaaa aaaaaaaaa aaaaaaaaaa&#160;bbbb'),
@@ -1048,11 +1048,171 @@ test('numeric entities', function (t) {
 // ==============================
 
 test('multiple lines & obvious errors in the text', function (t) {
-  t.equal(detergent(
-    'a .\na'),
-    'a.<br />\na',
-    'space - full stop - line break'
-  );
+  mixer(sampleObj, {
+      removeWidows: false,
+      replaceLineBreaks: true,
+      removeLineBreaks: false,
+      useXHTML: true,
+    })
+  .forEach(function (elem){
+    t.equal(detergent(
+      '\u000a Very long line, long-enough to trigger widow removal . \u000a\n Text . ', elem),
+      'Very long line, long-enough to trigger widow removal.<br />\n<br />\nText.',
+      'no.1 - space - full stop'
+    );
+  });
+  mixer(sampleObj, {
+      removeWidows: true,
+      convertEntities: true,
+      replaceLineBreaks: true,
+      removeLineBreaks: false,
+      useXHTML: true,
+    })
+  .forEach(function (elem){
+    t.equal(detergent(
+      '\u000a Very long line, long-enough to trigger widow removal . \u000a\n Text . ', elem),
+      'Very long line, long-enough to trigger widow&nbsp;removal.<br />\n<br />\nText.',
+      'no.2 - space - full stop'
+    );
+  });
+  mixer(sampleObj, {
+      removeWidows: true,
+      convertEntities: false,
+      replaceLineBreaks: true,
+      removeLineBreaks: false,
+      useXHTML: true,
+    })
+  .forEach(function (elem){
+    t.equal(detergent(
+      '\u000a Very long line, long-enough to trigger widow removal . \u000a\n Text . ', elem),
+      'Very long line, long-enough to trigger widow\xa0removal.<br />\n<br />\nText.',
+      'no.3 - space - full stop'
+    );
+  });
+
+  mixer(sampleObj, {
+      removeWidows: false,
+      replaceLineBreaks: false,
+      removeLineBreaks: false,
+      useXHTML: false,
+    })
+  .forEach(function (elem){
+    t.equal(detergent(
+      '\u000a Very long line, long-enough to trigger widow removal . \u000a\n Text . ', elem),
+      'Very long line, long-enough to trigger widow removal.\n\nText.',
+      'no.4 - space - full stop'
+    );
+  });
+  mixer(sampleObj, {
+      removeWidows: true,
+      convertEntities: true,
+      replaceLineBreaks: false,
+      removeLineBreaks: false,
+      useXHTML: true,
+    })
+  .forEach(function (elem){
+    t.equal(detergent(
+      '\u000a Very long line, long-enough to trigger widow removal . \u000a\n Text . ', elem),
+      'Very long line, long-enough to trigger widow&nbsp;removal.\n\nText.',
+      'no.5 - space - full stop'
+    );
+  });
+  mixer(sampleObj, {
+      removeWidows: true,
+      convertEntities: false,
+      replaceLineBreaks: false,
+      removeLineBreaks: false,
+      useXHTML: true,
+    })
+  .forEach(function (elem){
+    t.equal(detergent(
+      '\u000a Very long line, long-enough to trigger widow removal . \u000a\n Text . ', elem),
+      'Very long line, long-enough to trigger widow\xa0removal.\n\nText.',
+      'no.6 - space - full stop'
+    );
+  });
+
+  mixer(sampleObj, {
+      removeWidows: false,
+      replaceLineBreaks: true,
+      removeLineBreaks: false,
+      useXHTML: false,
+    })
+  .forEach(function (elem){
+    t.equal(detergent(
+      '\u000a Very long line, long-enough to trigger widow removal . \u000a\n Text . ', elem),
+      'Very long line, long-enough to trigger widow removal.<br>\n<br>\nText.',
+      'no.7 - space - full stop'
+    );
+  });
+  mixer(sampleObj, {
+      removeWidows: true,
+      convertEntities: true,
+      replaceLineBreaks: true,
+      removeLineBreaks: false,
+      useXHTML: false,
+    })
+  .forEach(function (elem){
+    t.equal(detergent(
+      '\u000a Very long line, long-enough to trigger widow removal . \u000a\n Text . ', elem),
+      'Very long line, long-enough to trigger widow&nbsp;removal.<br>\n<br>\nText.',
+      'no.8 - space - full stop'
+    );
+  });
+  mixer(sampleObj, {
+      removeWidows: true,
+      convertEntities: false,
+      replaceLineBreaks: true,
+      removeLineBreaks: false,
+      useXHTML: false,
+    })
+  .forEach(function (elem){
+    t.equal(detergent(
+      '\u000a Very long line, long-enough to trigger widow removal . \u000a\n Text . ', elem),
+      'Very long line, long-enough to trigger widow\xa0removal.<br>\n<br>\nText.',
+      'no.9 - space - full stop'
+    );
+  });
+
+  mixer(sampleObj, {
+      removeWidows: false,
+      removeLineBreaks: true
+    })
+  .forEach(function (elem){
+    t.equal(detergent(
+      ' \u000a    Very long line, long-enough to trigger widow removal   \n\n. \u000a\n Text text text text . ', elem),
+      'Very long line, long-enough to trigger widow removal. Text text text text.',
+      'no.10 - space - full stop'
+    );
+  });
+  mixer(sampleObj, {
+      removeWidows: true,
+      convertEntities: true,
+      removeLineBreaks: true
+    })
+  .forEach(function (elem){
+    t.equal(detergent(
+      ' \u000a    Very long line, long-enough to trigger widow removal .  \n \n \u000a\n Text text text text . ', elem),
+      'Very long line, long-enough to trigger widow removal. Text text text&nbsp;text.',
+      'no.11 - space - full stop'
+    );
+  });
+  mixer(sampleObj, {
+      removeWidows: true,
+      convertEntities: false,
+      removeLineBreaks: true
+    })
+  .forEach(function (elem){
+    t.equal(detergent(
+      ' \u000a   Very long line, long-enough to trigger widow removal .  \n \n  \u000a\n Text text text text . ', elem),
+      'Very long line, long-enough to trigger widow removal. Text text text\xa0text.',
+      'no.12 - space - full stop'
+    );
+  });
+
+
+
+
   t.equal(detergent(
     'a. \na'),
     'a.<br />\na',

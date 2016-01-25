@@ -303,6 +303,13 @@ function detergent(textToClean, options) {
 
   // ================= xx =================
 
+  // fix clearly wrong things, such as space-full stop occurencies:
+  cleanedText = S(cleanedText).replaceAll(' .', '.').s;
+  // space-comma as well:
+  cleanedText = S(cleanedText).replaceAll(' ,', ',').s;
+
+  // ================= xx =================
+
   // replace all occurencies of broken "&nbsp;" (where one char is missing) with a space
 
   cleanedText = S(cleanedText).replaceAll('nbsp;', ' ').s;
@@ -349,6 +356,15 @@ function detergent(textToClean, options) {
 
   // ================= xx =================
 
+  // optionally, remove all line breaks (off by default, overrides other settings)
+  if (o.removeLineBreaks === true) {
+    cleanedText = doDecodeBRs(cleanedText);
+    cleanedText = S(cleanedText).replaceAll('\n', ' ').s;
+    cleanedText = doCollapseWhiteSpace(cleanedText);
+  }
+
+  // ================= xx =================
+
   // optionally remove all soft hyphens, on by default
   if (o.removeSoftHyphens === true) {
     cleanedText = doRemoveSoftHyphens(cleanedText);
@@ -386,6 +402,7 @@ function detergent(textToClean, options) {
   // replace the tabs with spaces
   cleanedText = S(cleanedText).replaceAll('\u0009', ' ').s;
   cleanedText = S(cleanedText).replaceAll('\t', ' ').s;
+  cleanedText = doCollapseWhiteSpace(cleanedText);
 
   // ================= xx =================
 
@@ -433,29 +450,20 @@ function detergent(textToClean, options) {
 
   // ================= xx =================
 
-  // optionally, remove all line breaks (off by default, overrides other settings)
-  if (o.removeLineBreaks === true) {
-    cleanedText = doDecodeBRs(cleanedText);
-    cleanedText = S(cleanedText).replaceAll('\n', ' ').s;
-    // deflate all multiple spaces into single-one
-    // cleanedText = S(cleanedText).collapseWhitespace().s;
-  }
-
   // also, restore single apostrophes if any were encoded:
   cleanedText = S(cleanedText).replaceAll('&apos;', '\'').s;
 
-  // ================= xx =================
-
-  // fix clearly wrong things, such as space-full stop occurencies:
-  cleanedText = S(cleanedText).replaceAll(' .', '.').s;
-  // space-comma as well:
-  cleanedText = S(cleanedText).replaceAll(' ,', ',').s;
-
-  // ================= xx =================
-
+  // final trims:
   cleanedText = doCollapseWhiteSpace(cleanedText);
   cleanedText = trimTrailingSpaces(cleanedText);
   cleanedText = trimTrailingLineBreaks(cleanedText);
+
+  // repeated:
+  // fix clearly wrong things, such as space-full stop occurencies:
+  cleanedText = S(cleanedText).replaceAll(' .', '.').s;
+  // repeated:
+  // space-comma as well:
+  cleanedText = S(cleanedText).replaceAll(' ,', ',').s;
 
   // ================= xx =================
 
