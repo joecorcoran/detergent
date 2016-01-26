@@ -6,6 +6,7 @@ var curl = require('curl-quotes');
 var endashes = require('typographic-en-dashes');
 var emdashes = require('typographic-em-dashes');
 var unicodeDragon = require('unicode-dragon');
+var entityRefs = require('./entity-references.json');
 
 function detergent(textToClean, options) {
 
@@ -154,6 +155,10 @@ function detergent(textToClean, options) {
       input = S(input).chompLeft('\n').s;
     }
     return input;
+  }
+
+  function escapeRegex(value) {
+      return value.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, '\\$&');
   }
 
   function doCollapseWhiteSpace(inputString) {
@@ -431,6 +436,16 @@ function detergent(textToClean, options) {
   if (o.convertEntities === true) {
     cleanedText = doConvertEntities(cleanedText);
   }
+
+  // ================= xx =================
+
+  // check for mis-typed character references:
+  // 1. 100% wrong stuff - starts with ampersand, semicolon missing:
+  for (var i = 0, len = entityRefs.length; i < len; i++) {
+    cleanedText = cleanedText.replace(new RegExp((escapeRegex('&amp;' + entityRefs[i])+'(?!;)'), 'gm'), ('&' + entityRefs[i] + ';'));
+  }
+
+  // ================= xx =================
 
   // now restore any encrypted b, strong, em and i tags - on by default
   if (o.keepBoldEtc === true) {

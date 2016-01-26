@@ -4,6 +4,7 @@ var test = require('tape');
 var detergent = require('../detergent.js');
 var mixer = require('object-boolean-combinations');
 var hashCharEncoding = require('./hash-char-encoding.json');
+var entityRefs = require('../entity-references.json');
 
 // ==============================
 // A REFERENCE TEST OBJECT TO GET THE OBJECT KEYS
@@ -923,7 +924,7 @@ test('convert double quotes into fancy ones', function (t) {
 // http://practicaltypography.com/hyphens-and-dashes.html
 
 // N dash - use case #1
-test('convert dashes', function (t) {
+test('converts dashes', function (t) {
   mixer(sampleObj, {
       convertDashes: true,
       convertEntities: true,
@@ -966,7 +967,7 @@ test('convert dashes', function (t) {
 // o.dontEncodeNonLatin
 // ==============================
 
-test('convert dashes', function (t) {
+test('doesn\'t encode non-Latin', function (t) {
   mixer(sampleObj, {
       dontEncodeNonLatin: true,
       convertEntities: true,
@@ -990,7 +991,7 @@ test('convert dashes', function (t) {
 // such as, for example, &#118; or &#39; - range 0-255
 // ==============================
 
-test.skip('numeric entities', function (t) {
+test('numeric entities', function (t) {
 
   t.equal(detergent(
     'aaaaaaa aaaaaaaaa aaaaaaaaaa&#160;bbbb'),
@@ -1042,6 +1043,25 @@ test.skip('numeric entities', function (t) {
 
   t.end();
 });
+
+// ==============================
+// detecting partial named entities
+// ==============================
+
+test('partial entity references', function (t) {
+
+  // no mixer — it's rudimentary conversion, no need to bloat test suite
+    for (var i = 0, len = entityRefs.length; i < len; i++) {
+      t.equal(detergent(
+        '&'+entityRefs[i]),
+        '&'+entityRefs[i]+';',
+        'partial named refs: #1.'+i+': &'+entityRefs[i]
+      );
+    }
+
+  t.end();
+});
+
 
 // ==============================
 // Clearly errors
