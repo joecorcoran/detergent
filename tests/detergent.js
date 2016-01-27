@@ -1252,6 +1252,112 @@ test('multiple lines & obvious errors in the text', function (t) {
 });
 
 // ==============================
+// multiple spaces before comma or full stop
+// ==============================
+
+test('multiple spaces before comma/full stop', function (t) {
+  // mixer no.1 — no widows removal
+  mixer(sampleObj, {
+      removeWidows: false
+    })
+  .forEach(function (elem){
+    // comma
+    t.equal(detergent(
+      'some text text text text            ,text  ', elem),
+      'some text text text text, text',
+      '#1 - multiple spaces, comma, no space, text, spaces'
+    );
+    t.equal(detergent(
+      'some text text text text            ,text', elem),
+      'some text text text text, text',
+      '#2 - multiple spaces, comma, no space, text, no spaces'
+    );
+    t.equal(detergent(
+      'some text text text text            ,', elem),
+      'some text text text text,',
+      '#3 - multiple spaces, comma, string\'s end'
+    );
+    t.equal(detergent(
+      'lots of text to trigger widow removal 2,5 here', elem),
+      'lots of text to trigger widow removal 2,5 here',
+      '#4 - alternative decimal notation'
+    );
+    // full stop
+    t.equal(detergent(
+      'some text text text text            .text  ', elem),
+      'some text text text text. text',
+      '#5 - multiple spaces, comma, no space, text, spaces'
+    );
+    t.equal(detergent(
+      'some text text text text            .text', elem),
+      'some text text text text. text',
+      '#6 - multiple spaces, comma, no space, text, no spaces'
+    );
+    t.equal(detergent(
+      'some text text text text            .', elem),
+      'some text text text text.',
+      '#7 - multiple spaces, comma, string\'s end'
+    );
+    t.equal(detergent(
+      'lots of text to trigger widow removal 2.5 here', elem),
+      'lots of text to trigger widow removal 2.5 here',
+      '#8 - alternative decimal notation'
+    );
+  });
+
+  // mixer no.2 — widows removal
+  mixer(sampleObj, {
+      removeWidows: true,
+      convertEntities: true
+    })
+  .forEach(function (elem){
+    // comma
+    t.equal(detergent(
+      'some text text text text            ,text  ', elem),
+      'some text text text text,&nbsp;text',
+      '#9 - multiple spaces, comma, no space, text, spaces'
+    );
+    t.equal(detergent(
+      'some text text text text            ,text', elem),
+      'some text text text text,&nbsp;text',
+      '#10 - multiple spaces, comma, no space, text, no spaces'
+    );
+    t.equal(detergent(
+      'some text text text text            ,', elem),
+      'some text text text&nbsp;text,',
+      '#11 - multiple spaces, comma, string\'s end'
+    );
+    t.equal(detergent(
+      'lots of text to trigger widow removal 2,5 here', elem),
+      'lots of text to trigger widow removal 2,5&nbsp;here',
+      '#12 - alternative decimal notation'
+    );
+    // full stop
+    t.equal(detergent(
+      'some text text text text            .text  ', elem),
+      'some text text text text.&nbsp;text',
+      '#13 - multiple spaces, comma, no space, text, spaces'
+    );
+    t.equal(detergent(
+      'some text text text text            .text', elem),
+      'some text text text text.&nbsp;text',
+      '#14 - multiple spaces, comma, no space, text, no spaces'
+    );
+    t.equal(detergent(
+      'some text text text text            .', elem),
+      'some text text text&nbsp;text.',
+      '#15 - multiple spaces, comma, string\'s end'
+    );
+    t.equal(detergent(
+      'lots of text to trigger widow removal 2.5 here', elem),
+      'lots of text to trigger widow removal 2.5&nbsp;here',
+      '#16 - alternative decimal notation'
+    );
+  });
+  t.end();
+});
+
+// ==============================
 // etc
 // ==============================
 

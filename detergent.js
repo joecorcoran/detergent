@@ -389,13 +389,6 @@ function detergent(textToClean, options) {
 
   // ================= xx =================
 
-  // fix clearly wrong things, such as space-full stop occurencies:
-  cleanedText = S(cleanedText).replaceAll(' .', '.').s;
-  // space-comma as well:
-  cleanedText = S(cleanedText).replaceAll(' ,', ',').s;
-
-  // ================= xx =================
-
   // replace all occurencies of broken "&nbsp;" (where one char is missing) with a space
 
   cleanedText = S(cleanedText).replaceAll('nbsp;', ' ').s;
@@ -489,6 +482,27 @@ function detergent(textToClean, options) {
   cleanedText = S(cleanedText).replaceAll('\u0009', ' ').s;
   cleanedText = S(cleanedText).replaceAll('\t', ' ').s;
   cleanedText = doCollapseWhiteSpace(cleanedText);
+
+  // ================= xx =================
+
+  // enforce spaces after full stops and commas
+  cleanedText = doCollapseWhiteSpace(cleanedText);
+  cleanedText = cleanedText.replace(/\,(?![ \d])/igm, ', ');
+  cleanedText = cleanedText.replace(/\.(?![ \d])/igm, '. ');
+
+  // ================= xx =================
+
+  // fix clearly wrong things, such as space-full stop occurencies:
+  cleanedText = S(cleanedText).replaceAll(' .', '.').s;
+  // space-comma as well:
+  cleanedText = S(cleanedText).replaceAll(' ,', ',').s;
+
+  // ================= xx =================
+
+  // trims:
+  cleanedText = doCollapseWhiteSpace(cleanedText);
+  cleanedText = trimTrailingSpaces(cleanedText);
+  cleanedText = trimTrailingLineBreaks(cleanedText);
 
   // ================= xx =================
 
