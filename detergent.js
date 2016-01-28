@@ -12,9 +12,9 @@ var entityRefs = require('./entity-references.json');
 /**
  * detergent - main function
  *
- * @param  {String} textToClean   this is text to clean
- * @param  {Object} options       optional options object
- * @return {String}               cleaned text
+ * @param  {string} textToClean   this is text to clean
+ * @param  {object} options       optional options object
+ * @return {string}               cleaned text
  */
 function detergent(textToClean, options) {
 
@@ -66,8 +66,8 @@ function detergent(textToClean, options) {
   /**
    * doRemoveInvisibles - delete every character in the incoming "inputString" which is present in the "invisibleCharacters" array
    *
-   * @param  {String} inputString text to clean
-   * @return {String}             result
+   * @param  {string} inputString text to clean
+   * @return {string}             result
    */
   function doRemoveInvisibles(inputString) {
     invisibleCharacters.forEach(function (element) {
@@ -79,8 +79,8 @@ function detergent(textToClean, options) {
   /**
    * doRemoveSoftHyphens - delete all soft hyphens from a string
    *
-   * @param  {String} inputString text to clean
-   * @return {String}             result
+   * @param  {string} inputString text to clean
+   * @return {string}             result
    */
   function doRemoveSoftHyphens(inputString) {
     inputString = S(inputString).replaceAll('\u00AD', '').s;
@@ -91,8 +91,8 @@ function detergent(textToClean, options) {
   /**
    * doDecodeBRs - replace all BR tags with new line symbol
    *
-   * @param  {String} inputString text to clean
-   * @return {String}             result
+   * @param  {string} inputString text to clean
+   * @return {string}             result
    */
   function doDecodeBRs(inputString) {
     inputString = inputString.replace(/<\s*[bB][rR][^>]*>/igm, '\n');
@@ -103,8 +103,8 @@ function detergent(textToClean, options) {
   /**
    * encryptBoldItalic - change all <b>, <bold>, <i> and <em> tags as well as closing tag equivalents TO proprietary placeholders. This procedure will not retain any attributes (class, id, etc.). It is necessary to encrypt because otherwise tags would be stripped by other functions.
    *
-   * @param  {String} inputString text to clean
-   * @return {String}             result
+   * @param  {string} inputString text to clean
+   * @return {string}             result
    */
   function encryptBoldItalic(inputString) {
 
@@ -143,8 +143,8 @@ function detergent(textToClean, options) {
   /**
    * decryptBoldItalic - decode the encrypted <b>, <bold>, <i> and <em> tags
    *
-   * @param  {String} inputString text to decode
-   * @return {String}             result
+   * @param  {string} inputString text to decode
+   * @return {string}             result
    */
   function decryptBoldItalic(inputString) {
 
@@ -202,8 +202,8 @@ function detergent(textToClean, options) {
   /**
    * escapeRegex - escapes the regex strings.
    *
-   * @param value {String} incoming string
-   * @return {String} result
+   * @param value {string} incoming string
+   * @return {string} result
    */
   function escapeRegex(value) {
       return value.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, '\\$&');
@@ -213,8 +213,8 @@ function detergent(textToClean, options) {
   /**
    * doCollapseWhiteSpace - will loop until every double space is replaced with single space
    *
-   * @param  {String} inputString incoming string
-   * @return {String}             result
+   * @param  {string} inputString incoming string
+   * @return {string}             result
    */
   function doCollapseWhiteSpace(inputString) {
     while (S(inputString).contains('  ')){
@@ -230,7 +230,7 @@ function detergent(textToClean, options) {
    * fixedCharCodeAt - used as charCodeAt() replacement when it is unknown whether non-Basic-Multilingual-Plane characters exist before the specified index position.
    * Source: https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/String/charCodeAt
    *
-   * @param str  {String} incoming string
+   * @param str  {string} incoming string
    * @param idx  {Number} offset by one digit position. Theoretically, this second para could be used to identify the high surrogate. We are not using it here at Detergent.
    * @return {type}     description
    */
@@ -264,8 +264,8 @@ function detergent(textToClean, options) {
    * doConvertEntities - converts entities, optionally, skipping all non-latin characters.
    *
    * CHECKS AND CONSUMES o.dontEncodeNonLatin !
-   * @param inputString {String}  incoming string
-   * @return {String}             result
+   * @param  {string} inputString incoming string
+   * @return {string}             result
    */
   function doConvertEntities(inputString) {
     var encodeRangesArray = [
@@ -317,8 +317,8 @@ function detergent(textToClean, options) {
   /**
    * doRemoveWidows - prevents widows - last word in the paragraph that wrap onto the last line, all by itself. We use NBSP to join the last two words.
    *
-   * @param  {String} inputString incoming string
-   * @return {String}             result
+   * @param  {string} inputString incoming string
+   * @return {string}             result
    */
   function doRemoveWidows(inputString) {
 
