@@ -30,7 +30,7 @@
   "homepage": "https://github.com/code-and-send/detergent#readme",
   "dependencies": {
     "curl-quotes": "^0.1.0",
-    "he": "^0.5.0",
+    "he": "^1.0.0",
     "string": "^3.3.1",
     "typographic-em-dashes": "^1.0.2",
     "typographic-en-dashes": "^1.0.1",
