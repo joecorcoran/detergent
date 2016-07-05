@@ -370,9 +370,9 @@ function detergent (textToClean, options) {
 
   // ================= xx =================
 
-  // replace all occurencies of broken "&nbsp" (where one char is missing) with a space
+  // replace all occurencies of broken "&nbsp;" (where ampersand is missing) with a space
 
-  cleanedText = S(cleanedText).replaceAll('nbsp', ' ').s
+  cleanedText = S(cleanedText).replaceAll('nbsp;', ' ').s
   // there is safeguard for "text&nbsptext" already thanks to Mathias' he.js
 
   // ================= xx =================
@@ -517,7 +517,7 @@ function detergent (textToClean, options) {
   // check for mis-typed character references:
   // 1. 100% wrong stuff - starts with ampersand, semicolon missing:
   for (var i = 0, len = entityRefs.length; i < len; i++) {
-    cleanedText = cleanedText.replace(new RegExp((escapeRegex('&amp' + entityRefs[i]) + '(?!)'), 'gm'), ('&' + entityRefs[i] + ''))
+    cleanedText = cleanedText.replace(new RegExp((escapeRegex('&amp;' + entityRefs[i]) + '(?!;)'), 'gm'), ('&' + entityRefs[i] + ';'))
   }
 
   // ================= xx =================
@@ -541,7 +541,7 @@ function detergent (textToClean, options) {
   // ================= xx =================
 
   // also, restore single apostrophes if any were encoded:
-  cleanedText = S(cleanedText).replaceAll('&apos', '\'').s
+  cleanedText = S(cleanedText).replaceAll('&apos;', '\'').s
 
   // final trims:
   cleanedText = doCollapseWhiteSpace(cleanedText)
