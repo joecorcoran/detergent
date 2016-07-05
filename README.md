@@ -6,7 +6,7 @@
 
 [![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
 
-Detergent is a JavaScript library that prepares text to be pasted into email HTML code. There is also a front-end shell (internally called "the plastic") on [Detergent.io](http://detergent.io) with all current features implemented.
+Detergent is a JavaScript library that prepares text to be pasted into email's or website's HTML code. There is also a front-end shell (internally called "the plastic") on [Detergent.io](http://detergent.io) with all current features implemented.
 
 ## Rationale
 
@@ -24,6 +24,8 @@ If you take care to encode your copy, your converter must be smart-enough to:
 * skip the entity encoding on non-latin characters because there is not point to work on soup of entities — email will surely be sent in UTF-8 anyway. Yet, unencoded pound signs will trigger email code linters, so proper converter should encode what is _usually_ encoded (although, technically, not required in non-latin email).
 
 Detergent does all of this, and comes in two shapes: [NPM library](https://www.npmjs.com/package/detergent) and web app (http://detergent.io).
+
+While Detergent is essential for email coding, it is also very handy for coding websites. How many times have you pasted text into Notepad just to get rid of invisible characters? Well, with Detergent you don't need to do that anymore.
 
 ## API
 
