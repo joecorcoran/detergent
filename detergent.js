@@ -4,7 +4,6 @@ var he = require('he')
 var S = require('string')
 var curl = require('curl-quotes')
 var endashes = require('typographic-en-dashes')
-var emdashes = require('typographic-em-dashes')
 var unicodeDragon = require('unicode-dragon')
 var entityRefs = require('./entity-references.json')
 
@@ -21,16 +20,16 @@ function detergent (textToClean, options) {
   var cleanedText = String(textToClean)
 
   // vars - setting defaults
-  if (o.removeWidows === void 0) { o.removeWidows = true }
-  if (o.convertEntities === void 0) { o.convertEntities = true }
-  if (o.convertDashes === void 0) { o.convertDashes = true }
-  if (o.convertApostrophes === void 0) { o.convertApostrophes = true }
-  if (o.replaceLineBreaks === void 0) { o.replaceLineBreaks = true }
-  if (o.removeLineBreaks === void 0) { o.removeLineBreaks = false }
-  if (o.useXHTML === void 0) { o.useXHTML = true }
-  if (o.removeSoftHyphens === void 0) { o.removeSoftHyphens = true }
-  if (o.dontEncodeNonLatin === void 0) { o.dontEncodeNonLatin = true }
-  if (o.keepBoldEtc === void 0) { o.keepBoldEtc = true }
+  if (o.removeWidows === undefined) { o.removeWidows = true }
+  if (o.convertEntities === undefined) { o.convertEntities = true }
+  if (o.convertDashes === undefined) { o.convertDashes = true }
+  if (o.convertApostrophes === undefined) { o.convertApostrophes = true }
+  if (o.replaceLineBreaks === undefined) { o.replaceLineBreaks = true }
+  if (o.removeLineBreaks === undefined) { o.removeLineBreaks = false }
+  if (o.useXHTML === undefined) { o.useXHTML = true }
+  if (o.removeSoftHyphens === undefined) { o.removeSoftHyphens = true }
+  if (o.dontEncodeNonLatin === undefined) { o.dontEncodeNonLatin = true }
+  if (o.keepBoldEtc === undefined) { o.keepBoldEtc = true }
 
   // vars - assets:
   var invisibleCharacters = [
@@ -217,7 +216,7 @@ function detergent (textToClean, options) {
    *
    * @param str  {string} incoming string
    * @param idx  {Number} offset by one digit position. Theoretically, this second para could be used to identify the high surrogate. We are not using it here at Detergent.
-   * @return {type}     description
+   * @return {string}     description
    */
   function fixedCharCodeAt (str, idx) {
   // ex. fixedCharCodeAt('\uD800\uDC00', 0) // 65536
@@ -341,20 +340,66 @@ function detergent (textToClean, options) {
       return elem
     })
     outputString = newParasArray.join('\n')
+
+    return outputString
+  }
+
+  /**
+   * widowDashes - replaces spaces before dashes with non-breaking spaces
+   *
+   * @param  {string} inputString
+   * @return {string}
+   */
+  function doRemoveWidowDashes (inputString) {
+    var outputString = S(inputString).replaceAll(' \u2013', '\u00A0\u2013').s
+    outputString = S(outputString).replaceAll(' \u2014', '\u00A0\u2014').s
+
+    outputString = S(outputString).replaceAll(' &ndash;', '&nbsp;&ndash;').s
+    outputString = S(outputString).replaceAll(' &mdash;', '&nbsp;&mdash;').s
     return outputString
   }
 
   /**
    * doConvertDashes - converts regular dashes into N- and M-dashes, depending on the context.
    *
-   * @param  {type} inputString description
-   * @return {type}             description
+   * @param  {string} inputString
+   * @return {string}
    */
-  function doConvertDashes (inputString) {
+  function doConvertDashes (inputString, widows) {
     inputString = endashes(inputString)
-    inputString = emdashes(inputString)
-    inputString = S(inputString).replaceAll(' - ', '\u00A0\u2014 ').s
-    inputString = S(inputString).replaceAll(' \u2014 ', '\u00A0\u2014 ').s
+
+    // take care of m dashes manually (spaces added after deliberately):
+    inputString = S(inputString).replaceAll(' --', ' \u2014 ').s
+    inputString = S(inputString).replaceAll(' -', ' \u2014 ').s
+
+    // add space after m dash provisionally
+    inputString = S(inputString).replaceAll(' \u2014', ' \u2014 ').s
+    // add space after m dash provisionally
+    inputString = S(inputString).replaceAll(' &mdash;', ' &mdash; ').s
+
+    if (widows) {
+      // adding non-breaking space before ndashes:
+      inputString = S(inputString).replaceAll(' \u2013', '\u00A0\u2013 ').s
+      // adding non-breaking space before mdashes:
+      inputString = S(inputString).replaceAll(' \u2014', '\u00A0\u2014 ').s
+    }
+    return inputString
+  }
+
+  /**
+   * doAddSpaceAfterDashes - add space after hyphens and dashes if text follows
+   *
+   * @param  {string} inputString
+   * @return {string}
+   */
+  function doAddSpaceAfterDashes (inputString) {
+    // add space after m dash provisionally
+    inputString = S(inputString).replaceAll(' &mdash;', ' &mdash; ').s
+    // add space after m dash provisionally
+    inputString = S(inputString).replaceAll(' \u2014', ' \u2014 ').s
+    // add space after hyphen
+    inputString = S(inputString).replaceAll(' -', ' - ').s
+
     return inputString
   }
 
@@ -382,6 +427,16 @@ function detergent (textToClean, options) {
 
   // ================= xx =================
 
+  // replace all hairspace chars with spaces
+  cleanedText = S(cleanedText).replaceAll('\u200A', ' ').s
+
+  // ================= xx =================
+
+  // add missing space after m dashes
+  cleanedText = doAddSpaceAfterDashes(cleanedText)
+
+  // ================= xx =================
+
   // remove unpaired surrogates
   cleanedText = unicodeDragon(cleanedText)
   cleanedText = S(cleanedText).replaceAll('\uFFFD', '').s
@@ -390,7 +445,7 @@ function detergent (textToClean, options) {
 
   // replace all invisible characters that can be interpreted as line breaks
   // see https://en.wikipedia.org/wiki/Newline#Unicode
-  if (o.removeLineBreaks === false) {
+  if (!o.removeLineBreaks) {
     lineBreakCharacters.forEach(function (elem) {
       cleanedText = S(cleanedText).replaceAll(elem, '\n').s
     })
@@ -416,7 +471,7 @@ function detergent (textToClean, options) {
   // ================= xx =================
 
   // optionally, remove all line breaks (off by default, overrides other settings)
-  if (o.removeLineBreaks === true) {
+  if (o.removeLineBreaks) {
     cleanedText = doDecodeBRs(cleanedText)
     cleanedText = S(cleanedText).replaceAll('\n', ' ').s
     cleanedText = doCollapseWhiteSpace(cleanedText)
@@ -425,14 +480,14 @@ function detergent (textToClean, options) {
   // ================= xx =================
 
   // optionally remove all soft hyphens, on by default
-  if (o.removeSoftHyphens === true) {
+  if (o.removeSoftHyphens) {
     cleanedText = doRemoveSoftHyphens(cleanedText)
   }
 
   // ================= xx =================
 
   // optionally preserve bold, italic, strong and em - on by default
-  if (o.keepBoldEtc === true) {
+  if (o.keepBoldEtc) {
     cleanedText = encryptBoldItalic(cleanedText)
   }
 
@@ -487,29 +542,35 @@ function detergent (textToClean, options) {
   // ================= xx =================
 
   // optionally, fix widow words (on by default)
-  if (o.removeWidows === true) {
+  if (o.removeWidows) {
     cleanedText = doRemoveWidows(cleanedText)
+  }
+
+  // optionally, replace spaces before m dashes with non-breaking spaces
+  if (o.removeWidows) {
+    cleanedText = doRemoveWidowDashes(cleanedText)
   }
 
   // ================= xx =================
 
   // convert apostrophes and quotation marks into fancy ones
-  if (o.convertApostrophes === true) {
+  if (o.convertApostrophes) {
     cleanedText = curl(cleanedText)
   }
 
   // ================= xx =================
 
   // optionally, convert dashes to typographically correct-ones (on by default)
-  if (o.convertDashes === true) {
-    cleanedText = doConvertDashes(cleanedText)
+  if (o.convertDashes) {
+    cleanedText = doConvertDashes(cleanedText, o.removeWidows)
   }
 
   // ================= xx =================
 
   // optionally, encode non-ASCII characters into named entities (on by default)
-  if (o.convertEntities === true) {
+  if (o.convertEntities) {
     cleanedText = doConvertEntities(cleanedText)
+    cleanedText = S(cleanedText).replaceAll('&hairsp;', ' ').s
   }
 
   // ================= xx =================
@@ -523,14 +584,14 @@ function detergent (textToClean, options) {
   // ================= xx =================
 
   // now restore any encrypted b, strong, em and i tags - on by default
-  if (o.keepBoldEtc === true) {
+  if (o.keepBoldEtc) {
     cleanedText = decryptBoldItalic(cleanedText)
   }
 
   // ================= xx =================
 
   // optionally, replace line breaks with BR (on by default)
-  if ((o.replaceLineBreaks === true) && (o.removeLineBreaks === false)) {
+  if ((o.replaceLineBreaks) && (!o.removeLineBreaks)) {
     if (o.useXHTML) {
       cleanedText = S(cleanedText).replaceAll('\n', '<br />\n').s
     } else {
@@ -554,6 +615,19 @@ function detergent (textToClean, options) {
   // repeated:
   // space-comma as well:
   cleanedText = S(cleanedText).replaceAll(' ,', ',').s
+
+  // ================= xx =================
+
+  // replace all hairspace chars with spaces
+  cleanedText = S(cleanedText).replaceAll('\u200A', ' ').s
+  cleanedText = S(cleanedText).replaceAll('&hairsp;', ' ').s
+
+  // ================= xx =================
+
+  // optionally, replace spaces before m dashes with non-breaking spaces
+  if (o.removeWidows) {
+    cleanedText = doRemoveWidowDashes(cleanedText)
+  }
 
   // ================= xx =================
 
