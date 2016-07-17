@@ -6,6 +6,7 @@ var curl = require('curl-quotes')
 var endashes = require('typographic-en-dashes')
 var unicodeDragon = require('unicode-dragon')
 var entityRefs = require('./entity-references.json')
+var numericEnt = require('./enforced-numeric-entities-list.json')
 
 /**
  * detergent - main function
@@ -571,6 +572,33 @@ function detergent (textToClean, options) {
   if (o.convertEntities) {
     cleanedText = doConvertEntities(cleanedText)
     cleanedText = S(cleanedText).replaceAll('&hairsp;', ' ').s
+  }
+
+  // ================= xx =================
+
+  // clean up after converting entities:
+  // some entities can't be emailed in named form, only
+  // in numeric-one:
+
+  if (o.convertEntities) {
+    // cleanedText = S(cleanedText).replaceAll('&hairsp;', ' ').s
+    Object.keys(numericEnt).forEach(function (key) {
+      cleanedText = S(cleanedText).replaceAll(key, numericEnt[key]).s
+    })
+  }
+
+  // ================= xx =================
+
+  // (horizontal) ellipsis:
+
+  if (o.convertEntities) {
+    cleanedText = S(cleanedText).replaceAll('...', '&hellip;').s
+    cleanedText = S(cleanedText).replaceAll('&mldr;', '&hellip;').s
+    cleanedText = S(cleanedText).replaceAll('\u2026', '&hellip;').s
+  } else {
+    cleanedText = S(cleanedText).replaceAll('...', '\u2026').s
+    cleanedText = S(cleanedText).replaceAll('&mldr;', '\u2026').s
+    cleanedText = S(cleanedText).replaceAll('&hellip;', '\u2026').s
   }
 
   // ================= xx =================

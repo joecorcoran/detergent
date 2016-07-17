@@ -44,12 +44,12 @@ test('hairspace changed to space', function (t) {
     t.equal(detergent(
       'a&hairsp;a&VeryThinSpace;a&#x0200A;a&#8202;a\u200Aa', elem),
       'a a a a a a',
-      'hairspace changed to space: -widows'
+      'hairspace changed to space'
     )
     t.equal(detergent(
       'a    &hairsp;  a  &VeryThinSpace;   a &#x0200A;     a              &#8202; a \u200A a    ', elem),
       'a a a a a a',
-      'hairspace changed to space (lots of spaces): -widows'
+      'hairspace changed to space (lots of spaces)'
     )
   })
   mixer(sampleObj, {
@@ -242,7 +242,7 @@ test('Sketch case: hairspaces', function (t) {
     t.equal(detergent(
       'a\u200A&mdash;\u200Aa', elem),
       'a \u2014 a',
-      'hairspaces replaced with normal spaces: -entities-widows'
+      '#1 hairspaces'
     )
   })
   mixer(sampleObj, {
@@ -253,7 +253,7 @@ test('Sketch case: hairspaces', function (t) {
     t.equal(detergent(
       'HOORAY  \u2014  IT’S HERE \u200A', elem),
       'HOORAY &mdash; IT&rsquo;S HERE',
-      'M dash with surrounding space treated correctly: +entities-widows'
+      '#2 hairspaces'
     )
   })
   mixer(sampleObj, {
@@ -265,7 +265,7 @@ test('Sketch case: hairspaces', function (t) {
     t.equal(detergent(
       'HOORAY  -  IT’S HERE \u200A', elem),
       'HOORAY &mdash; IT&rsquo;S HERE',
-      'minus (hyphen) with surrounding space treated correctly: +entities-widows+dashes'
+      '#3 hairspaces'
     )
   })
   mixer(sampleObj, {
@@ -277,7 +277,7 @@ test('Sketch case: hairspaces', function (t) {
     t.equal(detergent(
       'HOORAY  -  IT’S HERE \u200A', elem),
       'HOORAY - IT&rsquo;S HERE',
-      'minus (hyphen) with surrounding space treated correctly: +entities-widows-dashes'
+      '#4 hairspaces'
     )
   })
   mixer(sampleObj, {
@@ -289,7 +289,7 @@ test('Sketch case: hairspaces', function (t) {
     t.equal(detergent(
       'HOORAY  -  IT’S HERE \u200A', elem),
       'HOORAY - IT&rsquo;S&nbsp;HERE',
-      'minus (hyphen) with surrounding space treated correctly: +entities+widows-dashes'
+      '#5 hairspaces'
     )
   })
   mixer(sampleObj, {
@@ -300,7 +300,7 @@ test('Sketch case: hairspaces', function (t) {
     t.equal(detergent(
       'HOORAY  —  IT’S HERE \u200A', elem),
       'HOORAY&nbsp;&mdash; IT&rsquo;S&nbsp;HERE',
-      'M dash with surrounding space treated correctly: +entities'
+      '#6 hairspaces'
     )
   })
   t.end()
@@ -319,7 +319,7 @@ test('More hairspaces safeguards', function (t) {
     t.equal(detergent(
       'aaaaaaaaaaa - aaaaaaaaaaaa', elem),
       'aaaaaaaaaaa&nbsp;&mdash; aaaaaaaaaaaa',
-      'Space minus: +entities+widows+dashes'
+      '#7 hairspaces'
     )
   })
   mixer(sampleObj, {
@@ -329,7 +329,7 @@ test('More hairspaces safeguards', function (t) {
     t.equal(detergent(
       'aaaaaaaaaaa - aaaaaaaaaaaa', elem),
       'aaaaaaaaaaa - aaaaaaaaaaaa',
-      'Space minus: -dashes'
+      '#8 hairspaces'
     )
   })
   mixer(sampleObj, {
@@ -340,7 +340,7 @@ test('More hairspaces safeguards', function (t) {
     t.equal(detergent(
       'aaaaaaaaaaa \u2014 aaaaaaaaaaaa', elem),
       'aaaaaaaaaaa&nbsp;&mdash; aaaaaaaaaaaa',
-      'Space unencoded m dash: +entities+widows'
+      '#9 hairspaces'
     )
   })
   mixer(sampleObj, {
@@ -351,7 +351,7 @@ test('More hairspaces safeguards', function (t) {
     t.equal(detergent(
       'aaaaaaaaaaa &mdash; aaaaaaaaaaaa', elem),
       'aaaaaaaaaaa&nbsp;&mdash; aaaaaaaaaaaa',
-      'Space encoded m dash: +entities+widows'
+      '#10 hairspaces'
     )
   }) // --- PART II ---
   mixer(sampleObj, {
@@ -362,7 +362,7 @@ test('More hairspaces safeguards', function (t) {
     t.equal(detergent(
       'a \u2014a', elem),
       'a&nbsp;&mdash; a',
-      'Space unencoded m dash letter (missing space after m dash): +entities+widows'
+      '#11 hairspaces'
     )
   })
   mixer(sampleObj, {
@@ -373,7 +373,7 @@ test('More hairspaces safeguards', function (t) {
     t.equal(detergent(
       'a \u2014a', elem),
       'a &mdash; a',
-      'Space unencoded m dash letter (missing space after m dash): +entities-widows'
+      '#12 hairspaces'
     )
   })
   mixer(sampleObj, {
@@ -384,7 +384,7 @@ test('More hairspaces safeguards', function (t) {
     t.equal(detergent(
       'a \u2014a', elem),
       'a\xa0\u2014 a',
-      'Space unencoded m dash letter (missing space after m dash): -entities+widows'
+      '#13 hairspaces'
     )
   })
   mixer(sampleObj, {
@@ -395,7 +395,7 @@ test('More hairspaces safeguards', function (t) {
     t.equal(detergent(
       'a \u2014a', elem),
       'a \u2014 a',
-      'Space unencoded m dash letter (missing space after m dash): -entities-widows'
+      '#14 hairspaces'
     )
   })// --- PART III - hairlines mixed in ---
   mixer(sampleObj, {
@@ -406,7 +406,7 @@ test('More hairspaces safeguards', function (t) {
     t.equal(detergent(
       'a\u200A\u2014a', elem),
       'a&nbsp;&mdash; a',
-      'Hairspace unencoded m dash letter (missing space after m dash): +entities+widows'
+      '#15 hairspaces'
     )
   })
   mixer(sampleObj, {
@@ -417,7 +417,7 @@ test('More hairspaces safeguards', function (t) {
     t.equal(detergent(
       'a\u200A\u2014a', elem),
       'a &mdash; a',
-      'Hairspace unencoded m dash letter (missing space after m dash): +entities-widows'
+      '#16 hairspaces'
     )
   })
   mixer(sampleObj, {
@@ -428,7 +428,7 @@ test('More hairspaces safeguards', function (t) {
     t.equal(detergent(
       'a\u200A\u2014a', elem),
       'a\xa0\u2014 a',
-      'Hairspace unencoded m dash letter (missing space after m dash): -entities+widows'
+      '#17 hairspaces'
     )
   })
   mixer(sampleObj, {
@@ -439,7 +439,7 @@ test('More hairspaces safeguards', function (t) {
     t.equal(detergent(
       'a\u200A\u2014a', elem),
       'a \u2014 a',
-      'Hairspace unencoded m dash letter (missing space after m dash): -entities-widows'
+      '#18 hairspaces'
     )
   })
   t.end()
@@ -1296,41 +1296,51 @@ test('numeric entities', function (t) {
     'aaaaaaa aaaaaaaaa aaaaaaaaa&nbsp;bbbb',
     'non-encoded entities'
   )
-
-  mixer(sampleObj, {
-    convertEntities: true,
-    useXHTML: true,
-    convertApostrophes: false,
-    removeSoftHyphens: false,
-    removeWidows: false
-  })
-  .forEach(function (elem1) {
-    hashCharEncoding.forEach(function (elem2) {
-      t.equal(detergent(
-        elem2[0], elem1),
-        elem2[3],
-        (elem2[1] + ' (' + elem2[0] + ')')
-      )
-    })
-  })
-  mixer(sampleObj, {
-    convertEntities: false,
-    useXHTML: true,
-    convertApostrophes: false,
-    removeSoftHyphens: false
-  })
-  .forEach(function (elem1) {
-    hashCharEncoding.forEach(function (elem2) {
-      t.equal(detergent(
-        elem2[0], elem1),
-        elem2[2],
-        (elem2[1] + ' (' + elem2[0] + ')')
-      )
-    })
-  })
-
   t.end()
 })
+
+// ==============================
+// SKIPPED TEST:
+// checking all numeric entities encoded in hyphens-and-dashes
+// such as, for example, &#118; or &#39; - range 0-255
+// NOT ALL ENTITIES HAVE TO BE ENCODED INTO NAMED ONES (v2.7 change)
+// ==============================
+
+// test.skip('numeric entities', function (t) {
+//   mixer(sampleObj, {
+//     convertEntities: true,
+//     useXHTML: true,
+//     convertApostrophes: false,
+//     removeSoftHyphens: false,
+//     removeWidows: false
+//   })
+//   .forEach(function (elem1) {
+//     hashCharEncoding.forEach(function (elem2) {
+//       t.equal(detergent(
+//         elem2[0], elem1),
+//         elem2[3],
+//         (elem2[1] + ' (' + elem2[0] + ')')
+//       )
+//     })
+//   })
+//   mixer(sampleObj, {
+//     convertEntities: false,
+//     useXHTML: true,
+//     convertApostrophes: false,
+//     removeSoftHyphens: false
+//   })
+//   .forEach(function (elem1) {
+//     hashCharEncoding.forEach(function (elem2) {
+//       t.equal(detergent(
+//         elem2[0], elem1),
+//         elem2[2],
+//         (elem2[1] + ' (' + elem2[0] + ')')
+//       )
+//     })
+//   })
+//
+//   t.end()
+// })
 
 // ==============================
 // detecting partial named entities
@@ -1653,6 +1663,180 @@ test('m dash sanity check', function (t) {
       'm—m', elem),
       'm—m',
       'leaves the m dashes alone'
+    )
+  })
+  t.end()
+})
+
+// ==============================
+// (horizontal) ellipsis sanity check
+// ==============================
+
+test('m dash sanity check', function (t) {
+  mixer(sampleObj, {
+    convertEntities: false
+  })
+  .forEach(function (elem) {
+    t.equal(detergent(
+      '\u2026', elem),
+      '\u2026',
+      'leaves the ellipsis alone when it has to (unencoded)'
+    )
+    t.equal(detergent(
+      '&hellip;', elem),
+      '\u2026',
+      'leaves the ellipsis alone when it has to (hellip)'
+    )
+    t.equal(detergent(
+      '&mldr;', elem),
+      '\u2026',
+      'leaves the ellipsis alone when it has to (mldr)'
+    )
+  })
+  mixer(sampleObj, {
+    convertEntities: true
+  })
+  .forEach(function (elem) {
+    t.equal(detergent(
+      '\u2026', elem),
+      '&hellip;',
+      'encodes the ellipsis when it has to (unencoded)'
+    )
+    t.equal(detergent(
+      '&hellip;', elem),
+      '&hellip;',
+      'encodes the ellipsis when it has to (hellip)'
+    )
+    t.equal(detergent(
+      '&mldr;', elem),
+      '&hellip;',
+      'encodes the ellipsis when it has to (mldr)'
+    )
+  })
+  t.end()
+})
+
+// =======================================
+// three dots converted to ellipsis symbol
+// =======================================
+
+test('ellipsis from full stops', function (t) {
+  mixer(sampleObj, {
+    convertEntities: false
+  })
+  .forEach(function (elem) {
+    t.equal(detergent(
+      '...', elem),
+      '\u2026',
+      'converts three full stops to unencoded ellipsis'
+    )
+  })
+  mixer(sampleObj, {
+    convertEntities: true
+  })
+  .forEach(function (elem) {
+    t.equal(detergent(
+      '...', elem),
+      '&hellip;',
+      'converts three full stops to encoded ellipsis'
+    )
+  })
+  t.end()
+})
+
+// ============================================================================
+// some HTML entitities can't be sent in named entities format, only in numeric
+// ============================================================================
+
+test('ellipsis from full stops', function (t) {
+  mixer(sampleObj, {
+    convertEntities: true
+  })
+  .forEach(function (elem) {
+    t.equal(detergent(
+      '&Breve;', elem),
+      '&#x2D8;',
+      'HTML entity — Breve'
+    )
+    t.equal(detergent(
+      '&Backslash;', elem),
+      '&#x2216;',
+      'HTML entity — Backslash'
+    )
+    t.equal(detergent(
+      '&Cacute;', elem),
+      '&#x106;',
+      'HTML entity — Cacute'
+    )
+    t.equal(detergent(
+      '&CircleDot;', elem),
+      '&#x2299;',
+      'HTML entity — CircleDot'
+    )
+    t.equal(detergent(
+      '&DD;', elem),
+      '&#x2145;',
+      'HTML entity — DD'
+    )
+    t.equal(detergent(
+      '&Diamond;', elem),
+      '&#x22C4;',
+      'HTML entity — Diamond'
+    )
+    t.equal(detergent(
+      '&DownArrow;', elem),
+      '&darr;',
+      'HTML entity — DownArrow'
+    )
+    t.equal(detergent(
+      '&LT;', elem),
+      '&lt;',
+      'HTML entity — LT'
+    )
+    t.equal(detergent(
+      '&RightArrow;', elem),
+      '&rarr;',
+      'HTML entity — RightArrow'
+    )
+    t.equal(detergent(
+      '&SmallCircle;', elem),
+      '&#x2218;',
+      'HTML entity — SmallCircle'
+    )
+    t.equal(detergent(
+      '&Uarr;', elem),
+      '&#x219F;',
+      'HTML entity — Uarr'
+    )
+    t.equal(detergent(
+      '&Verbar;', elem),
+      '&#x2016;',
+      'HTML entity — Verbar'
+    )
+    t.equal(detergent(
+      '&angst;', elem),
+      '&#xC5;',
+      'HTML entity — angst'
+    )
+    t.equal(detergent(
+      '&zdot;', elem),
+      '&#x17C;',
+      'HTML entity — zdot'
+    )
+  })
+  t.end()
+})
+
+test('wrong named entity QUOT into quot', function (t) {
+  mixer(sampleObj, {
+    convertEntities: true,
+    convertApostrophes: false
+  })
+  .forEach(function (elem) {
+    t.equal(detergent(
+      '&QUOT;', elem),
+      '&quot;',
+      'HTML entity — QUOT'
     )
   })
   t.end()
