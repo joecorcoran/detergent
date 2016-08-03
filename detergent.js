@@ -305,7 +305,7 @@ function detergent (textToClean, options) {
    */
   function doRemoveWidows (inputString) {
     // first, trim the trailing white space
-    inputString = inputString.trim()
+    // inputString = inputString.trim()
     var outputString
 
     // var paragraphsArray = inputString.split('\n')

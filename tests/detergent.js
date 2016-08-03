@@ -475,7 +475,7 @@ test('More hairspaces safeguards', function (t) {
     t.equal(detergent(
       'a\u200Aa a a a a a a a a \u2014 a a a a ', elem),
       'a a a a a a a a a a&nbsp;&mdash; a a a&nbsp;a',
-      'Doesn\'t add hairspaces +convert+widows'
+      '#19 hairspaces'
     )
   })
   mixer(sampleObj, {
@@ -486,7 +486,7 @@ test('More hairspaces safeguards', function (t) {
     t.equal(detergent(
       'a a a a a a\u200Aa a a a \u2014 a a a a ', elem),
       'a a a a a a a a a a &mdash; a a a a',
-      'Doesn\'t add hairspaces +convert-widows'
+      '#20 hairspaces'
     )
   })
   mixer(sampleObj, {
@@ -497,7 +497,7 @@ test('More hairspaces safeguards', function (t) {
     t.equal(detergent(
       'a a a a a a a a a a \u2014 a a a a \u200A', elem),
       'a a a a a a a a a a\xa0\u2014 a a a\xa0a',
-      'Doesn\'t add hairspaces -convert+widows'
+      '#21 hairspaces'
     )
   })
   mixer(sampleObj, {
@@ -508,7 +508,7 @@ test('More hairspaces safeguards', function (t) {
     t.equal(detergent(
       'a a a a a a a a a a \u2014 a a a a \u200A', elem),
       'a a a a a a a a a a \u2014 a a a a',
-      'Doesn\'t add hairspaces -convert-widows'
+      '#22 hairspaces'
     )
   })
   t.end()
@@ -819,6 +819,80 @@ test('strip middle space clusters', function (t) {
   })
   t.end()
 }, 'redundant space between words')
+
+test('leading-trailing non-breaking space', function (t) {
+  mixer(sampleObj, {
+    convertEntities: true
+  })
+  .forEach(function (elem) {
+    t.equal(detergent(
+      '&nbsp; a b', elem),
+      '&nbsp; a b',
+      '#1 leading nbsp'
+    )
+    t.equal(detergent(
+      'a b &nbsp;', elem),
+      'a b &nbsp;',
+      '#2 leading nbsp'
+    )
+    t.equal(detergent(
+      '&nbsp; a &nbsp;', elem),
+      '&nbsp; a &nbsp;',
+      '#3 surrounded with nbsp'
+    )
+    t.equal(detergent(
+      '    \xa0     a     \xa0      ', elem),
+      '&nbsp; a &nbsp;',
+      '#4 surrounded with nbsp'
+    )
+    t.equal(detergent(
+      '&nbsp;&nbsp;&nbsp; a &nbsp;&nbsp;&nbsp;', elem),
+      '&nbsp;&nbsp;&nbsp; a &nbsp;&nbsp;&nbsp;',
+      '#5 surrounded with nbsp'
+    )
+    t.equal(detergent(
+      ' &nbsp;&nbsp;&nbsp; a &nbsp;&nbsp;&nbsp; ', elem),
+      '&nbsp;&nbsp;&nbsp; a &nbsp;&nbsp;&nbsp;',
+      '#6 surrounded with nbsp'
+    )
+  })
+  mixer(sampleObj, {
+    convertEntities: false
+  })
+  .forEach(function (elem) {
+    t.equal(detergent(
+      '&nbsp; a b', elem),
+      '\xa0 a b',
+      '#7 trailing nbsp'
+    )
+    t.equal(detergent(
+      'a b &nbsp;', elem),
+      'a b \xa0',
+      '#8 trailing nbsp'
+    )
+    t.equal(detergent(
+      '    &nbsp; a &nbsp;     ', elem),
+      '\xa0 a \xa0',
+      '#9 surrounded with nbsp'
+    )
+    t.equal(detergent(
+      '    \xa0     a     \xa0           ', elem),
+      '\xa0 a \xa0',
+      '#10 surrounded with nbsp'
+    )
+    t.equal(detergent(
+      '\xa0\xa0\xa0 a \xa0\xa0\xa0', elem),
+      '\xa0\xa0\xa0 a \xa0\xa0\xa0',
+      '#11 surrounded with nbsp'
+    )
+    t.equal(detergent(
+      ' \xa0\xa0\xa0 a \xa0\xa0\xa0 ', elem),
+      '\xa0\xa0\xa0 a \xa0\xa0\xa0',
+      '#12 surrounded with nbsp'
+    )
+  })
+  t.end()
+})
 
 // ==============================
 // testing ETX removal
@@ -1326,7 +1400,7 @@ test('numeric entities', function (t) {
 // NOT ALL ENTITIES HAVE TO BE ENCODED INTO NAMED ONES (v2.7 change)
 // ==============================
 
-// test.skip('numeric entities', function (t) {
+// test('numeric entities', function (t) {
 //   mixer(sampleObj, {
 //     convertEntities: true,
 //     useXHTML: true,
