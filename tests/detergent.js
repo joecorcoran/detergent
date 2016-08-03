@@ -173,9 +173,29 @@ test('strip HTML', function (t) {
   })
   .forEach(function (elem) {
     t.equal(detergent(
-      'text <a href="#">text</a> text', elem),
+      'text <a>text</a> text', elem),
       'text text text',
-      'strip the HTML'
+      '#1 strip the HTML'
+    )
+    t.equal(detergent(
+      'text <a>text<a> text', elem),
+      'text text text',
+      '#2 strip the HTML'
+    )
+    t.equal(detergent(
+      'text <error>text<error> text', elem),
+      'text text text',
+      '#3 strip the HTML'
+    )
+    t.equal(detergent(
+      'text <sldkfj asdasd="lekjrtt" lgkdjfld="lndllkjfg">text<hgjkd> text', elem),
+      'text text text',
+      '#4 strip the HTML'
+    )
+    t.equal(detergent(
+      'text <a href="#" style="display: block;">text</a> text', elem),
+      'text text text',
+      '#5 strip the HTML'
     )
   })
   t.end()
