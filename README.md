@@ -2,9 +2,12 @@
 
 # Detergent
 
+> All-in-one special character encoder and text cleaner for pasting into HTML
+
 [![Build Status](https://travis-ci.org/code-and-send/detergent.svg?branch=master)](https://travis-ci.org/code-and-send/detergent) [![Dependency Status](https://david-dm.org/code-and-send/detergent.svg)](https://david-dm.org/code-and-send/detergent) [![devDependency Status](https://david-dm.org/code-and-send/detergent/dev-status.svg)](https://david-dm.org/code-and-send/detergent#info=devDependencies) [![Downloads/Month](https://img.shields.io/npm/dm/detergent.svg)](https://www.npmjs.com/package/detergent)
 
 [![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
+
 
 Detergent is a JavaScript library that prepares text to be pasted into email's or website's HTML code. There is also a front-end shell (internally called "the plastic") on [Detergent.io](http://detergent.io) with all current features implemented.
 
@@ -64,13 +67,13 @@ detergent('clean this text £',{
 
 ## Contributing & testing
 
-Flush the repo onto your SSD and have a butchers at tests/detergent.js. It's very minimalistic testing setup using [Tape](https://ponyfoo.com/articles/testing-javascript-modules-with-tape). Faucet helps to gang the tests, so each one sits on one line. Without Faucet you would get more than 40,000 lines of console output, all beastly in black and white.
+Flush the repo onto your SSD and have a butchers at `test.js`. It's very minimalistic testing setup using [AVA](https://github.com/avajs/ava).
 
 ```bash
-node tests/detergent.js | faucet
+npm test
 ```
 
-If you want to contribute, please do. If it's code contribution, please supplement tests/detergent.js with tests covering your code.
+If you want to contribute, please do. If it's code contribution, please supplement `test.js` with tests covering your code.
 
 ## Licence
 

@@ -271,7 +271,7 @@ function detergent (textToClean, options) {
             } else {
               // concat next symbol with current, completing the character
               value1 = value1 + array1[index1 + 1]
-              console.log('new value1=' + value1)
+              // console.log('new value1=' + value1)
               // delete the next array element, because it is now part of the current character
               array1.splice((index1 + 1), 1)
             }
