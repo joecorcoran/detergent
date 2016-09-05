@@ -7,6 +7,7 @@ var endashes = require('typographic-en-dashes')
 var unicodeDragon = require('unicode-dragon')
 var entityRefs = require('./entity-references.json')
 var numericEnt = require('./enforced-numeric-entities-list.json')
+var er = require('easy-replace')
 
 /**
  * detergent - main function
@@ -184,16 +185,6 @@ function detergent (textToClean, options) {
       input = S(input).chompLeft('\n').s
     }
     return input
-  }
-
-  /**
-   * escapeRegex - escapes the regex strings.
-   *
-   * @param value {string} incoming string
-   * @return {string} result
-   */
-  function escapeRegex (value) {
-    return value.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, '\\$&')
   }
 
   /**
@@ -394,13 +385,471 @@ function detergent (textToClean, options) {
    * @return {string}
    */
   function doAddSpaceAfterDashes (inputString) {
-    // add space after m dash provisionally
-    inputString = S(inputString).replaceAll(' &mdash;', ' &mdash; ').s
+    // add space after m dash if there's preceding-one
+    inputString = er(
+      inputString,
+      {
+        leftOutsideNot: '',
+        leftOutside: ' ',
+        leftMaybe: '',
+        searchFor: '\u2014',
+        rightMaybe: ' ',
+        rightOutside: '',
+        rightOutsideNot: ''
+      },
+      '\u2014 '
+    )
+    // add space after n dash if there's preceding-one
+    inputString = er(
+      inputString,
+      {
+        leftOutsideNot: '',
+        leftOutside: ' ',
+        leftMaybe: '',
+        searchFor: '\u2013',
+        rightMaybe: ' ',
+        rightOutside: '',
+        rightOutsideNot: ''
+      },
+      '\u2013 '
+    )
+    // add space after m dash if there's nbsp in front of it
+    inputString = er(
+      inputString,
+      {
+        leftOutsideNot: '',
+        leftOutside: '\xa0',
+        leftMaybe: '',
+        searchFor: '\u2014',
+        rightMaybe: ' ',
+        rightOutside: '',
+        rightOutsideNot: ''
+      },
+      '\u2014 '
+    )
+    // add space after n dash if there's nbsp in front of it
+    inputString = er(
+      inputString,
+      {
+        leftOutsideNot: '',
+        leftOutside: '\xa0',
+        leftMaybe: '',
+        searchFor: '\u2013',
+        rightMaybe: ' ',
+        rightOutside: '',
+        rightOutsideNot: ''
+      },
+      '\u2013 '
+    )
     // add space after m dash provisionally
     inputString = S(inputString).replaceAll(' \u2014', ' \u2014 ').s
     // add space after hyphen
     inputString = S(inputString).replaceAll(' -', ' - ').s
 
+    return inputString
+  }
+
+  /**
+   * doInterpretErroneousNBSP - fixes all variations of wrong &nbsp;
+   *
+   * @param  {string} inputString
+   * @return {string}
+   */
+  function doInterpretErroneousNBSP (inputString) {
+    // PART 1. At least one of each of the set [n, b, s, p] is present.
+    // any repetitions whatsoever like &&&&&nnnbbbssssppp;;;
+    inputString = inputString.replace(/\&+n+b+s+p+/igm, '&nbsp')
+    inputString = inputString.replace(/n+b+s+p+;+/igm, 'nbsp;')
+    inputString = inputString.replace(/n+b+s+p+/igm, 'nbsp')
+
+    // PART 2. One letter missing, but amp and semicol are present.
+    inputString = inputString.replace(/\&bsp;/igm, '&nbsp;')
+    inputString = inputString.replace(/\&nsp;/igm, '&nbsp;')
+    inputString = inputString.replace(/\&nbp;/igm, '&nbsp;')
+    inputString = inputString.replace(/\&nbs;/igm, '&nbsp;')
+
+    // PART 3. Two components missing: one of [&, ;] and one of [n, b, s, p]
+    // \nnsp;
+    inputString = er(
+      inputString,
+      {
+        leftOutsideNot: '',
+        leftOutside: '\n',
+        leftMaybe: '',
+        searchFor: 'nsp;',
+        rightMaybe: '',
+        rightOutside: '',
+        rightOutsideNot: ''
+      },
+      '&nbsp;'
+    )
+    // \nnbp;
+    inputString = er(
+      inputString,
+      {
+        leftOutsideNot: '',
+        leftOutside: '\n',
+        leftMaybe: '',
+        searchFor: 'nbp;',
+        rightMaybe: '',
+        rightOutside: '',
+        rightOutsideNot: ''
+      },
+      '&nbsp;'
+    )
+    // \nnbs;
+    inputString = er(
+      inputString,
+      {
+        leftOutsideNot: '',
+        leftOutside: '\n',
+        leftMaybe: '',
+        searchFor: 'nbs;',
+        rightMaybe: '',
+        rightOutside: '',
+        rightOutsideNot: ''
+      },
+      '&nbsp;'
+    )
+    // thinsp;
+    inputString = er(
+      inputString,
+      {
+        leftOutsideNot: '',
+        leftOutside: '',
+        leftMaybe: '&',
+        searchFor: 'thinsp',
+        rightMaybe: ';',
+        rightOutside: '',
+        rightOutsideNot: ''
+      },
+      '\u2009'
+    )
+    // &nbs
+    inputString = er(
+      inputString,
+      {
+        leftOutsideNot: '',
+        leftOutside: '&',
+        leftMaybe: '',
+        searchFor: 'nbs',
+        rightMaybe: '',
+        rightOutside: '',
+        rightOutsideNot: 'p'
+      },
+      'nbsp'
+    )
+    // (&)nsp;
+    inputString = er(
+      inputString,
+      {
+        leftOutsideNot: 'e',
+        leftOutside: '',
+        leftMaybe: '&',
+        searchFor: 'nsp;',
+        rightMaybe: '',
+        rightOutside: '',
+        rightOutsideNot: ''
+      },
+      '&nbsp;'
+    )
+    // &nsp
+    inputString = er(
+      inputString,
+      {
+        leftOutsideNot: '',
+        leftOutside: '&',
+        leftMaybe: '',
+        searchFor: 'nsp',
+        rightMaybe: ';',
+        rightOutside: '',
+        rightOutsideNot: ''
+      },
+      'nbsp;'
+    )
+    // bsp
+    inputString = er(
+      inputString,
+      {
+        leftOutsideNot: '',
+        leftOutside: '&',
+        leftMaybe: '',
+        searchFor: 'bsp',
+        rightMaybe: ';',
+        rightOutside: '',
+        rightOutsideNot: ''
+      },
+      'nbsp;'
+    )
+    // nbp and similar
+    inputString = er(
+      inputString,
+      {
+        leftOutsideNot: '',
+        leftOutside: '',
+        leftMaybe: '&',
+        searchFor: 'nbp',
+        rightMaybe: ';',
+        rightOutside: '',
+        rightOutsideNot: ''
+      },
+      '&nbsp;'
+    )
+    // now dangerous stuff: missing ampersand and one letter (semicol present)
+    // ?nbs;
+    inputString = er(
+      inputString,
+      {
+        leftOutsideNot: '',
+        leftOutside: '',
+        leftMaybe: '&',
+        searchFor: 'nbs;',
+        rightMaybe: '',
+        rightOutside: '',
+        rightOutsideNot: ''
+      },
+      '&nbsp;'
+    )
+    // ?bsp;
+    inputString = er(
+      inputString,
+      {
+        leftOutsideNot: 'n',
+        leftOutside: '',
+        leftMaybe: '&',
+        searchFor: 'bsp;',
+        rightMaybe: '',
+        rightOutside: '',
+        rightOutsideNot: ''
+      },
+      '&nbsp;'
+    )
+
+    // // &bbbsssppp; and similar dupes in all case variations
+    // inputString = inputString.replace(/n*b+s+p+;/igm, 'nbsp;')
+    // // &bbbsssppp; and similar dupes in all case variations
+    // inputString = inputString.replace(/n+b+s*p+;/igm, 'nbsp;')
+    // // &nnnbbbsss; and similar dupes in all case variations
+    // inputString = inputString.replace(/n+b+s+p*;/igm, 'nbsp;')
+    // ===
+    // fix missing semicolon when ampersand is present:
+    inputString = er(
+      inputString,
+      {
+        leftOutsideNot: '',
+        leftOutside: '&',
+        leftMaybe: '',
+        searchFor: 'nbsp',
+        rightMaybe: ';',
+        rightOutside: '',
+        rightOutsideNot: ''
+      },
+      'nbsp;'
+    )
+    // ===
+    // fix missing ampersand and semicolon if wrapped by spaces
+    inputString = er(
+      inputString,
+      {
+        leftOutsideNot: '',
+        leftOutside: ' ',
+        leftMaybe: '',
+        searchFor: 'nbsp',
+        rightMaybe: '',
+        rightOutside: ' ',
+        rightOutsideNot: ''
+      },
+      ' &nbsp; '
+    )
+    // ===
+    // fix space-nbsp with no semicol
+    inputString = er(
+      inputString,
+      {
+        leftOutsideNot: '',
+        leftOutside: ' ',
+        leftMaybe: '',
+        searchFor: 'nbsp',
+        rightMaybe: '',
+        rightOutside: '',
+        rightOutsideNot: ';'
+      },
+      ' &nbsp;'
+    )
+    // ===
+    // fix missing ampersand when semicolon is present:
+    inputString = er(
+      inputString,
+      {
+        leftOutsideNot: '',
+        leftOutside: '',
+        leftMaybe: '&',
+        searchFor: 'nbsp',
+        rightMaybe: '',
+        rightOutside: ';',
+        rightOutsideNot: ''
+      },
+      '&nbsp'
+    )
+    // &ang (not &angst) - without semicol
+    inputString = er(
+      inputString,
+      {
+        leftOutsideNot: '',
+        leftOutside: '',
+        leftMaybe: '',
+        searchFor: '&ang',
+        rightMaybe: ';',
+        rightOutside: '',
+        rightOutsideNot: 's'
+      },
+      '&ang;'
+    )
+    // &ang (not &angst) - without semicol
+    inputString = er(
+      inputString,
+      {
+        leftOutsideNot: '',
+        leftOutside: '',
+        leftMaybe: '',
+        searchFor: '&angst',
+        rightMaybe: '',
+        rightOutside: '',
+        rightOutsideNot: ';'
+      },
+      '&angst;'
+    )
+    // &pi (not &piv) - without semicol
+    inputString = er(
+      inputString,
+      {
+        leftOutsideNot: '',
+        leftOutside: '',
+        leftMaybe: '',
+        searchFor: '&pi',
+        rightMaybe: ';',
+        rightOutside: '',
+        rightOutsideNot: 'v'
+      },
+      '&pi;'
+    )
+    // &pi (not &piv) - without semicol
+    inputString = er(
+      inputString,
+      {
+        leftOutsideNot: '',
+        leftOutside: '',
+        leftMaybe: '',
+        searchFor: '&Pi',
+        rightMaybe: ';',
+        rightOutside: '',
+        rightOutsideNot: ''
+      },
+      '&Pi;'
+    )
+    // &sigma (not &sigmaf) - without semicol
+    inputString = er(
+      inputString,
+      {
+        leftOutsideNot: '',
+        leftOutside: '',
+        leftMaybe: '',
+        searchFor: '&sigma',
+        rightMaybe: ';',
+        rightOutside: '',
+        rightOutsideNot: 'f'
+      },
+      '&sigma;'
+    )
+    // &sub (not &sube) - without semicol
+    inputString = er(
+      inputString,
+      {
+        leftOutsideNot: '',
+        leftOutside: '',
+        leftMaybe: '',
+        searchFor: '&sub',
+        rightMaybe: ';',
+        rightOutside: '',
+        rightOutsideNot: 'e'
+      },
+      '&sub;'
+    )
+    //
+    // TODO
+    // (requires OR logical operator capability in easy-replace)
+    // &sup (not &supf) - without semicol
+    // inputString = er(
+    //   inputString,
+    //   {
+    //     leftOutsideNot: '',
+    //     leftOutside: '',
+    //     leftMaybe: '',
+    //     searchFor: '&sup',
+    //     rightMaybe: ';',
+    //     rightOutside: '',
+    //     rightOutsideNot: 'f'
+    //   },
+    //   '&sup;'
+    // )
+
+    // TODO: &sup (not &supf, &supe, &sup1, &sup2 or &sup3) - without semicol
+
+    // &pi (not &piv) - without semicol
+    inputString = er(
+      inputString,
+      {
+        leftOutsideNot: '',
+        leftOutside: '',
+        leftMaybe: '',
+        searchFor: '&piv',
+        rightMaybe: ';',
+        rightOutside: '',
+        rightOutsideNot: ''
+      },
+      '&piv;'
+    )
+    // &pi (not &piv) - without semicol
+    inputString = er(
+      inputString,
+      {
+        leftOutsideNot: '',
+        leftOutside: '',
+        leftMaybe: '',
+        searchFor: '&theta',
+        rightMaybe: ';',
+        rightOutside: '',
+        rightOutsideNot: 'sym'
+      },
+      '&theta;'
+    )
+    return inputString
+  }
+
+  /**
+   * fixMissingAmpsAndSemicols - patches up other messed up named entities
+   *
+   * @param  {string} inputString
+   * @return {string}
+   */
+  function fixMissingAmpsAndSemicols (inputString) {
+    entityRefs.forEach(function (elem) {
+      if (elem !== '') {
+        inputString = er(
+          inputString,
+          {
+            leftOutsideNot: '',
+            leftOutside: '&',
+            leftMaybe: '',
+            searchFor: elem,
+            rightMaybe: ';',
+            rightOutside: '',
+            rightOutsideNot: ''
+          },
+          elem + ';'
+        )
+      }
+    })
     return inputString
   }
 
@@ -410,16 +859,16 @@ function detergent (textToClean, options) {
 
   // ================= xx =================
 
-  // decode entities
-  // cleanedText = S(cleanedText).decodeHTMLEntities().s
-  cleanedText = he.decode(cleanedText)
+  // replace all occurencies of broken "&nbsp;" (where ampersand is missing) with a "&nbsp;"
+  cleanedText = doInterpretErroneousNBSP(cleanedText)
+  // all other mis-typed character references — missing ampersand and/or semicolon
+  cleanedText = fixMissingAmpsAndSemicols(cleanedText)
 
   // ================= xx =================
 
-  // replace all occurencies of broken "&nbsp;" (where ampersand is missing) with a space
-
-  cleanedText = S(cleanedText).replaceAll('nbsp;', ' ').s
-  // there is safeguard for "text&nbsptext" already thanks to Mathias' he.js
+  // decode entities
+  // cleanedText = S(cleanedText).decodeHTMLEntities().s
+  cleanedText = he.decode(cleanedText)
 
   // ================= xx =================
 
@@ -599,14 +1048,6 @@ function detergent (textToClean, options) {
     cleanedText = S(cleanedText).replaceAll('...', '\u2026').s
     cleanedText = S(cleanedText).replaceAll('&mldr;', '\u2026').s
     cleanedText = S(cleanedText).replaceAll('&hellip;', '\u2026').s
-  }
-
-  // ================= xx =================
-
-  // check for mis-typed character references:
-  // 1. 100% wrong stuff - starts with ampersand, semicolon missing:
-  for (var i = 0, len = entityRefs.length; i < len; i++) {
-    cleanedText = cleanedText.replace(new RegExp((escapeRegex('&amp;' + entityRefs[i]) + '(?!;)'), 'gm'), ('&' + entityRefs[i] + ';'))
   }
 
   // ================= xx =================

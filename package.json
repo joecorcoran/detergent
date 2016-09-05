@@ -4,7 +4,7 @@
   "description": "Comprehensively clean text strings for use in email HTML code",
   "main": "detergent.js",
   "scripts": {
-    "test": "ava"
+    "test": "ava | faucet"
   },
   "repository": {
     "type": "git",
@@ -30,6 +30,7 @@
   "homepage": "https://github.com/code-and-send/detergent#readme",
   "dependencies": {
     "curl-quotes": "^0.1.0",
+    "easy-replace": "^1.0.1",
     "he": "^1.0.0",
     "string": "^3.3.1",
     "typographic-en-dashes": "^1.0.1",
@@ -44,6 +45,6 @@
     "parser": "babel-eslint"
   },
   "ava": {
-    "concurrency": 5
+    "tap": true
   }
 }
