@@ -456,6 +456,21 @@ function detergent (textToClean, options) {
    * @return {string}
    */
   function doInterpretErroneousNBSP (inputString) {
+    // PART 0. Double-encoded nbsp
+    inputString = er(
+      inputString,
+      {
+        leftOutsideNot: '',
+        leftOutside: '',
+        leftMaybe: '',
+        searchFor: '&amp;nbsp;',
+        rightMaybe: '',
+        rightOutside: '',
+        rightOutsideNot: ''
+      },
+      '&nbsp;'
+    )
+
     // PART 1. At least one of each of the set [n, b, s, p] is present.
     // any repetitions whatsoever like &&&&&nnnbbbssssppp;;;
     inputString = inputString.replace(/\&+n+b+s+p+/igm, '&nbsp')
@@ -853,6 +868,12 @@ function detergent (textToClean, options) {
     return inputString
   }
 
+  //                           ____
+  //          massive hammer  |    |
+  //        O=================|    |
+  //          upon all bugs   |____|
+  //
+  //                         .=O=.
   //
   //       T H E    P I P E L I N E
   //
@@ -867,8 +888,10 @@ function detergent (textToClean, options) {
   // ================= xx =================
 
   // decode entities
-  // cleanedText = S(cleanedText).decodeHTMLEntities().s
-  cleanedText = he.decode(cleanedText)
+  // recursive decode until there's no difference anymore
+  while (cleanedText !== he.decode(cleanedText)) {
+    cleanedText = he.decode(cleanedText)
+  }
 
   // ================= xx =================
 

@@ -2187,3 +2187,50 @@ test('57 - broken nbsp - nbsp; (no ampersand)', function (t) {
     )
   })
 })
+
+// ==============================
+// COPING WITH MULTIPLE ENCODING
+// ==============================
+
+test('58 - recursive entity de-coding', function (t) {
+  mixer(sampleObj, {
+    convertEntities: false
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('&amp;nbsp;', elem),
+      '\xa0',
+      '58.1 - double-encoded nbsp'
+    )
+    t.is(
+      detergent('&amp;pound;', elem),
+      '£',
+      '58.2 - double-encoded pound'
+    )
+    t.is(
+      detergent('&amp;amp;amp;amp;pound;', elem),
+      '£',
+      '58.3 - five times encoded pound'
+    )
+  })
+  mixer(sampleObj, {
+    convertEntities: true
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('&amp;nbsp;', elem),
+      '&nbsp;',
+      '58.4 - double-encoded nbsp'
+    )
+    t.is(
+      detergent('&amp;pound;', elem),
+      '&pound;',
+      '58.5 - double-encoded pound'
+    )
+    t.is(
+      detergent('&amp;amp;amp;amp;pound;', elem),
+      '&pound;',
+      '58.6 - five times encoded pound'
+    )
+  })
+})
