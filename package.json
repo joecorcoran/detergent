@@ -1,6 +1,6 @@
 {
   "name": "detergent",
-  "version": "2.11.1",
+  "version": "2.11.2",
   "description": "Comprehensively clean text strings for use in email HTML code",
   "main": "detergent.js",
   "scripts": {
@@ -20,7 +20,9 @@
     "text",
     "brief",
     "code",
-    "send"
+    "send",
+    "encode",
+    "style"
   ],
   "author": "Roy Reveltas <roy@codeandsend.com> (http://codeandsend.com/)",
   "license": "MIT",
