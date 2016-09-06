@@ -6,33 +6,48 @@
 
 [![Build Status](https://travis-ci.org/code-and-send/detergent.svg?branch=master)](https://travis-ci.org/code-and-send/detergent) [![Dependency Status](https://david-dm.org/code-and-send/detergent.svg)](https://david-dm.org/code-and-send/detergent) [![devDependency Status](https://david-dm.org/code-and-send/detergent/dev-status.svg)](https://david-dm.org/code-and-send/detergent#info=devDependencies) [![Downloads/Month](https://img.shields.io/npm/dm/detergent.svg)](https://www.npmjs.com/package/detergent)
 
-[![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
+<a href="https://github.com/feross/standard"><img src="https://cdn.rawgit.com/feross/standard/master/sticker.svg" alt="Standard JavaScript" width="100"></a>
 
 
-Detergent is a JavaScript library that prepares text to be pasted into email's or website's HTML code. There is also a front-end shell (internally called "the plastic") on [Detergent.io](http://detergent.io) with all current features implemented.
+Detergent is a smart HTML entity encoder, specifically tailored for email templates. It is a JavaScript library that prepares text to be pasted into email's or website's HTML code. There is also a web app on [Detergent.io](http://detergent.io) which is driven by this JS library.
+
+For manual HTML character encoding, website [Detergent.io](https://detergent.io) is the best. For automation purposes (for example, automated email builds using Gulp/Grunt/npm_scripts), this, _JS-library-Detergent_ (this library you see here) is the best.
+
+If you don't know any JavaScript, calm down, close this web page and continue to use [Detergent.io](https://detergent.io).
+
+## Install
+
+```bash
+$ npm install --save detergent
+```
+
+## Test
+
+```
+$ npm test
+```
 
 ## Rationale
 
-Let's say you are an agency and you have clients that pay you to create email newsletters for them. Newsletters are filled with text, and that text can be given to you in various file formats. Adobe products (Photoshop and Illustrator, for example) are notorious for adding invisible characters such as ETX as line breaks. Ideally, we need a tool to replace them with `<BR>`'s. To the best of my knowledge, no tool on the market can do that currently besides Detergent. Other cleaners either strip ETX'es (wasting your time) or ignore them (causing rendering problems later).
+Detergent is three things: 1) HTML special character encoder and 2) invisible special character remover, and 3) English grammar style improving tool. Detergent was created to be robust and accept any kinds of text as an input, including HTML code. Yes, you can be lazy and paste "dirty" unencoded HTML into Detergent, and it will decode, clean and encode the HTML.
 
-Sometimes the text you copy-paste into your email code can contain other invisible characters from the Unicode range. Detergent cleans them all.
+If you copy-paste text from creative files or Excel spreadsheets or Word into your email templates, you need to clean the text first using Detergent because that text might contain invisible Unicode characters (such as ETX coming from Adobe software) and strange white spaces.
 
-Email messages' RAW source is in ASCII. If you use any other characters in your email newsletter outside of ASCII, you need to encode them - either do it manually using [Detergent](http://detergent.io) (the best way) or rely on your ESP to do it for you (risky).
+Detergent improves the English style, and all features are optional and automated:
 
-Ideally, we need a tool to encode all the special characters within Unicode, including astral-ones (such as &#119558; or emoji's in general). There are few character converters on the Internet but some either [fail](http://www.emailonacid.com/character_converter/) at encoding astral characters and emoji's; or don't offer the option to encode using named entities. Latter makes it impossible to proof-read the emails before sending.
+* [widow word](https://en.wikipedia.org/wiki/Widows_and_orphans) prevention adding `&nbsp;` between last two words
+* M-dash and N-dash recognition and automatic replacement
+* Adding fancy apostrophes
 
-If you take care to encode your copy, your converter must be smart-enough to:
-* strip the HTML, retaining bold/italic/strong/em tags
-* offer to typographically-correct the text (to set typographically-correct dashes, quotes etc.)
-* skip the entity encoding on non-latin characters because there is not point to work on soup of entities — email will surely be sent in UTF-8 anyway. Yet, unencoded pound signs will trigger email code linters, so proper converter should encode what is _usually_ encoded (although, technically, not required in non-latin email).
+Extra features are:
 
-Detergent does all of this, and comes in two shapes: [NPM library](https://www.npmjs.com/package/detergent) and web app (http://detergent.io).
-
-While Detergent is essential for email coding, it is also very handy for coding websites. How many times have you pasted text into Notepad just to get rid of invisible characters? Well, with Detergent you don't need to do that anymore.
+* You can skip the encoding of non-Latin language letters. Useful when you are deploying Japanese or Chinese emails.
+* Detergent is both XHTML and HTML-friendly. You can set which way you want your `<BR>`'s to appear: with closing slash (XHTML) or without (HTML), so your HTML code should be passing the W3C validator.
+* Detergent is Emoji-friendly and accepts any and all Unicode characters.
 
 ## API
 
-Optionally, you can customize the Detergent's functionality by providing an options object. Here's an overview of the default settings object's values.
+Optionally, you can customise the Detergent's functionality by providing an options object. Here's an overview of the default settings object's values.
 
 ```js
 detergent('text to clean', {
@@ -49,25 +64,29 @@ detergent('text to clean', {
 });
 ```
 
+The default settings are specifically chosen to be the most common scenario: _decode, encode and apply all available fixes_. This way, when I set up wiring in automated email build systems in Gulp, I don't even set any settings and run on default-ones.
+
 ## Example
 
 Simple encoding using default settings:
 
 ```js
 detergent('clean this text £');
+// > &pound;
 ```
 
 Using custom settings object:
 
 ```js
 detergent('clean this text £',{
-	convertEntities: false
+    convertEntities: false
 });
+// > &
 ```
 
 ## Contributing & testing
 
-Flush the repo onto your SSD and have a butchers at `test.js`. It's very minimalistic testing setup using [AVA](https://github.com/avajs/ava).
+Flush the repo onto your SSD and have a butchers at `test.js`. It's very minimalistic testing setup using [AVA](https://github.com/avajs/ava), with TAP output (formatter via Faucet).
 
 ```bash
 npm test
