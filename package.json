@@ -32,7 +32,7 @@
   "homepage": "https://github.com/code-and-send/detergent#readme",
   "dependencies": {
     "curl-quotes": "^0.1.0",
-    "easy-replace": "^1.0.1",
+    "easy-replace": "^2.0.0",
     "he": "^1.0.0",
     "string": "^3.3.1",
     "typographic-en-dashes": "^1.0.1",
