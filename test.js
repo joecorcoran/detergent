@@ -1371,14 +1371,10 @@ test('41 - potentially clashing incomplete named entities', function (t) {
       detergent('&sub&sube&sub&sube'),
     '&sub;&sube;&sub;&sube;',
     '41.5 precaution &sub;/&sube;')
-  //
-  // TODO
-  // easy-replace is not ready yet, need OR logical op to cater "&sup"
-  //
-  // t.is(
-  //     detergent('&sup&supf&sup&supf'),
-  //   '&sup;&supf;&sup;&supf;',
-  //   '43.6 precaution &sup;/&supf;')
+  t.is(
+      detergent('&sup&sup1&sup&sup2&sup&sup3&sup&supe'),
+    '&sup;&sup1;&sup;&sup2;&sup;&sup3;&sup;&supe;',
+    '43.6 precaution &sup;/&sup1/&sup2/&sup3;/&supe')
   t.is(
       detergent('&theta&thetasym&theta&thetasym'),
     he.decode('&theta;&thetasym;&theta;&thetasym;'),
@@ -1980,7 +1976,7 @@ test('53 - missing space after ndash added', function (t) {
 
 // repetitions
 
-test('54 - broken nbsp - repetitions — nnnbbbsssppp', function (t) {
+test('54 - broken nbsp - repetitions — nnnbbbsssp', function (t) {
   mixer(sampleObj, {
     convertEntities: true,
     replaceLineBreaks: false,
@@ -1989,7 +1985,7 @@ test('54 - broken nbsp - repetitions — nnnbbbsssppp', function (t) {
   })
   .forEach(function (elem) {
     t.is(
-      detergent('aaa &&&&nnnbbbspp;;;; aaa\naaa nnnbbbsssppp aaaa\naaaa&nnnnbbbssssppp;aaa\naaannnbbbsssppp;aaaa\naaa&nnnbbbssspppaaaa\naaa&nnbsp;aaaa\naaannbsp;aaaa\naaa&nnbspaaaa\naaa &nnbsp; aaaa\naaa nnbsp; aaaa\naaa &nnbsp aaaa', elem),
+      detergent('aaa &&&&nnnbbbspp;;;; aaa\naaa nnnbbbsssp aaaa\naaaa&nnnnbbbssssppp;aaa\naaannnbbbsssp;aaaa\naaa&nnnbbbssspaaaa\naaa&nnbsp;aaaa\naaannbsp;aaaa\naaa&nnbspaaaa\naaa &nnbsp; aaaa\naaa nnbsp; aaaa\naaa &nnbsp aaaa', elem),
       'aaa &nbsp; aaa\naaa &nbsp; aaaa\naaaa&nbsp;aaa\naaa&nbsp;aaaa\naaa&nbsp;aaaa\naaa&nbsp;aaaa\naaa&nbsp;aaaa\naaa&nbsp;aaaa\naaa &nbsp; aaaa\naaa &nbsp; aaaa\naaa &nbsp; aaaa',
       '54.1'
     )
@@ -2002,7 +1998,7 @@ test('54 - broken nbsp - repetitions — nnnbbbsssppp', function (t) {
   })
   .forEach(function (elem) {
     t.is(
-      detergent('aaa &&&&nnnbbbspp;;;; aaa\naaa nnnbbbsssppp aaaa\naaaa&nnnnbbbssssppp;aaa\naaannnbbbsssppp;aaaa\naaa&nnnbbbssspppaaaa\naaa&nnbsp;aaaa\naaannbsp;aaaa\naaa&nnbspaaaa\naaa &nnbsp; aaaa\naaa nnbsp; aaaa\naaa &nnbsp aaaa', elem),
+      detergent('aaa &&&&nnnbbbspp;;;; aaa\naaa nnnbbbsssp aaaa\naaaa&nnnnbbbssssppp;aaa\naaannnbbbsssp;aaaa\naaa&nnnbbbssspaaaa\naaa&nnbsp;aaaa\naaannbsp;aaaa\naaa&nnbspaaaa\naaa &nnbsp; aaaa\naaa nnbsp; aaaa\naaa &nnbsp aaaa', elem),
       'aaa \xa0 aaa\naaa \xa0 aaaa\naaaa\xa0aaa\naaa\xa0aaaa\naaa\xa0aaaa\naaa\xa0aaaa\naaa\xa0aaaa\naaa\xa0aaaa\naaa \xa0 aaaa\naaa \xa0 aaaa\naaa \xa0 aaaa',
       '54.2'
     )
@@ -2016,7 +2012,7 @@ test('54 - broken nbsp - repetitions — nnnbbbsssppp', function (t) {
   })
   .forEach(function (elem) {
     t.is(
-      detergent('aaa &&&&nnnbbbspp;;;; aaa\naaa nnnbbbsssppp aaaa\naaaa&nnnnbbbssssppp;aaa\naaannnbbbsssppp;aaaa\naaa&nnnbbbssspppaaaa\naaa&nnbsp;aaaa\naaannbsp;aaaa\naaa&nnbspaaaa\naaa &nnbsp; aaaa\naaa nnbsp; aaaa\naaa &nnbsp aaaa', elem),
+      detergent('aaa &&&&nnnbbbspp;;;; aaa\naaa nnnbbbsssp aaaa\naaaa&nnnnbbbssssppp;aaa\naaannnbbbsssp;aaaa\naaa&nnnbbbssspaaaa\naaa&nnbsp;aaaa\naaannbsp;aaaa\naaa&nnbspaaaa\naaa &nnbsp; aaaa\naaa nnbsp; aaaa\naaa &nnbsp aaaa', elem),
       'aaa &nbsp; aaa<br />\naaa &nbsp; aaaa<br />\naaaa&nbsp;aaa<br />\naaa&nbsp;aaaa<br />\naaa&nbsp;aaaa<br />\naaa&nbsp;aaaa<br />\naaa&nbsp;aaaa<br />\naaa&nbsp;aaaa<br />\naaa &nbsp; aaaa<br />\naaa &nbsp; aaaa<br />\naaa &nbsp; aaaa',
       '54.3'
     )
@@ -2030,7 +2026,7 @@ test('54 - broken nbsp - repetitions — nnnbbbsssppp', function (t) {
   })
   .forEach(function (elem) {
     t.is(
-      detergent('aaa &&&&nnnbbbspp;;;; aaa\naaa nnnbbbsssppp aaaa\naaaa&nnnnbbbssssppp;aaa\naaannnbbbsssppp;aaaa\naaa&nnnbbbssspppaaaa\naaa&nnbsp;aaaa\naaannbsp;aaaa\naaa&nnbspaaaa\naaa &nnbsp; aaaa\naaa nnbsp; aaaa\naaa &nnbsp aaaa', elem),
+      detergent('aaa &&&&nnnbbbspp;;;; aaa\naaa nnnbbbsssp aaaa\naaaa&nnnnbbbssssppp;aaa\naaannnbbbsssp;aaaa\naaa&nnnbbbssspaaaa\naaa&nnbsp;aaaa\naaannbsp;aaaa\naaa&nnbspaaaa\naaa &nnbsp; aaaa\naaa nnbsp; aaaa\naaa &nnbsp aaaa', elem),
       'aaa &nbsp; aaa<br>\naaa &nbsp; aaaa<br>\naaaa&nbsp;aaa<br>\naaa&nbsp;aaaa<br>\naaa&nbsp;aaaa<br>\naaa&nbsp;aaaa<br>\naaa&nbsp;aaaa<br>\naaa&nbsp;aaaa<br>\naaa &nbsp; aaaa<br>\naaa &nbsp; aaaa<br>\naaa &nbsp; aaaa',
       '54.4'
     )
@@ -2042,7 +2038,7 @@ test('54 - broken nbsp - repetitions — nnnbbbsssppp', function (t) {
   })
   .forEach(function (elem) {
     t.is(
-      detergent('aaa &&&&nnnbbbspp;;;; aaa\naaa nnnbbbsssppp aaaa\naaaa&nnnnbbbssssppp;aaa\naaannnbbbsssppp;aaaa\naaa&nnnbbbssspppaaaa\naaa&nnbsp;aaaa\naaannbsp;aaaa\naaa&nnbspaaaa\naaa &nnbsp; aaaa\naaa nnbsp; aaaa\naaa &nnbsp aaaa', elem),
+      detergent('aaa &&&&nnnbbbspp;;;; aaa\naaa nnnbbbsssp aaaa\naaaa&nnnnbbbssssppp;aaa\naaannnbbbsssp;aaaa\naaa&nnnbbbssspaaaa\naaa&nnbsp;aaaa\naaannbsp;aaaa\naaa&nnbspaaaa\naaa &nnbsp; aaaa\naaa nnbsp; aaaa\naaa &nnbsp aaaa', elem),
       'aaa &nbsp; aaa aaa &nbsp; aaaa aaaa&nbsp;aaa aaa&nbsp;aaaa aaa&nbsp;aaaa aaa&nbsp;aaaa aaa&nbsp;aaaa aaa&nbsp;aaaa aaa &nbsp; aaaa aaa &nbsp; aaaa aaa &nbsp; aaaa',
       '54.5'
     )
@@ -2054,22 +2050,32 @@ test('54 - broken nbsp - repetitions — nnnbbbsssppp', function (t) {
   })
   .forEach(function (elem) {
     t.is(
-      detergent('aaa &&&&nnnbbbspp;;;; aaa\naaa nnnbbbsssppp aaaa\naaaa&nnnnbbbssssppp;aaa\naaannnbbbsssppp;aaaa\naaa&nnnbbbssspppaaaa\naaa&nnbsp;aaaa\naaannbsp;aaaa\naaa&nnbspaaaa\naaa &nnbsp; aaaa\naaa nnbsp; aaaa\naaa &nnbsp aaaa', elem),
+      detergent('aaa &&&&nnnbbbspp;;;; aaa\naaa nnnbbbsssp aaaa\naaaa&nnnnbbbssssppp;aaa\naaannnbbbsssp;aaaa\naaa&nnnbbbssspaaaa\naaa&nnbsp;aaaa\naaannbsp;aaaa\naaa&nnbspaaaa\naaa &nnbsp; aaaa\naaa nnbsp; aaaa\naaa &nnbsp aaaa', elem),
       'aaa \xa0 aaa aaa \xa0 aaaa aaaa\xa0aaa aaa\xa0aaaa aaa\xa0aaaa aaa\xa0aaaa aaa\xa0aaaa aaa\xa0aaaa aaa \xa0 aaaa aaa \xa0 aaaa aaa \xa0 aaaa',
       '54.6'
     )
   })
 })
 
-test('55 - nbSpppppp with no semicol', function (t) {
+test('55 - nbSp with no semicol', function (t) {
   mixer(sampleObj, {
     convertEntities: true
   })
   .forEach(function (elem) {
     t.is(
-      detergent('a nbSpppppp a', elem),
+      detergent('a nbbSp a', elem),
       'a &nbsp; a',
-      '55 - both duplicate p\'s in nbsppp and missing semicol/ampers'
+      '55.1 - missing semicol/ampers and wrong capitalisation and repetitions'
+    )
+  })
+  mixer(sampleObj, {
+    convertEntities: true
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('a nbbSppp; a', elem),
+      'a &nbsp; a',
+      '55.2 - missing amp and wrong capitalisation and repetition on P'
     )
   })
 })
@@ -2188,11 +2194,32 @@ test('57 - broken nbsp - nbsp; (no ampersand)', function (t) {
   })
 })
 
+// NBSP missing letters AMPERSAND OBLIGATORY, SEMICOL — NOT:
+// [' ', '.', ',', ';', '\xa0', '?', '!']
+test('58 - broken nbsp - ?!.,nbsp (no semicol)', function (t) {
+  mixer(sampleObj, {
+    convertEntities: true,
+    removeWidows: false
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('aaa nbspaaa.nbspaaa,nbspaaa;nbspaaa\xa0nbspaaa?nbspaaa!nbspaaa', elem),
+      'aaa &nbsp;aaa. &nbsp;aaa, &nbsp;aaa;&nbsp;aaa&nbsp;&nbsp;aaa?&nbsp;aaa!&nbsp;aaa',
+      '58.1 - nbsp missing semicol and amp'
+    )
+    t.is(
+      detergent('prop nbspprop.nbspprop,nbspprop;nbspprop\xa0nbspprop?nbspprop!nbspprop', elem),
+      'prop &nbsp;prop. &nbsp;prop, &nbsp;prop;&nbsp;prop&nbsp;&nbsp;prop?&nbsp;prop!&nbsp;prop',
+      '58.2 - nbsp missing semicol and amp - sneaky p\'s'
+    )
+  })
+})
+
 // ==============================
 // COPING WITH MULTIPLE ENCODING
 // ==============================
 
-test('58 - recursive entity de-coding', function (t) {
+test('59 - recursive entity de-coding', function (t) {
   mixer(sampleObj, {
     convertEntities: false
   })
@@ -2200,17 +2227,22 @@ test('58 - recursive entity de-coding', function (t) {
     t.is(
       detergent('&amp;nbsp;', elem),
       '\xa0',
-      '58.1 - double-encoded nbsp'
+      '59.1 - double-encoded nbsp'
     )
     t.is(
       detergent('&amp;pound;', elem),
       '£',
-      '58.2 - double-encoded pound'
+      '59.2 - double-encoded pound'
     )
     t.is(
       detergent('&amp;amp;amp;amp;pound;', elem),
       '£',
-      '58.3 - five times encoded pound'
+      '59.3 - five times encoded pound'
+    )
+    t.is(
+      detergent('&#x26;#xA9;', elem),
+      '\u00A9',
+      '59.4 - twice encoded using numeric entities'
     )
   })
   mixer(sampleObj, {
@@ -2220,17 +2252,56 @@ test('58 - recursive entity de-coding', function (t) {
     t.is(
       detergent('&amp;nbsp;', elem),
       '&nbsp;',
-      '58.4 - double-encoded nbsp'
+      '59.5 - double-encoded nbsp'
     )
     t.is(
       detergent('&amp;pound;', elem),
       '&pound;',
-      '58.5 - double-encoded pound'
+      '59.6 - double-encoded pound'
     )
     t.is(
       detergent('&amp;amp;amp;amp;pound;', elem),
       '&pound;',
-      '58.6 - five times encoded pound'
+      '59.7 - five times encoded pound'
+    )
+    t.is(
+      detergent('&#x26;#xA9;', elem),
+      '&copy;',
+      '59.8 - twice encoded using numeric entities'
+    )
+  })
+})
+
+// =================================
+// Enforcing spaces after semicolons
+// =================================
+
+test('60 - spaces after semicolons', function (t) {
+  // usual:
+  allCombinations.forEach(function (elem) {
+    t.is(
+      detergent('aaa;aaa', elem),
+      'aaa; aaa',
+      '60.1 - missing semicol'
+    )
+  })
+  // semicol is last character:
+  allCombinations.forEach(function (elem) {
+    t.is(
+      detergent('aaa;aaa;', elem),
+      'aaa; aaa;',
+      '60.2 - semicol at eol'
+    )
+  })
+  // must not affect HTML entities:
+  mixer(sampleObj, {
+    convertEntities: true
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('aaa&nbsp;aaa', elem),
+      'aaa&nbsp;aaa',
+      '60.3 - semicol fixes must not affect HTML entities'
     )
   })
 })

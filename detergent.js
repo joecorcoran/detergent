@@ -137,7 +137,7 @@ function detergent (textToClean, options) {
    * @return {string}             result
    */
   function decryptBoldItalic (inputString) {
-    // TODO: appropriate freakout: if opening tag count doesn't match closing tag count - remove all
+    // IDEA: appropriate freakout: if opening tag count doesn't match closing tag count - remove all
 
     inputString = inputString.replace('%$%b%$%', '<b>')
     inputString = inputString.replace('%$%/b%$%', '</b>')
@@ -254,7 +254,6 @@ function detergent (textToClean, options) {
         .map(function (value1, index1, array1) {
           // if current character is surrogate's first pair, grab second-one from the next array1 element and concat both.
           if (0xD800 <= value1.charCodeAt(0) && value1.charCodeAt(0) <= 0xDBFF) {
-            // TODO: grab next array element if surrogate's first part identified
             low = array1[index1 + 1].charCodeAt(0)
             if (isNaN(low)) {
               // if the symbol is incomplete, instead of throw'ing an exception, just delete this first half
@@ -413,12 +412,12 @@ function detergent (textToClean, options) {
       },
       '\u2013 '
     )
-    // add space after m dash if there's nbsp in front of it
+    // add space after m dash if there's nbsp or space in front of it
     inputString = er(
       inputString,
       {
         leftOutsideNot: '',
-        leftOutside: '\xa0',
+        leftOutside: ['\xa0', ' '],
         leftMaybe: '',
         searchFor: '\u2014',
         rightMaybe: ' ',
@@ -427,12 +426,12 @@ function detergent (textToClean, options) {
       },
       '\u2014 '
     )
-    // add space after n dash if there's nbsp in front of it
+    // add space after n dash if there's nbsp or space in front of it
     inputString = er(
       inputString,
       {
         leftOutsideNot: '',
-        leftOutside: '\xa0',
+        leftOutside: ['\xa0', ' '],
         leftMaybe: '',
         searchFor: '\u2013',
         rightMaybe: ' ',
@@ -441,11 +440,20 @@ function detergent (textToClean, options) {
       },
       '\u2013 '
     )
-    // add space after m dash provisionally
-    inputString = S(inputString).replaceAll(' \u2014', ' \u2014 ').s
-    // add space after hyphen
-    inputString = S(inputString).replaceAll(' -', ' - ').s
-
+    // add space after minus/dash character if there's nbsp or space in front of it
+    inputString = er(
+      inputString,
+      {
+        leftOutsideNot: '',
+        leftOutside: ['\xa0', ' '],
+        leftMaybe: '',
+        searchFor: '-',
+        rightMaybe: ' ',
+        rightOutside: '',
+        rightOutsideNot: ''
+      },
+      '- '
+    )
     return inputString
   }
 
@@ -471,19 +479,7 @@ function detergent (textToClean, options) {
       '&nbsp;'
     )
 
-    // PART 1. At least one of each of the set [n, b, s, p] is present.
-    // any repetitions whatsoever like &&&&&nnnbbbssssppp;;;
-    inputString = inputString.replace(/\&+n+b+s+p+/igm, '&nbsp')
-    inputString = inputString.replace(/n+b+s+p+;+/igm, 'nbsp;')
-    inputString = inputString.replace(/n+b+s+p+/igm, 'nbsp')
-
-    // PART 2. One letter missing, but amp and semicol are present.
-    inputString = inputString.replace(/\&bsp;/igm, '&nbsp;')
-    inputString = inputString.replace(/\&nsp;/igm, '&nbsp;')
-    inputString = inputString.replace(/\&nbp;/igm, '&nbsp;')
-    inputString = inputString.replace(/\&nbs;/igm, '&nbsp;')
-
-    // PART 3. Two components missing: one of [&, ;] and one of [n, b, s, p]
+    // PART 1. Two components missing: one of [&, ;] and one of [n, b, s, p]
     // \nnsp;
     inputString = er(
       inputString,
@@ -639,28 +635,6 @@ function detergent (textToClean, options) {
       },
       '&nbsp;'
     )
-
-    // // &bbbsssppp; and similar dupes in all case variations
-    // inputString = inputString.replace(/n*b+s+p+;/igm, 'nbsp;')
-    // // &bbbsssppp; and similar dupes in all case variations
-    // inputString = inputString.replace(/n+b+s*p+;/igm, 'nbsp;')
-    // // &nnnbbbsss; and similar dupes in all case variations
-    // inputString = inputString.replace(/n+b+s+p*;/igm, 'nbsp;')
-    // ===
-    // fix missing semicolon when ampersand is present:
-    inputString = er(
-      inputString,
-      {
-        leftOutsideNot: '',
-        leftOutside: '&',
-        leftMaybe: '',
-        searchFor: 'nbsp',
-        rightMaybe: ';',
-        rightOutside: '',
-        rightOutsideNot: ''
-      },
-      'nbsp;'
-    )
     // ===
     // fix missing ampersand and semicolon if wrapped by spaces
     inputString = er(
@@ -675,36 +649,6 @@ function detergent (textToClean, options) {
         rightOutsideNot: ''
       },
       ' &nbsp; '
-    )
-    // ===
-    // fix space-nbsp with no semicol
-    inputString = er(
-      inputString,
-      {
-        leftOutsideNot: '',
-        leftOutside: ' ',
-        leftMaybe: '',
-        searchFor: 'nbsp',
-        rightMaybe: '',
-        rightOutside: '',
-        rightOutsideNot: ';'
-      },
-      ' &nbsp;'
-    )
-    // ===
-    // fix missing ampersand when semicolon is present:
-    inputString = er(
-      inputString,
-      {
-        leftOutsideNot: '',
-        leftOutside: '',
-        leftMaybe: '&',
-        searchFor: 'nbsp',
-        rightMaybe: '',
-        rightOutside: ';',
-        rightOutsideNot: ''
-      },
-      '&nbsp'
     )
     // &ang (not &angst) - without semicol
     inputString = er(
@@ -790,26 +734,20 @@ function detergent (textToClean, options) {
       },
       '&sub;'
     )
-    //
-    // TODO
-    // (requires OR logical operator capability in easy-replace)
-    // &sup (not &supf) - without semicol
-    // inputString = er(
-    //   inputString,
-    //   {
-    //     leftOutsideNot: '',
-    //     leftOutside: '',
-    //     leftMaybe: '',
-    //     searchFor: '&sup',
-    //     rightMaybe: ';',
-    //     rightOutside: '',
-    //     rightOutsideNot: 'f'
-    //   },
-    //   '&sup;'
-    // )
-
-    // TODO: &sup (not &supf, &supe, &sup1, &sup2 or &sup3) - without semicol
-
+    // &sup (not &supf, &supe, &sup1, &sup2 or &sup3) - without semicol
+    inputString = er(
+      inputString,
+      {
+        leftOutsideNot: '',
+        leftOutside: '',
+        leftMaybe: '',
+        searchFor: '&sup',
+        rightMaybe: ';',
+        rightOutside: '',
+        rightOutsideNot: ['f', 'e', '1', '2', '3']
+      },
+      '&sup;'
+    )
     // &pi (not &piv) - without semicol
     inputString = er(
       inputString,
@@ -838,6 +776,67 @@ function detergent (textToClean, options) {
       },
       '&theta;'
     )
+    //
+    // PART 2. At least one of each of the set [n, b, s, p] is present.
+    // any repetitions whatsoever like &&&&&nnnbbbssssp;;;
+    inputString = inputString.replace(/\&+n+b+s+p/igm, '&nbsp')
+    inputString = inputString.replace(/n+b+s+p+;+/igm, 'nbsp;')
+    inputString = inputString.replace(/n+b+s+p /igm, 'nbsp; ')
+    inputString = inputString.replace(/n+b+s+p,/igm, 'nbsp;,')
+    inputString = inputString.replace(/n+b+s+p\./igm, 'nbsp;.')
+
+    // PART 3. One letter missing, but amp and semicol are present.
+    inputString = inputString.replace(/\&bsp;/igm, '&nbsp;')
+    inputString = inputString.replace(/\&nsp;/igm, '&nbsp;')
+    inputString = inputString.replace(/\&nbp;/igm, '&nbsp;')
+    inputString = inputString.replace(/\&nbs;/igm, '&nbsp;')
+    //
+    // ===
+    // fix missing semicolon when ampersand is present:
+    inputString = er(
+      inputString,
+      {
+        leftOutsideNot: '',
+        leftOutside: '&',
+        leftMaybe: '',
+        searchFor: 'nbsp',
+        rightMaybe: ';',
+        rightOutside: '',
+        rightOutsideNot: ''
+      },
+      'nbsp;'
+    )
+    // ===
+    // fix space-nbsp with no semicol
+    inputString = er(
+      inputString,
+      {
+        leftOutsideNot: '',
+        leftOutside: [' ', '.', ',', ';', '\xa0', '?', '!'],
+        leftMaybe: '',
+        searchFor: 'nbsp',
+        rightMaybe: '',
+        rightOutside: '',
+        rightOutsideNot: ';'
+      },
+      '&nbsp;'
+    )
+    // ===
+    // fix missing ampersand when semicolon is present:
+    inputString = er(
+      inputString,
+      {
+        leftOutsideNot: '',
+        leftOutside: '',
+        leftMaybe: '&',
+        searchFor: 'nbsp',
+        rightMaybe: '',
+        rightOutside: ';',
+        rightOutsideNot: ''
+      },
+      '&nbsp'
+    )
+    //
     return inputString
   }
 
@@ -993,10 +992,23 @@ function detergent (textToClean, options) {
 
   // ================= xx =================
 
-  // enforce spaces after full stops and commas
+  // enforce spaces after full stops, commas and semicolons
   cleanedText = doCollapseWhiteSpace(cleanedText)
   cleanedText = cleanedText.replace(/\,(?![ \d])/igm, ', ')
   cleanedText = cleanedText.replace(/\.(?![ \d])/igm, '. ')
+  cleanedText = er(
+    cleanedText,
+    {
+      leftOutsideNot: '',
+      leftOutside: '',
+      leftMaybe: '',
+      searchFor: ';',
+      rightMaybe: ' ',
+      rightOutside: '',
+      rightOutsideNot: ['&', '\xa0']
+    },
+    '; '
+  )
 
   // ================= xx =================
 
