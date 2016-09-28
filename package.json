@@ -1,6 +1,6 @@
 {
   "name": "detergent",
-  "version": "2.13.1",
+  "version": "2.13.2",
   "description": "Comprehensively clean text strings for use in email HTML code",
   "main": "detergent.js",
   "scripts": {
