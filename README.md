@@ -1,17 +1,16 @@
-![Detergent](https://detergent.io/images/code-and-send-detergent-io_108x204.gif)
-
 # Detergent
 
-> All-in-one special character encoder and text cleaner for pasting into HTML
+<a href="https://github.com/feross/standard" style="float: right; padding: 0 0 20px 20px;"><img src="https://cdn.rawgit.com/feross/standard/master/sticker.svg" alt="Standard JavaScript" width="100" align="right"></a>
 
-[![Build Status](https://travis-ci.org/code-and-send/detergent.svg?branch=master)](https://travis-ci.org/code-and-send/detergent) [![Dependency Status](https://david-dm.org/code-and-send/detergent.svg)](https://david-dm.org/code-and-send/detergent) [![devDependency Status](https://david-dm.org/code-and-send/detergent/dev-status.svg)](https://david-dm.org/code-and-send/detergent#info=devDependencies) [![Downloads/Month](https://img.shields.io/npm/dm/detergent.svg)](https://www.npmjs.com/package/detergent)
+> All-in-one: HTML special character encoder, invisible character cleaner and English style improver — and fully customisable
 
-<a href="https://github.com/feross/standard"><img src="https://cdn.rawgit.com/feross/standard/master/sticker.svg" alt="Standard JavaScript" width="100"></a>
+<a href="https://detergent.io" style="float: left; padding: 0 20px 20px 0;"><img src="https://detergent.io/images/code-and-send-detergent-io_108x204.gif" alt="Detergent.io" width="100" align="left"></a>
 
+[![Build Status](https://travis-ci.org/code-and-send/detergent.svg?branch=master)](https://travis-ci.org/code-and-send/detergent) [![bitHound Overall Score](https://www.bithound.io/github/code-and-send/detergent/badges/score.svg)](https://www.bithound.io/github/code-and-send/detergent) [![Dependency Status](https://david-dm.org/code-and-send/detergent.svg)](https://david-dm.org/code-and-send/detergent) [![devDependency Status](https://david-dm.org/code-and-send/detergent/dev-status.svg)](https://david-dm.org/code-and-send/detergent#info=devDependencies) [![Downloads/Month](https://img.shields.io/npm/dm/detergent.svg)](https://www.npmjs.com/package/detergent)
 
-Detergent is a smart HTML entity encoder, specifically tailored for email templates. It is a JavaScript library that prepares text to be pasted into email's or website's HTML code. There is also a web app on [Detergent.io](http://detergent.io) which is driven by this JS library.
+Detergent is a smart HTML entity encoder, specifically tailored for email template development. It is a JavaScript library that prepares text to be pasted into email's or website's HTML code. There is also a web app on [Detergent.io](http://detergent.io) which is driven by this JS library.
 
-For manual HTML character encoding, website [Detergent.io](https://detergent.io) is the best. For automation purposes (for example, automated email builds using Gulp/Grunt/npm_scripts), this, _JS-library-Detergent_ (this library you see here) is the best.
+For manual HTML character encoding, website [Detergent.io](https://detergent.io) is the best. For automation purposes (for example, automated email template builds using Gulp/Grunt/npm_scripts), this, _JS-library-Detergent_ (this library you see here) is the best.
 
 If you don't know any JavaScript, calm down, close this web page and continue to use [Detergent.io](https://detergent.io).
 
