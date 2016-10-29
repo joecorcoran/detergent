@@ -71,7 +71,7 @@ Simple encoding using default settings:
 
 ```js
 detergent('clean this text £');
-// > &pound;
+// > 'clean this text &pound;'
 ```
 
 Using custom settings object:
@@ -80,7 +80,7 @@ Using custom settings object:
 detergent('clean this text £',{
     convertEntities: false
 });
-// > &
+// > 'clean this text £'
 ```
 
 ## Contributing & testing
