@@ -41,7 +41,7 @@
   "devDependencies": {
     "ava": "^0.16.0",
     "faucet": "0.0.1",
-    "object-boolean-combinations": "^1.0.2"
+    "object-boolean-combinations": "^1.4.0"
   },
   "ava": {
     "tap": true
