@@ -90,13 +90,15 @@ detergent('clean this text £',{
 
 ## Contributing & testing
 
-Flush the repo onto your SSD and have a butchers at `test.js`. It's very minimalistic testing setup using [AVA](https://github.com/avajs/ava), with TAP output (formatter via Faucet).
+Flush the repo onto your SSD and have a butchers at `test.js`. It's very minimalistic testing setup using [AVA](https://github.com/avajs/ava) and [Istanbul CLI](https://github.com/istanbuljs/nyc). Currently the Detergent has ten options and each option can affect the output of the library. This means, we have to test each feature against every possible combination of the settings — that's 2^10=1024 tests for each unit test! I coded up an auxiliary library, [object-boolean-combinations](https://github.com/revelt/object-boolean-combinations) which generates an array of all possible variations and feeds that into AVA. See its readme file to learn more how it works.
+
+Tests take around 5 minutes to complete:
 
 ```bash
 npm test
 ```
 
-If you want to contribute, please do. If it's code contribution, please supplement `test.js` with tests covering your code.
+If you want to contribute, don't hesitate. If it's a code contribution, please supplement `test.js` with tests covering your code. This library uses JS Standard notation.
 
 ## Licence
 

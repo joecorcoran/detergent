@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## 2.17.0 - 2016-12-21
+## [2.17.0] - 2016-12-21
 ### Added
 - Test coverage and a badge
 - Changelog
