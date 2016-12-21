@@ -1166,7 +1166,7 @@ test('34 - replace \\n line breaks with BR', function (t) {
 // o.removeLineBreaks
 // ==============================
 
-test('35 - replace \\n line breaks with BR', function (t) {
+test('35 - remove \\n line breaks', function (t) {
   mixer(sampleObj, {
     removeLineBreaks: true,
     removeWidows: false
@@ -1436,7 +1436,7 @@ test('43 - precaution against false positives', function (t) {
 // Clearly errors
 // ==============================
 
-test('44 - multiple lines & obvious errors in the text', function (t) {
+test('44 - fixes: space + full stop combinations', function (t) {
   mixer(sampleObj, {
     removeWidows: false,
     replaceLineBreaks: true,
@@ -1597,7 +1597,7 @@ test('44 - multiple lines & obvious errors in the text', function (t) {
   })
 })
 
-test('45 - multiple lines & obvious errors in the text', function (t) {
+test('45 - fixes: full stop + space + line break combinations', function (t) {
   t.is(
       detergent('a. \na'),
     'a.<br />\na',
@@ -1911,7 +1911,7 @@ test('51 - wrong named entity QUOT into quot', function (t) {
 // ndash
 // =====
 
-test('52 - missing space after ndash added', function (t) {
+test('52 - missing space after ndash added (nbsp + ndash)', function (t) {
   mixer(sampleObj, {
     convertEntities: true
   })
@@ -1945,7 +1945,7 @@ test('52 - missing space after ndash added', function (t) {
   })
 })
 
-test('53 - missing space after ndash added', function (t) {
+test('53 - missing space after ndash added (space + ndash)', function (t) {
   mixer(sampleObj, {
     convertEntities: true,
     removeWidows: true

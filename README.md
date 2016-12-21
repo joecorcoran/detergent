@@ -6,7 +6,12 @@
 
 <a href="https://detergent.io" style="float: left; padding: 0 20px 20px 0;"><img src="https://detergent.io/images/code-and-send-detergent-io_108x204.gif" alt="Detergent.io" width="100" align="left"></a>
 
-[![Build Status](https://travis-ci.org/code-and-send/detergent.svg?branch=master)](https://travis-ci.org/code-and-send/detergent) [![bitHound Overall Score](https://www.bithound.io/github/code-and-send/detergent/badges/score.svg)](https://www.bithound.io/github/code-and-send/detergent) [![bitHound Dependencies](https://www.bithound.io/github/code-and-send/detergent/badges/dependencies.svg)](https://www.bithound.io/github/code-and-send/detergent/master/dependencies/npm) [![bitHound Dependencies](https://www.bithound.io/github/code-and-send/detergent/badges/dependencies.svg)](https://www.bithound.io/github/code-and-send/detergent/master/dependencies/npm) [![bitHound Dev Dependencies](https://www.bithound.io/github/code-and-send/detergent/badges/devDependencies.svg)](https://www.bithound.io/github/code-and-send/detergent/master/dependencies/npm) [![Downloads/Month](https://img.shields.io/npm/dm/detergent.svg)](https://www.npmjs.com/package/detergent)
+[![Build Status][travis-img]][travis-url]
+[![bitHound Overall Score][overall-img]][overall-url]
+[![bitHound Dependencies][deps-img]][deps-url]
+[![bitHound Dev Dependencies][dev-img]][dev-url]
+[![Coverage Status][cov-img]][cov-url]
+[![Downloads/Month][downloads-img]][downloads-url]
 
 Detergent is a smart HTML entity encoder, specifically tailored for email template development. It is a JavaScript library that prepares text to be pasted into email's or website's HTML code. There is also a web app on [Detergent.io](http://detergent.io) which is driven by this JS library.
 
@@ -95,4 +100,42 @@ If you want to contribute, please do. If it's code contribution, please suppleme
 
 ## Licence
 
-MIT © Roy Reveltas
+> MIT License (MIT)
+
+> Copyright (c) 2016 Code and Send Ltd, Roy Reveltas
+
+> Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+> The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+[travis-img]: https://travis-ci.org/code-and-send/detergent.svg?branch=master
+[travis-url]: https://travis-ci.org/code-and-send/detergent
+
+[overall-img]: https://www.bithound.io/github/code-and-send/detergent/badges/score.svg
+[overall-url]: https://www.bithound.io/github/code-and-send/detergent
+
+[deps-img]: https://www.bithound.io/github/code-and-send/detergent/badges/dependencies.svg
+[deps-url]: https://www.bithound.io/github/code-and-send/detergent/master/dependencies/npm
+
+[dev-img]: https://www.bithound.io/github/code-and-send/detergent/badges/devDependencies.svg
+[dev-url]: https://www.bithound.io/github/code-and-send/detergent/master/dependencies/npm
+
+[cov-img]: https://coveralls.io/repos/github/code-and-send/detergent/badge.svg?branch=master
+[cov-url]: https://coveralls.io/github/code-and-send/detergent?branch=master
+
+[downloads-img]: https://img.shields.io/npm/dm/detergent.svg
+[downloads-url]: https://www.npmjs.com/package/detergent
