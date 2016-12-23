@@ -104,28 +104,28 @@ function detergent (textToClean, options) {
     // closing B tag. No attributes allowed:
     inputString = inputString.replace(/<\s*\/\s*b[^>]*>/igm, '%$%/b%$%')
     // wrong slash on closing B tag:
-    inputString = inputString.replace(/<\s*b\s*[\/]\s*>/igm, '%$%/b%$%')
+    inputString = inputString.replace(/<\s*b\s*[/]\s*>/igm, '%$%/b%$%')
 
     // opening STRONG tag, attributes allowed
     inputString = inputString.replace(/<\s*strong\s*[^/>]*>/igm, '%$%strong%$%')
     // closing STRONG tag, attributes alowed
-    inputString = inputString.replace(/<\s*[\/]\s*strong\s*[^>]*>/igm, '%$%/strong%$%')
+    inputString = inputString.replace(/<\s*[/]\s*strong\s*[^>]*>/igm, '%$%/strong%$%')
     // closing STRONG tag, wrong slash
-    inputString = inputString.replace(/<\s*strong\s*[^>]*\s*[\/]\s*>/igm, '%$%/strong%$%')
+    inputString = inputString.replace(/<\s*strong\s*[^>]*\s*[/]\s*>/igm, '%$%/strong%$%')
 
     // opening i tag, attributes allowed
     inputString = inputString.replace(/<\s*i\s*[^/>]*>/igm, '%$%i%$%')
     // closing i tag, attributes alowed
-    inputString = inputString.replace(/<\s*[\/]\s*i\s*[^>]*>/igm, '%$%/i%$%')
+    inputString = inputString.replace(/<\s*[/]\s*i\s*[^>]*>/igm, '%$%/i%$%')
     // closing i tag, wrong slash
-    inputString = inputString.replace(/<\s*i\s*[^>]*\s*[\/]\s*>/igm, '%$%/i%$%')
+    inputString = inputString.replace(/<\s*i\s*[^>]*\s*[/]\s*>/igm, '%$%/i%$%')
 
     // opening EM tag, attributes allowed
-    inputString = inputString.replace(/<\s*[^\/][em]\s*[^/>]*>/igm, '%$%em%$%')
+    inputString = inputString.replace(/<\s*[^/][em]\s*[^/>]*>/igm, '%$%em%$%')
     // closing EM tag, attributes alowed
-    inputString = inputString.replace(/<\s*[\/]\s*em\s*[^>]*>/igm, '%$%/em%$%')
+    inputString = inputString.replace(/<\s*[/]\s*em\s*[^>]*>/igm, '%$%/em%$%')
     // closing EM tag, wrong slash
-    inputString = inputString.replace(/<\s*em\s*[^>]*\s*[\/]\s*>/igm, '%$%/em%$%')
+    inputString = inputString.replace(/<\s*em\s*[^>]*\s*[/]\s*>/igm, '%$%/em%$%')
 
     return inputString
   }
@@ -219,7 +219,7 @@ function detergent (textToClean, options) {
 
   // High surrogate (could change last hex to 0xDB7F to treat high
   // private surrogates as single characters)
-    if (0xD800 <= code && code <= 0xDBFF) {
+    if ((code >= 0xD800) && (code <= 0xDBFF)) {
       hi = code
       low = str.charCodeAt(idx + 1)
     // if (isNaN(low)) {
@@ -227,7 +227,7 @@ function detergent (textToClean, options) {
     // }
       return ((hi - 0xD800) * 0x400) + (low - 0xDC00) + 0x10000
     }
-    if (0xDC00 <= code && code <= 0xDFFF) { // Low surrogate
+    if ((code >= 0xDC00) && (code <= 0xDFFF)) { // Low surrogate
     // We return false to allow loops to skip this iteration since should have
     // already handled high surrogate above in the previous iteration
       return false
@@ -253,7 +253,7 @@ function detergent (textToClean, options) {
         .split('')
         .map(function (value1, index1, array1) {
           // if current character is surrogate's first pair, grab second-one from the next array1 element and concat both.
-          if (0xD800 <= value1.charCodeAt(0) && value1.charCodeAt(0) <= 0xDBFF) {
+          if ((value1.charCodeAt(0) >= 0xD800) && (value1.charCodeAt(0) <= 0xDBFF)) {
             low = array1[index1 + 1].charCodeAt(0)
             if (isNaN(low)) {
               // if the symbol is incomplete, instead of throw'ing an exception, just delete this first half
@@ -779,17 +779,17 @@ function detergent (textToClean, options) {
     //
     // PART 2. At least one of each of the set [n, b, s, p] is present.
     // any repetitions whatsoever like &&&&&nnnbbbssssp;;;
-    inputString = inputString.replace(/\&+n+b+s+p/igm, '&nbsp')
+    inputString = inputString.replace(/&+n+b+s+p/igm, '&nbsp')
     inputString = inputString.replace(/n+b+s+p+;+/igm, 'nbsp;')
     inputString = inputString.replace(/n+b+s+p /igm, 'nbsp; ')
     inputString = inputString.replace(/n+b+s+p,/igm, 'nbsp;,')
     inputString = inputString.replace(/n+b+s+p\./igm, 'nbsp;.')
 
     // PART 3. One letter missing, but amp and semicol are present.
-    inputString = inputString.replace(/\&bsp;/igm, '&nbsp;')
-    inputString = inputString.replace(/\&nsp;/igm, '&nbsp;')
-    inputString = inputString.replace(/\&nbp;/igm, '&nbsp;')
-    inputString = inputString.replace(/\&nbs;/igm, '&nbsp;')
+    inputString = inputString.replace(/&bsp;/igm, '&nbsp;')
+    inputString = inputString.replace(/&nsp;/igm, '&nbsp;')
+    inputString = inputString.replace(/&nbp;/igm, '&nbsp;')
+    inputString = inputString.replace(/&nbs;/igm, '&nbsp;')
     //
     // ===
     // fix missing semicolon when ampersand is present:
@@ -994,7 +994,7 @@ function detergent (textToClean, options) {
 
   // enforce spaces after full stops, commas and semicolons
   cleanedText = doCollapseWhiteSpace(cleanedText)
-  cleanedText = cleanedText.replace(/\,(?![ \d])/igm, ', ')
+  cleanedText = cleanedText.replace(/,(?![ \d])/igm, ', ')
   cleanedText = cleanedText.replace(/\.(?![ \d])/igm, '. ')
   cleanedText = er(
     cleanedText,

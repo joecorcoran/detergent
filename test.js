@@ -561,6 +561,18 @@ test('13 - stray low surrogates removed', function (t) {
       'aa',
       '13.2 - stray high surrogates are deleted')
   })
+  allCombinations.forEach(function (elem) {
+    t.is(
+      detergent('\uD835', elem),
+      '',
+      '13.3 - stray low surrogate deleted, set #2 (𝟘)')
+  })
+  allCombinations.forEach(function (elem) {
+    t.is(
+      detergent('\uDFD8', elem),
+      '',
+      '13.4 - stray high surrogate deleted, set #2 (𝟘)')
+  })
 })
 
 test('14 - German characters', function (t) {
