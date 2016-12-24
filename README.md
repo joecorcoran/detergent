@@ -7,10 +7,10 @@
 <a href="https://detergent.io" style="float: left; padding: 0 20px 20px 0;"><img src="https://detergent.io/images/code-and-send-detergent-io_108x204.gif" alt="Detergent.io" width="100" align="left"></a>
 
 [![Build Status][travis-img]][travis-url]
+[![Coverage Status][cov-img]][cov-url]
 [![bitHound Overall Score][overall-img]][overall-url]
 [![bitHound Dependencies][deps-img]][deps-url]
 [![bitHound Dev Dependencies][dev-img]][dev-url]
-[![Coverage Status][cov-img]][cov-url]
 [![Downloads/Month][downloads-img]][downloads-url]
 
 Detergent is a smart HTML entity encoder, specifically tailored for email template development. It is a JavaScript library that prepares text to be pasted into email's or website's HTML code. There is also a web app on [Detergent.io](http://detergent.io) which is driven by this JS library.
@@ -127,6 +127,9 @@ SOFTWARE.
 [travis-img]: https://travis-ci.org/code-and-send/detergent.svg?branch=master
 [travis-url]: https://travis-ci.org/code-and-send/detergent
 
+[cov-img]: https://coveralls.io/repos/github/code-and-send/detergent/badge.svg?branch=master
+[cov-url]: https://coveralls.io/github/code-and-send/detergent?branch=master
+
 [overall-img]: https://www.bithound.io/github/code-and-send/detergent/badges/score.svg
 [overall-url]: https://www.bithound.io/github/code-and-send/detergent
 
@@ -135,9 +138,6 @@ SOFTWARE.
 
 [dev-img]: https://www.bithound.io/github/code-and-send/detergent/badges/devDependencies.svg
 [dev-url]: https://www.bithound.io/github/code-and-send/detergent/master/dependencies/npm
-
-[cov-img]: https://coveralls.io/repos/github/code-and-send/detergent/badge.svg?branch=master
-[cov-url]: https://coveralls.io/github/code-and-send/detergent?branch=master
 
 [downloads-img]: https://img.shields.io/npm/dm/detergent.svg
 [downloads-url]: https://www.npmjs.com/package/detergent
