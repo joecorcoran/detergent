@@ -47,7 +47,7 @@ Extra features are:
 
 * You can skip the encoding of non-Latin language letters. Useful when you are deploying Japanese or Chinese emails.
 * Detergent is both XHTML and HTML-friendly. You can set which way you want your `<BR>`'s to appear: with closing slash (XHTML) or without (HTML), so your HTML code should be passing the W3C validator.
-* Detergent is Emoji-friendly and accepts any and all Unicode characters.
+* Detergent handles the full range of Unicode code points. In other words, it's emoji-friendly.
 
 ## API
 
