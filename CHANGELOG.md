@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.19.0] - 2017-01-04
+### Added
+- URL recognition — now Detergent won't add spaces within an URL.
+- New tests — to maintain the coverage and prove the surrounded text is cleaned correctly as before.
+
 ## [2.18.0] - 2016-12-23
 ### Added
 - JS Standard on a precommit hook to enforce an order everywhere
@@ -24,3 +29,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 [2.17.0]: https://github.com/code-and-send/detergent/compare/v2.16.0...v2.17.0
 [2.18.0]: https://github.com/code-and-send/detergent/compare/v2.17.0...v2.18.0
+[2.19.0]: https://github.com/code-and-send/detergent/compare/v2.18.0...v2.19.0

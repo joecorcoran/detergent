@@ -36,6 +36,7 @@
     "curl-quotes": "^0.1.0",
     "easy-replace": "^2.3.0",
     "he": "^1.0.0",
+    "lodash.toarray": "^4.4.0",
     "string": "^3.3.1",
     "typographic-en-dashes": "^1.0.1",
     "unicode-dragon": "^0.1.3"

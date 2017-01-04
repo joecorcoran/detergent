@@ -2317,3 +2317,121 @@ test('60 - spaces after semicolons', function (t) {
     )
   })
 })
+
+// ==============================
+// DOESN'T MANGLE URLS
+// ==============================
+
+test('61 - doesn\'t add spaces within simple URL\'s', function (t) {
+  // usual:
+  allCombinations.forEach(function (elem) {
+    t.is(
+      detergent('http://detergent.io', elem),
+      'http://detergent.io',
+      '61.1 - url only'
+    )
+    t.is(
+      detergent('http://detergent.io ', elem),
+      'http://detergent.io',
+      '61.2 - url + space only (checks trimming impact)'
+    )
+  })
+})
+
+test('62 - doesn\'t add spaces within urls', function (t) {
+  mixer(sampleObj, {
+    removeWidows: false,
+    replaceLineBreaks: false,
+    removeLineBreaks: false
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('http://detergent.io is cool', elem),
+      'http://detergent.io is cool',
+      '62.1 - url + space + text'
+    )
+    t.is(
+      detergent('http://detergent.io.\nThis is cool', elem),
+      'http://detergent.io.\nThis is cool',
+      '62.2 - adds space before capital letter (line break)'
+    )
+    t.is(
+      detergent('http://detergent.io. \nThis is cool', elem),
+      'http://detergent.io.\nThis is cool',
+      '62.3 - adds space before capital letter (line break)'
+    )
+    t.is(
+      detergent('Aaaaa.aaaa www.detergent.io bbbbb.Bbbbb', elem),
+      'Aaaaa. aaaa www.detergent.io bbbbb. Bbbbb',
+      '62.4 - no :// but www instead'
+    )
+  })
+})
+
+test('63 - full stop after URL recognised if it starts with capital letter', function (t) {
+  mixer(sampleObj, {
+    removeWidows: false
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('http://detergent.io.This is cool', elem),
+      'http://detergent.io. This is cool',
+      '63'
+    )
+  })
+})
+
+test('64 - doesn\'t add spaces within urls, considering emoji and line breaks', function (t) {
+  mixer(sampleObj, {
+    removeWidows: false,
+    convertEntities: false,
+    replaceLineBreaks: false,
+    removeLineBreaks: false
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('Aaaa🦄.bbbbb http://detergent.whatever.a.bd.re.qwe.gf.asdew.v.df.g.er.re ZZZ.🦄YYY', elem),
+      'Aaaa🦄. bbbbb http://detergent.whatever.a.bd.re.qwe.gf.asdew.v.df.g.er.re ZZZ. 🦄YYY',
+      '64.1'
+    )
+    t.is(
+      detergent('Aaaa.bbbbb http://detergent.whatever.a.bd.re.qwe.\ngf.asdew.V.df,g;er.re ZZZ.🦄YYY sfhksdf fgkjhk jhfgkh.', elem),
+      'Aaaa. bbbbb http://detergent.whatever.a.bd.re.qwe.\ngf. asdew. V. df, g; er. re ZZZ. 🦄YYY sfhksdf fgkjhk jhfgkh.',
+      '64.2'
+    )
+  })
+})
+
+test('65 - adds space after semicolon, but not in URLs', function (t) {
+  mixer(sampleObj, {
+    removeWidows: false
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('This is http://detergent.io;This is cool.', elem),
+      'This is http://detergent.io; This is cool.',
+      '65.1'
+    )
+    t.is(
+      detergent('This is http://detergent;io;This is cool.', elem),
+      'This is http://detergent;io; This is cool.',
+      '65.2'
+    )
+  })
+
+  mixer(sampleObj, {
+    convertEntities: false
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('Semicolon;\xa0is cool.', elem),
+      'Semicolon;\xa0is cool.',
+      '65.3'
+    )
+    t.is(
+      detergent('Semicolon;&is cool.', elem),
+      'Semicolon;&is cool.',
+      '65.4'
+    )
+  })
+})

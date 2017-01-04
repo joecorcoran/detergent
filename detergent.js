@@ -8,6 +8,9 @@ var unicodeDragon = require('unicode-dragon')
 var entityRefs = require('./entity-references.json')
 var numericEnt = require('./enforced-numeric-entities-list.json')
 var er = require('easy-replace')
+var toArray = require('lodash.toarray')
+
+function existy (x) { return x != null }
 
 /**
  * detergent - main function
@@ -250,7 +253,6 @@ function detergent (textToClean, options) {
           if ((value1.charCodeAt(0) >= 0xD800) && (value1.charCodeAt(0) <= 0xDBFF)) {
             // concat next symbol with current, completing the character
             value1 = value1 + array1[index1 + 1]
-            // console.log('new value1=' + value1)
             // delete the next array element, because it is now part of the current character
             array1.splice((index1 + 1), 1)
           }
@@ -855,6 +857,104 @@ function detergent (textToClean, options) {
     return inputString
   }
 
+  // taken from jQuery
+  // detects strings which are numbers
+  //
+  function isNumeric (obj) {
+    return !isNaN(obj - parseFloat(obj))
+  }
+
+  function isLetter (c) {
+    return c.toLowerCase() !== c.toUpperCase()
+  }
+
+  function isCapitalLetter (char) {
+    if (isLetter(char)) {
+      return char.toUpperCase() === char
+    } else {
+      return false
+    }
+  }
+
+  /**
+   * addMissingSpaces - adds missing spaces after dots/colons/semicolons, unless it's URL
+   * space and colon don't have restrictions for following characters
+   * space after semicolon will be added only if ['&', '\xa0'] don't follow it
+   * algorithm will look for "://" to acticate URL ignoring
+   *
+   * @param  {String} input  accepts any string
+   * @return {String}        returns cleaned string
+   */
+  function addMissingSpaces (input) {
+    var x = toArray(input)
+    var onUrlCurrently = false
+    for (var i = 0, len = x.length; i < len; i++) {
+      //
+      // situation detections
+      // ====================
+      if ((x[i] === ':') && existy(x[i + 2]) && (x[i + 1] === '/') && (x[i + 2] === '/')) {
+        onUrlCurrently = true
+      } else if ((x[i] === 'w') && existy(x[i + 2]) && (x[i + 1] === 'w') && (x[i + 2] === 'w')) {
+        onUrlCurrently = true
+      }
+      if ((x[i] === ' ') || (x[i] === '\n')) {
+        onUrlCurrently = false
+      }
+      //
+      // action
+      // ======
+      // add missing space after full stop or comma
+      if (!onUrlCurrently &&
+        ((x[i] === '.') || (x[i] === ',')) &&
+        !isNumeric(x[i + 1]) &&
+        (x[i + 1] !== ' ') &&
+        (x[i + 1] !== '\n') &&
+        (x[i + 1] !== undefined)
+      ) {
+        // dot/comma, not on URL, not followed by number = add space afterwards
+        x.splice(i + 1, 0, ' ')
+        len++
+      } else if (
+        onUrlCurrently &&
+        ((x[i] === '.') || (x[i] === ',')) &&
+        existy(x[i] + 2) &&
+        isCapitalLetter(x[i + 1]) &&
+        !isCapitalLetter(x[i + 2])
+      ) {
+        // dot at the end of URL, there's capital case letter and lowercase letter after it
+        x.splice(i + 1, 0, ' ')
+        len++
+      }
+
+      // add missing space after semicolon
+      if (!onUrlCurrently &&
+        (x[i] === ';') &&
+        !isNumeric(x[i + 1]) &&
+        (x[i + 1] !== ' ') &&
+        (x[i + 1] !== '\n') &&
+        (x[i + 1] !== undefined) &&
+        (x[i + 1] !== '&') &&
+        (x[i + 1] !== '\xa0')
+      ) {
+        // dot, not on URL, not followed by number = add space afterwards
+        x.splice(i + 1, 0, ' ')
+        len++
+      } else if (
+        onUrlCurrently &&
+        (x[i] === ';') &&
+        existy(x[i] + 2) &&
+        isCapitalLetter(x[i + 1]) &&
+        !isCapitalLetter(x[i + 2]) &&
+        (x[i + 1] !== '&') &&
+        (x[i + 1] !== '\xa0')
+      ) {
+        x.splice(i + 1, 0, ' ')
+        len++
+      }
+    }
+    return x.join('')
+  }
+
   //                           ____
   //          massive hammer  |    |
   //        O=================|    |
@@ -982,21 +1082,7 @@ function detergent (textToClean, options) {
 
   // enforce spaces after full stops, commas and semicolons
   cleanedText = doCollapseWhiteSpace(cleanedText)
-  cleanedText = cleanedText.replace(/,(?![ \d])/igm, ', ')
-  cleanedText = cleanedText.replace(/\.(?![ \d])/igm, '. ')
-  cleanedText = er(
-    cleanedText,
-    {
-      leftOutsideNot: '',
-      leftOutside: '',
-      leftMaybe: '',
-      searchFor: ';',
-      rightMaybe: ' ',
-      rightOutside: '',
-      rightOutsideNot: ['&', '\xa0']
-    },
-    '; '
-  )
+  cleanedText = addMissingSpaces(cleanedText)
 
   // ================= xx =================
 
