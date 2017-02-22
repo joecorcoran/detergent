@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.20.0] - 2017-02-22
+### Added
+- Widow removal now identifies UK postcodes and replaces the space with non-breaking space.
+
 ## [2.19.0] - 2017-01-04
 ### Added
 - URL recognition — now Detergent won't add spaces within an URL.

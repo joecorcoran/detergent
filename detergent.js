@@ -321,6 +321,7 @@ function detergent (textToClean, options) {
       return elem
     })
     outputString = newParasArray.join('\n')
+    outputString = joinPostcodes(outputString)
 
     return outputString
   }
@@ -953,6 +954,12 @@ function detergent (textToClean, options) {
       }
     }
     return x.join('')
+  }
+
+  // find postcodes, replace the space within them with '\u00A0'
+  function joinPostcodes (str) {
+    str = str.replace(/([A-Z]{1,2}[0-9][0-9A-Z]?)\s?([0-9][A-Z]{2})/g, '$1\u00A0$2')
+    return str
   }
 
   //                           ____
