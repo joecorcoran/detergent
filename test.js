@@ -28,7 +28,7 @@ var sampleObj = {
 // 01. INVISIBLES
 // ==============================
 
-// var all settings combinations with remove\u00A0s=true/false overrides
+// var all settings combinations with removeWidows = true/false overrides
 var allCombinations = mixer(sampleObj)
 // console.log('\n\n all combinations'+allCombinations+'\n\n')
 
