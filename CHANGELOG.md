@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.21.0] - 2017-03-09
+### Added
+- Removes [byte order mark](https://en.wikipedia.org/wiki/Byte_order_mark#UTF-8) (BOM). 
+
 ## [2.20.0] - 2017-02-22
 ### Added
 - Widow removal now identifies UK postcodes and replaces the space with non-breaking space.
@@ -35,3 +39,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 [2.18.0]: https://github.com/code-and-send/detergent/compare/v2.17.0...v2.18.0
 [2.19.0]: https://github.com/code-and-send/detergent/compare/v2.18.0...v2.19.0
 [2.20.0]: https://github.com/code-and-send/detergent/compare/v2.19.0...v2.20.0
+[2.21.0]: https://github.com/code-and-send/detergent/compare/v2.20.0...v2.21.0

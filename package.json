@@ -8,10 +8,10 @@
     "precommit": "npm test",
     "test": "standard && nyc --reporter=html --reporter=text ava"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/code-and-send/detergent.git"
+  "engines": {
+    "node": ">=4"
   },
+  "repository": "code-and-send/detergent",
   "keywords": [
     "detergent",
     "email",
@@ -38,6 +38,7 @@
     "he": "^1.0.0",
     "lodash.toarray": "^4.4.0",
     "string": "^3.3.1",
+    "strip-bom": "^3.0.0",
     "typographic-en-dashes": "^1.0.1",
     "unicode-dragon": "^0.1.3"
   },

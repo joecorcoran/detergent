@@ -2548,3 +2548,24 @@ test('29.05 - adds space after semicolon, but not in URLs', function (t) {
     )
   })
 })
+
+// ==============================
+// 30. BOM
+// ==============================
+
+test('30.01 - strips UTF8 BOM', function (t) {
+  allCombinations.forEach(function (elem) {
+    t.is(
+      detergent('\uFEFFunicorn', elem),
+      'unicorn',
+      '30.01.01 - UTF8 BOM at the beginning of a string')
+    t.is(
+      detergent('unicorn\uFEFF', elem),
+      'unicorn',
+      '30.01.02 - UTF8 BOM at the end of a string')
+    t.is(
+      detergent('unicorn\uFEFFzzz', elem),
+      'unicornzzz',
+      '30.01.03 - UTF8 BOM in the middle of a string')
+  })
+})
