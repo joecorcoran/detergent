@@ -1,6 +1,6 @@
 {
   "name": "detergent",
-  "version": "2.21.0",
+  "version": "2.22.0",
   "description": "All-in-one: HTML special character encoder, invisible character cleaner and English style improve tool",
   "main": "detergent.js",
   "scripts": {
