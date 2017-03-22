@@ -3,7 +3,7 @@
     "lint": {"engine": "standard"}
   },
   "dependencies": {
-      "mute": ["ava", "standard", "coveralls", "object-boolean-combinations"]
+      "mute": ["ava", "coveralls", "object-boolean-combinations"]
   },
   "test": [
     "test.js"

@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.22.0] - 2017-03-22
+### Improved
+- Now correctly recognises and ignores legitimate minus signs, such as `-20°C` when it comes after a space. If algorithm will detect a number of curency symbol after a dash, it will not add a space after it or turn it into an m-dash. It does not matter now, a space character precedes all that or not.
+- Updated Husky to latest.
+### Added
+- More tests.
+### Changed
+- Now consuming JS Standard linter in normal fashion, not "any latest", but within the current _major_ range.
+
 ## [2.21.0] - 2017-03-09
 ### Added
 - Removes [byte order mark](https://en.wikipedia.org/wiki/Byte_order_mark#UTF-8) (BOM). 

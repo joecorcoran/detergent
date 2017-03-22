@@ -320,8 +320,9 @@ test('04.03 - hairspaces', function (t) {
 
 // convertDashes: true
 
-// more dashes tests:
+// more dashes' tests:
 test('04.04 - dash tests', function (t) {
+  // --- PART I ---
   mixer(sampleObj, {
     convertDashes: true,
     convertEntities: true,
@@ -365,7 +366,8 @@ test('04.04 - dash tests', function (t) {
       'aaaaaaaaaaa&nbsp;&mdash; aaaaaaaaaaaa',
       '04.04.04 - nbsp, dash'
     )
-  }) // --- PART II ---
+  })
+  // --- PART II ---
   mixer(sampleObj, {
     convertEntities: true,
     removeWidows: true
@@ -409,7 +411,8 @@ test('04.04 - dash tests', function (t) {
       'a \u2014 a',
       '04.04.08 - missing space after m-dash'
     )
-  })// --- PART III - hairlines mixed in ---
+  })
+  // --- PART III - hairlines mixed in ---
   mixer(sampleObj, {
     convertEntities: true,
     removeWidows: true
@@ -452,6 +455,34 @@ test('04.04 - dash tests', function (t) {
       detergent('a\u200A\u2014a', elem),
       'a \u2014 a',
       '04.04.12 - hairline mdash'
+    )
+  })
+  // --- PART IV false positives---
+  mixer(sampleObj, {
+    convertEntities: true
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('Discount: -£10.00', elem),
+      'Discount: -&pound;10.00',
+      '04.04.13'
+    )
+  })
+  mixer(sampleObj, {
+    convertEntities: false
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('Discount: -£10.00', elem),
+      'Discount: -£10.00',
+      '04.04.14'
+    )
+  })
+  allCombinations.forEach(function (elem) {
+    t.is(
+      detergent('Discount: -10.00', elem),
+      'Discount: -10.00',
+      '04.04.15'
     )
   })
 })
@@ -1849,7 +1880,7 @@ test('19.01 - multiple spaces before comma/full stop', function (t) {
 // 20. m dash sanity check
 // ==============================
 
-test('20    - m dash sanity check', function (t) {
+test('20.01 - m dash sanity check', function (t) {
   mixer(sampleObj, {
     convertEntities: false
   })
@@ -1857,7 +1888,159 @@ test('20    - m dash sanity check', function (t) {
     t.is(
       detergent('m—m', elem),
       'm—m',
-      '20 - leaves the m dashes alone'
+      '20.01.01 - leaves the m dashes alone'
+    )
+    t.is(
+      detergent('m-m', elem),
+      'm-m',
+      '20.01.02 - leaves minuses alone'
+    )
+  })
+  mixer(sampleObj, {
+    convertEntities: true
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('m—m', elem),
+      'm&mdash;m',
+      '20.01.03 - leaves the m dashes alone'
+    )
+    t.is(
+      detergent('m-m', elem),
+      'm-m',
+      '20.01.04 - leaves minuses alone'
+    )
+  })
+})
+
+test('20.02 - minus and number, too short to widow removal', function (t) {
+  mixer(sampleObj, {
+    convertEntities: false
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('Temperatures of -20°C', elem),
+      'Temperatures of -20°C',
+      '20.02.01'
+    )
+    t.is(
+      detergent('-20°C', elem),
+      '-20°C',
+      '20.02.01'
+    )
+  })
+  mixer(sampleObj, {
+    convertEntities: true
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('Temperatures of -20°C', elem),
+      'Temperatures of -20&deg;C',
+      '20.02.02'
+    )
+    t.is(
+      detergent('-20°C', elem),
+      '-20&deg;C',
+      '20.02.02'
+    )
+  })
+})
+
+test('20.03 - minus and number, clashing with widow removal', function (t) {
+  mixer(sampleObj, {
+    convertEntities: true,
+    removeWidows: true
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('The records show that there were temperatures as low as -20°C', elem),
+      'The records show that there were temperatures as low as&nbsp;-20&deg;C',
+      '20.03.01'
+    )
+  })
+  mixer(sampleObj, {
+    convertEntities: true,
+    removeWidows: false
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('The records show that there were temperatures as low as -20°C', elem),
+      'The records show that there were temperatures as low as -20&deg;C',
+      '20.03.02'
+    )
+  })
+  mixer(sampleObj, {
+    convertEntities: false,
+    removeWidows: true
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('The records show that there were temperatures as low as -20°C', elem),
+      'The records show that there were temperatures as low as\xa0-20°C',
+      '20.03.03'
+    )
+  })
+  mixer(sampleObj, {
+    convertEntities: false,
+    removeWidows: false
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('The records show that there were temperatures as low as -20°C', elem),
+      'The records show that there were temperatures as low as -20°C',
+      '20.03.04'
+    )
+  })
+})
+
+test('20.04 - dashes between words, no spaces', function (t) {
+  allCombinations.forEach(function (elem) {
+    t.is(
+      detergent('Stratford-upon-Avon', elem),
+      'Stratford-upon-Avon',
+      '20.04.01'
+    )
+  })
+  mixer(sampleObj, {
+    convertEntities: true,
+    removeWidows: true
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('One day we should visit Stratford-upon-Avon', elem),
+      'One day we should visit&nbsp;Stratford-upon-Avon',
+      '20.04.02'
+    )
+  })
+  mixer(sampleObj, {
+    convertEntities: true,
+    removeWidows: true
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('One day we should visit Stratford-upon-Avon.', elem),
+      'One day we should visit&nbsp;Stratford-upon-Avon.',
+      '20.04.03'
+    )
+  })
+  mixer(sampleObj, {
+    removeWidows: false
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('One day we should visit Stratford-upon-Avon', elem),
+      'One day we should visit Stratford-upon-Avon',
+      '20.04.04'
+    )
+  })
+  mixer(sampleObj, {
+    removeWidows: false
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('One day we should visit Stratford-upon-Avon.', elem),
+      'One day we should visit Stratford-upon-Avon.',
+      '20.04.05'
     )
   })
 })

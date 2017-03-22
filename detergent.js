@@ -352,10 +352,19 @@ function detergent (textToClean, options) {
    */
   function doConvertDashes (inputString, widows) {
     inputString = endashes(inputString)
-
-    // take care of m dashes manually (spaces added after deliberately):
-    inputString = S(inputString).replaceAll(' --', ' \u2014 ').s
-    inputString = S(inputString).replaceAll(' -', ' \u2014 ').s
+    inputString = er(
+      inputString,
+      {
+        leftOutsideNot: '',
+        leftOutside: ' ',
+        leftMaybe: '',
+        searchFor: '-',
+        rightMaybe: '-',
+        rightOutside: '',
+        rightOutsideNot: ['$', '£', '€', '₽', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+      },
+      '\u2014 '
+    )
 
     // add space after m dash provisionally
     inputString = S(inputString).replaceAll(' \u2014', ' \u2014 ').s
@@ -442,9 +451,9 @@ function detergent (textToClean, options) {
         leftOutside: ['\xa0', ' '],
         leftMaybe: '',
         searchFor: '-',
-        rightMaybe: ' ',
+        rightMaybe: [' ', '-'],
         rightOutside: '',
-        rightOutsideNot: ''
+        rightOutsideNot: ['$', '£', '€', '₽', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
       },
       '- '
     )
@@ -981,7 +990,6 @@ function detergent (textToClean, options) {
   cleanedText = doInterpretErroneousNBSP(cleanedText)
   // all other mis-typed character references — missing ampersand and/or semicolon
   cleanedText = fixMissingAmpsAndSemicols(cleanedText)
-
   // ================= xx =================
 
   // decode entities
