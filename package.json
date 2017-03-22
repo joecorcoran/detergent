@@ -1,7 +1,7 @@
 {
   "name": "detergent",
   "version": "2.22.0",
-  "description": "All-in-one: HTML special character encoder, invisible character cleaner and English style improve tool",
+  "description": "All-in-one: HTML special character encoder, invisible character cleaner and English style improvement tool",
   "main": "detergent.js",
   "scripts": {
     "coverage": "nyc report --reporter=text-lcov | coveralls",
