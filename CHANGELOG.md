@@ -49,3 +49,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 [2.19.0]: https://github.com/code-and-send/detergent/compare/v2.18.0...v2.19.0
 [2.20.0]: https://github.com/code-and-send/detergent/compare/v2.19.0...v2.20.0
 [2.21.0]: https://github.com/code-and-send/detergent/compare/v2.20.0...v2.21.0
+[2.22.0]: https://github.com/code-and-send/detergent/compare/v2.21.0...v2.22.0
