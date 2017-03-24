@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.23.0] - 2017-03-24
+### Improved
+- Swooping in on full stop + letter fixes. I found the file names where extension is mentioned get separated into two parts. I came up with the idea: two errors rarely happen at one place. "string1.string2" is a double error because space after full stop is missing and letter that follows is in capital. This leads to the algorithm:
+
+If there is no space after full stop, and letter that follows is uppercase, add a full stop. If lowecase letter follows full stop, leave it as it is.
+
+Additionally, the algorithm is now checking, does any of the known extensions follow the full stop (in any case). If so, space between the full stop and extension is not added. This should cover all false positives where file names are involved.
+
 ## [2.22.0] - 2017-03-22
 ### Improved
 - Now correctly recognises and ignores legitimate minus signs, such as `-20°C` when it comes after a space. If algorithm will detect a number of curency symbol after a dash, it will not add a space after it or turn it into an m-dash. It does not matter now, a space character precedes all that or not.
@@ -50,3 +58,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 [2.20.0]: https://github.com/code-and-send/detergent/compare/v2.19.0...v2.20.0
 [2.21.0]: https://github.com/code-and-send/detergent/compare/v2.20.0...v2.21.0
 [2.22.0]: https://github.com/code-and-send/detergent/compare/v2.21.0...v2.22.0
+[2.23.0]: https://github.com/code-and-send/detergent/compare/v2.22.0...v2.23.0

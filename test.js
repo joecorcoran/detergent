@@ -1,4 +1,5 @@
 'use strict'
+/* eslint no-template-curly-in-string: 0 */
 
 var he = require('he')
 var detergent = require('./detergent.js')
@@ -1804,13 +1805,13 @@ test('19.01 - multiple spaces before comma/full stop', function (t) {
     )
     // full stop
     t.is(
-      detergent('some text text text text            .text  ', elem),
-      'some text text text text. text',
+      detergent('Some text text text text            .Text  ', elem),
+      'Some text text text text. Text',
       '19.01.05 - multiple spaces, comma, no space, text, spaces'
     )
     t.is(
-      detergent('some text text text text            .text', elem),
-      'some text text text text. text',
+      detergent('Some text text text text            .Text', elem),
+      'Some text text text text. Text',
       '19.01.06 - multiple spaces, comma, no space, text, no spaces'
     )
     t.is(
@@ -1854,18 +1855,18 @@ test('19.01 - multiple spaces before comma/full stop', function (t) {
     )
     // full stop
     t.is(
-      detergent('some text text text text            .text  ', elem),
-      'some text text text text.&nbsp;text',
+      detergent('Some text text text text            .Text  ', elem),
+      'Some text text text text.&nbsp;Text',
       '19.01.13 - multiple spaces, comma, no space, text, spaces'
     )
     t.is(
-      detergent('some text text text text            .text', elem),
-      'some text text text text.&nbsp;text',
+      detergent('Some text text text text            .Text', elem),
+      'Some text text text text.&nbsp;Text',
       '19.01.14 - multiple spaces, comma, no space, text, no spaces'
     )
     t.is(
-      detergent('some text text text text            .', elem),
-      'some text text text&nbsp;text.',
+      detergent('Some text text text text            .', elem),
+      'Some text text text&nbsp;text.',
       '19.01.15 - multiple spaces, comma, string\'s end'
     )
     t.is(
@@ -2657,22 +2658,59 @@ test('29.02 - doesn\'t add spaces within urls', function (t) {
       '29.02.03 - adds space before capital letter (line break)'
     )
     t.is(
-      detergent('Aaaaa.aaaa www.detergent.io bbbbb.Bbbbb', elem),
-      'Aaaaa. aaaa www.detergent.io bbbbb. Bbbbb',
+      detergent('Aaaaa.Aaaa www.detergent.io bbbbb.Bbbbb', elem),
+      'Aaaaa. Aaaa www.detergent.io bbbbb. Bbbbb',
       '29.02.04 - no :// but www instead'
     )
   })
 })
 
-test('29.03 - full stop after URL recognised if it starts with capital letter', function (t) {
+test('29.03 - adds space after semicolon, but not in URLs', function (t) {
   mixer(sampleObj, {
     removeWidows: false
   })
   .forEach(function (elem) {
     t.is(
-      detergent('http://detergent.io.This is cool', elem),
-      'http://detergent.io. This is cool',
-      '29.03'
+      detergent('This is http://detergent.io.This is cool.', elem),
+      'This is http://detergent.io. This is cool.',
+      '29.03.01'
+    )
+    t.is(
+      detergent('This is http://detergent.io.', elem),
+      'This is http://detergent.io.',
+      '29.03.02'
+    )
+  })
+  mixer(sampleObj, {
+    removeWidows: true,
+    convertEntities: true
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('This is http://detergent.io.This is cool.', elem),
+      'This is http://detergent.io. This is&nbsp;cool.',
+      '29.03.03'
+    )
+    t.is(
+      detergent('This is http://detergent.io.', elem),
+      'This is http://detergent.io.',
+      '29.03.04'
+    )
+  })
+  mixer(sampleObj, {
+    removeWidows: true,
+    convertEntities: false
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('This is http://detergent.io.This is cool.', elem),
+      'This is http://detergent.io. This is\xa0cool.',
+      '29.03.05'
+    )
+    t.is(
+      detergent('This is http://detergent.io.', elem),
+      'This is http://detergent.io.',
+      '29.03.06'
     )
   })
 })
@@ -2687,12 +2725,12 @@ test('29.04 - doesn\'t add spaces within urls, considering emoji and line breaks
   .forEach(function (elem) {
     t.is(
       detergent('Aaaa🦄.bbbbb http://detergent.whatever.a.bd.re.qwe.gf.asdew.v.df.g.er.re ZZZ.🦄YYY', elem),
-      'Aaaa🦄. bbbbb http://detergent.whatever.a.bd.re.qwe.gf.asdew.v.df.g.er.re ZZZ. 🦄YYY',
+      'Aaaa🦄.bbbbb http://detergent.whatever.a.bd.re.qwe.gf.asdew.v.df.g.er.re ZZZ. 🦄YYY',
       '29.04.01'
     )
     t.is(
-      detergent('Aaaa.bbbbb http://detergent.whatever.a.bd.re.qwe.\ngf.asdew.V.df,g;er.re ZZZ.🦄YYY sfhksdf fgkjhk jhfgkh.', elem),
-      'Aaaa. bbbbb http://detergent.whatever.a.bd.re.qwe.\ngf. asdew. V. df, g; er. re ZZZ. 🦄YYY sfhksdf fgkjhk jhfgkh.',
+      detergent('Aaaa.Bbbbb http://detergent.whatever.a.bd.re.qwe.\ngf.Asdew.V.Df,g;er.Re ZZZ.🦄YYY sfhksdf fgkjhk jhfgkh.', elem),
+      'Aaaa. Bbbbb http://detergent.whatever.a.bd.re.qwe.\ngf. Asdew. V. Df, g; er. Re ZZZ. 🦄YYY sfhksdf fgkjhk jhfgkh.',
       '29.04.02'
     )
   })
@@ -2714,7 +2752,65 @@ test('29.05 - adds space after semicolon, but not in URLs', function (t) {
       '29.05.02'
     )
   })
+  mixer(sampleObj, {
+    removeWidows: true,
+    convertEntities: true
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('This is http://detergent.io;This is cool.', elem),
+      'This is http://detergent.io; This is&nbsp;cool.',
+      '29.05.03'
+    )
+    t.is(
+      detergent('This is http://detergent;io;This is cool.', elem),
+      'This is http://detergent;io; This is&nbsp;cool.',
+      '29.05.04'
+    )
+  })
+  mixer(sampleObj, {
+    removeWidows: true,
+    convertEntities: false
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('This is http://detergent.io;This is cool.', elem),
+      'This is http://detergent.io; This is\xa0cool.',
+      '29.05.05'
+    )
+    t.is(
+      detergent('This is http://detergent;io;This is cool.', elem),
+      'This is http://detergent;io; This is\xa0cool.',
+      '29.05.06'
+    )
+  })
+})
 
+test('29.06 - non-Latin character after URL', function (t) {
+  mixer(sampleObj, {
+    removeWidows: false,
+    dontEncodeNonLatin: true
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('This is http://detergent.io.Это хорошо.', elem),
+      'This is http://detergent.io. Это хорошо.',
+      '29.06.01'
+    )
+    t.is(
+      detergent('This is http://detergent.io,Это хорошо.', elem),
+      'This is http://detergent.io, Это хорошо.',
+      '29.06.02'
+    )
+    t.is(
+      detergent('This is http://detergent.io;Это хорошо.', elem),
+      'This is http://detergent.io; Это хорошо.',
+      '29.06.03'
+    )
+  })
+})
+
+test('29.07 - sanity checks', function (t) {
   mixer(sampleObj, {
     convertEntities: false
   })
@@ -2722,12 +2818,122 @@ test('29.05 - adds space after semicolon, but not in URLs', function (t) {
     t.is(
       detergent('Semicolon;\xa0is cool.', elem),
       'Semicolon;\xa0is cool.',
-      '29.05.03'
+      '29.07.01'
     )
     t.is(
       detergent('Semicolon;&is cool.', elem),
       'Semicolon;&is cool.',
-      '29.05.04'
+      '29.07.02'
+    )
+  })
+  allCombinations.forEach(function (elem) {
+    t.is(
+      detergent('${responseObject.storeName}', elem),
+      '${responseObject.storeName}',
+      '29.07.03'
+    )
+  })
+})
+
+test('29.08 - leaves file names intact', function (t) {
+  allCombinations.forEach(function (elem) {
+    t.is(
+      detergent('image.jpg', elem),
+      'image.jpg',
+      '29.08.01'
+    )
+    t.is(
+      detergent('image.JPG', elem),
+      'image.JPG',
+      '29.08.02'
+    )
+    t.is(
+      detergent('image.jpeg', elem),
+      'image.jpeg',
+      '29.08.03'
+    )
+    t.is(
+      detergent('image.JPEG', elem),
+      'image.JPEG',
+      '29.08.04'
+    )
+    t.is(
+      detergent('image.png', elem),
+      'image.png',
+      '29.08.05'
+    )
+    t.is(
+      detergent('image.PNG', elem),
+      'image.PNG',
+      '29.08.06'
+    )
+    t.is(
+      detergent('image.gif', elem),
+      'image.gif',
+      '29.08.07'
+    )
+    t.is(
+      detergent('image.GIF', elem),
+      'image.GIF',
+      '29.08.08'
+    )
+    t.is(
+      detergent('image.svg', elem),
+      'image.svg',
+      '29.08.09'
+    )
+    t.is(
+      detergent('image.SVG', elem),
+      'image.SVG',
+      '29.08.10'
+    )
+    t.is(
+      detergent('image.json', elem),
+      'image.json',
+      '29.08.11'
+    )
+    t.is(
+      detergent('image.JSON', elem),
+      'image.JSON',
+      '29.08.12'
+    )
+    t.is(
+      detergent('image.html', elem),
+      'image.html',
+      '29.08.13'
+    )
+    t.is(
+      detergent('image.HTML', elem),
+      'image.HTML',
+      '29.08.14'
+    )
+    t.is(
+      detergent('image.htm', elem),
+      'image.htm',
+      '29.08.15'
+    )
+    t.is(
+      detergent('image.HTM', elem),
+      'image.HTM',
+      '29.08.16'
+    )
+  })
+})
+
+test('29.09 - long sentences with file names with extensions', function (t) {
+  t.is(
+    detergent('Some text .gitignore'),
+    'Some text .gitignore',
+    '29.09.01'
+  )
+  mixer(sampleObj, {
+    removeWidows: false
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('When you will download header.PNG, file fix.jpg and the dotfiles named .gitignore, check them.', elem),
+      'When you will download header.PNG, file fix.jpg and the dotfiles named .gitignore, check them.',
+      '29.09.02'
     )
   })
 })

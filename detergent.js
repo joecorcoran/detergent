@@ -10,6 +10,8 @@ var numericEnt = require('./enforced-numeric-entities-list.json')
 var er = require('easy-replace')
 var toArray = require('lodash.toarray')
 var stripBom = require('strip-bom')
+var upperCase = require('upper-case')
+var lowerCase = require('lower-case')
 
 function existy (x) { return x != null }
 
@@ -58,6 +60,9 @@ function detergent (textToClean, options) {
   var lineBreakCharacters = [
     '\u000a', '\u000b', '\u000c', '\u000d', '\u0085', '\u2028', '\u2029', '\u0003'
   ] // CR+LF, (U+000D and U+000A) combination will yield two line breaks on Detergent.
+
+  // first three characters only:
+  var knownExtensions = ['jpg', 'jpeg', 'png', 'gif', 'svg', 'jso', 'htm', 'pdf', 'psd', 'tar', 'zip', 'rar', 'otf', 'ttf', 'jsp', 'php', 'rss', 'asp', 'ppt', 'doc', 'txt', 'rtf', 'git']
 
   // FUNCTIONS
 
@@ -877,15 +882,23 @@ function detergent (textToClean, options) {
     return !isNaN(obj - parseFloat(obj))
   }
 
-  function isLetter (c) {
-    return c.toLowerCase() !== c.toUpperCase()
+  function isLetter (str) {
+    return upperCase(str) !== lowerCase(str)
   }
 
-  function isCapitalLetter (char) {
-    if (isLetter(char)) {
-      return char.toUpperCase() === char
+  function isNotAnUppercaseString (str) {
+    if (!isLetter(str)) {
+      return true
     } else {
-      return false
+      return lowerCase(str) === str
+    }
+  }
+
+  function isNotALowercaseString (str) {
+    if (!isLetter(str)) {
+      return true
+    } else {
+      return upperCase(str) === str
     }
   }
 
@@ -899,6 +912,25 @@ function detergent (textToClean, options) {
    * @return {String}        returns cleaned string
    */
   function addMissingSpaces (input) {
+    function checkExtensions (first, second, third) {
+      var threeCharExt
+      var notFound = true
+      if (existy(first) && existy(second) && existy(third)) {
+        threeCharExt = '' + first + second + third
+        for (var i = 0, len = knownExtensions.length; i < len; i++) {
+          if (
+            threeCharExt[0].toLowerCase() === knownExtensions[i][0] &&
+            threeCharExt[1].toLowerCase() === knownExtensions[i][1] &&
+            threeCharExt[2].toLowerCase() === knownExtensions[i][2]
+          ) {
+            notFound = false
+            break
+          }
+        }
+      }
+      return notFound
+    }
+
     var x = toArray(input)
     var onUrlCurrently = false
     for (var i = 0, len = x.length; i < len; i++) {
@@ -913,12 +945,22 @@ function detergent (textToClean, options) {
       if ((x[i] === ' ') || (x[i] === '\n')) {
         onUrlCurrently = false
       }
+
       //
       // action
       // ======
+
       // add missing space after full stop or comma
       if (!onUrlCurrently &&
-        ((x[i] === '.') || (x[i] === ',')) &&
+        (
+          (
+            (x[i] === '.') && isNotALowercaseString(x[i + 1]) &&
+            checkExtensions(x[i + 1], x[i + 2], x[i + 3])
+          ) ||
+          (
+            x[i] === ','
+          )
+        ) &&
         !isNumeric(x[i + 1]) &&
         (x[i + 1] !== ' ') &&
         (x[i + 1] !== '\n') &&
@@ -931,8 +973,8 @@ function detergent (textToClean, options) {
         onUrlCurrently &&
         ((x[i] === '.') || (x[i] === ',')) &&
         existy(x[i] + 2) &&
-        isCapitalLetter(x[i + 1]) &&
-        !isCapitalLetter(x[i + 2])
+        isNotALowercaseString(x[i + 1]) &&
+        isNotAnUppercaseString(x[i + 2])
       ) {
         // dot at the end of URL, there's capital case letter and lowercase letter after it
         x.splice(i + 1, 0, ' ')
@@ -956,8 +998,8 @@ function detergent (textToClean, options) {
         onUrlCurrently &&
         (x[i] === ';') &&
         existy(x[i] + 2) &&
-        isCapitalLetter(x[i + 1]) &&
-        !isCapitalLetter(x[i + 2]) &&
+        isNotALowercaseString(x[i + 1]) &&
+        isNotAnUppercaseString(x[i + 2]) &&
         (x[i + 1] !== '&') &&
         (x[i + 1] !== '\xa0')
       ) {
@@ -1106,7 +1148,19 @@ function detergent (textToClean, options) {
   // ================= xx =================
 
   // fix clearly wrong things, such as space-full stop occurencies:
-  cleanedText = S(cleanedText).replaceAll(' .', '.').s
+  cleanedText = er(
+    cleanedText,
+    {
+      leftOutsideNot: '',
+      leftOutside: '',
+      leftMaybe: '',
+      searchFor: ' .',
+      rightMaybe: '',
+      rightOutside: '',
+      rightOutsideNot: knownExtensions
+    },
+    '.'
+  )
   // space-comma as well:
   cleanedText = S(cleanedText).replaceAll(' ,', ',').s
 
@@ -1208,7 +1262,19 @@ function detergent (textToClean, options) {
 
   // repeated:
   // fix clearly wrong things, such as space-full stop occurencies:
-  cleanedText = S(cleanedText).replaceAll(' .', '.').s
+  cleanedText = er(
+    cleanedText,
+    {
+      leftOutsideNot: '',
+      leftOutside: '',
+      leftMaybe: '',
+      searchFor: ' .',
+      rightMaybe: '',
+      rightOutside: '',
+      rightOutsideNot: knownExtensions
+    },
+    '.'
+  )
   // repeated:
   // space-comma as well:
   cleanedText = S(cleanedText).replaceAll(' ,', ',').s
