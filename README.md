@@ -1,18 +1,3 @@
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
-
-- [Detergent](#detergent)
-  - [Install](#install)
-  - [Test](#test)
-  - [Rationale](#rationale)
-  - [API](#api)
-  - [Example](#example)
-  - [Contributing & testing](#contributing--testing)
-  - [Licence](#licence)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
 # Detergent
 
 <a href="https://github.com/feross/standard" style="float: right; padding: 0 0 20px 20px;"><img src="https://cdn.rawgit.com/feross/standard/master/sticker.svg" alt="Standard JavaScript" width="100" align="right"></a>
@@ -40,11 +25,19 @@ If you don't know any JavaScript, calm down, close this web page and continue to
 $ npm install --save detergent
 ```
 
-## Test
+## Table of Contents
 
-```
-$ npm test
-```
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+
+- [Rationale](#rationale)
+- [API](#api)
+- [Example](#example)
+- [Contributing & testing](#contributing--testing)
+- [Licence](#licence)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Rationale
 
