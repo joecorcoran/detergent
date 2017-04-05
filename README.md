@@ -148,4 +148,4 @@ SOFTWARE.
 [dev-url]: https://www.bithound.io/github/code-and-send/detergent/master/dependencies/npm
 
 [downloads-img]: https://img.shields.io/npm/dm/detergent.svg
-[downloads-url]: https://www.npmjs.com/package/detergent
+[downloads-url]: https://npm-stat.com/charts.html?package=detergent
