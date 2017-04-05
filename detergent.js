@@ -9,7 +9,6 @@ var entityRefs = require('./entity-references.json')
 var numericEnt = require('./enforced-numeric-entities-list.json')
 var er = require('easy-replace')
 var toArray = require('lodash.toarray')
-var stripBom = require('strip-bom')
 var upperCase = require('upper-case')
 var lowerCase = require('lower-case')
 
@@ -300,7 +299,7 @@ function detergent (textToClean, options) {
     var paragraphsArray = S(inputString).lines()
     var newParasArray = paragraphsArray.map(function (elem, index, array) {
       // if the current line has a line under it, this means it is not the last line of the paragraph and we have to skip widow removal procedure
-      if ((array[index + 1] !== void 0) && (array[index + 1] !== '')) {
+      if ((array[index + 1] !== undefined) && (array[index + 1] !== '')) {
         if (!S(elem).endsWith('.') && !S(elem).endsWith('?') && !S(elem).endsWith('!')) {
           return elem
         }
@@ -323,7 +322,14 @@ function detergent (textToClean, options) {
       var part2 = elem.substring(elem.length - lengthOfLastWord, elem.length)
 
       // glue together, only with &nbsp between them:
-      if (part1.length > 0) {
+      // * don't add non-breaking space if there's right slash immediately to the right of it. (it's a closing tag)
+      // * don't add non-breaking space if left side ends with "br" or "hr"
+      if (
+        part1.length > 0 &&
+        !S(part2).startsWith('/') &&
+        !S(part1).endsWith('br') &&
+        !S(part1).endsWith('hr')
+      ) {
         elem = part1 + '\u00A0' + part2
       }
       return elem
@@ -1044,7 +1050,6 @@ function detergent (textToClean, options) {
 
   // invisibles being removed
   cleanedText = doRemoveInvisibles(cleanedText)
-  cleanedText = stripBom(cleanedText)
 
   // ================= xx =================
 

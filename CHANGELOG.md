@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.24.0] - 2017-04-05
+### Improved
+- Widows won't be added if there's right closing slash following the space. Also, they won't be added if there's `hr` or `br` preceding the space. This is necessary to cater the cases when Detergent is being ran on a code which has concealed HTML tags where brackets are swapped with custom strings. For example, cases like `aaaaaaaaaaa%%%1br /%%%2aaaaaaaaaaa` should get identified as concealed HTML and widow removal should not be triggered.
+### Removed
+- `strip-bom` library dependency was redundant; '\uFEFF' was already in the invisible character list and removed along all other invisibles.
+
 ## [2.23.0] - 2017-03-24
 ### Improved
 - Swooping in on full stop + letter fixes. I found the file names where extension is mentioned get separated into two parts. I came up with the idea: two errors rarely happen at one place. "string1.string2" is a double error because space after full stop is missing and letter that follows is in capital. This leads to the algorithm:
@@ -59,3 +65,4 @@ Additionally, the algorithm is now checking, does any of the known extensions fo
 [2.21.0]: https://github.com/code-and-send/detergent/compare/v2.20.0...v2.21.0
 [2.22.0]: https://github.com/code-and-send/detergent/compare/v2.21.0...v2.22.0
 [2.23.0]: https://github.com/code-and-send/detergent/compare/v2.22.0...v2.23.0
+[2.24.0]: https://github.com/code-and-send/detergent/compare/v2.23.0...v2.24.0

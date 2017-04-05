@@ -1,12 +1,11 @@
 'use strict'
 /* eslint no-template-curly-in-string: 0 */
+import test from 'ava'
 
 var he = require('he')
 var detergent = require('./detergent.js')
 var mixer = require('object-boolean-combinations')
 var entityTest = require('./entity-test.json')
-
-import test from 'ava'
 
 // ==============================
 // A REFERENCE TEST OBJECT TO GET THE OBJECT KEYS
@@ -692,7 +691,7 @@ test('05.03 - even more widows', function (t) {
   })
 })
 
-test('05.04 - even more widows and a little bit more', function (t) {
+test('05.04 - and a little bit more widows', function (t) {
   mixer(sampleObj, {
     removeWidows: true,
     convertEntities: true,
@@ -903,6 +902,37 @@ test('05.10 - glues UK postcodes', function (t) {
       detergent('Some text SW1A 1Aa and some more text.', elem),
       'Some text SW1A 1Aa and some more text.',
       '05.10.18 - improperly formatted UK postcode'
+    )
+  })
+})
+
+test('05.11 - widows not added within hidden HTML tags', function (t) {
+  allCombinations.forEach(function (elem) {
+    t.is(
+      detergent('aaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1br /@@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1br /@@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1br /@@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1br /@@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', elem),
+      'aaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1br /@@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1br /@@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1br /@@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1br /@@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+      '05.11.01 - widows not added if there\'s right slash following them'
+    )
+  })
+  allCombinations.forEach(function (elem) {
+    t.is(
+      detergent('aaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1br @@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1br @@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1br @@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1br @@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', elem),
+      'aaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1br @@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1br @@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1br @@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1br @@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+      '05.11.02 - widows not added if there\'s a known tag before them'
+    )
+  })
+  allCombinations.forEach(function (elem) {
+    t.is(
+      detergent('aaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1hr /@@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1hr /@@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1hr /@@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1hr /@@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', elem),
+      'aaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1hr /@@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1hr /@@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1hr /@@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1hr /@@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+      '05.11.03 - hr tag, xhtml style'
+    )
+  })
+  allCombinations.forEach(function (elem) {
+    t.is(
+      detergent('aaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1hr @@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1hr @@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1hr @@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1hr @@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', elem),
+      'aaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1hr @@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1hr @@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1hr @@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1hr @@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+      '05.11.04 - hr tag, html style'
     )
   })
 })
