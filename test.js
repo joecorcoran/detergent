@@ -2,35 +2,84 @@
 /* eslint no-template-curly-in-string: 0 */
 import test from 'ava'
 
-var he = require('he')
-var detergent = require('./detergent.js')
-var mixer = require('object-boolean-combinations')
-var entityTest = require('./entity-test.json')
+const he = require('he')
+const detergent = require('./detergent.js')
+const mixer = require('object-boolean-combinations')
+const entityTest = require('./entity-test.json')
+const util = require('./util')
+const defaultsObj = util.defaultsObj
+const clone = require('lodash.clonedeep')
 
 // ==============================
-// A REFERENCE TEST OBJECT TO GET THE OBJECT KEYS
+// 0. THROWS
 // ==============================
 
-var sampleObj = {
-  removeWidows: true,
-  convertEntities: true,
-  convertDashes: true,
-  replaceLineBreaks: true,
-  removeLineBreaks: false,
-  useXHTML: true,
-  convertApostrophes: true,
-  removeSoftHyphens: true,
-  dontEncodeNonLatin: true,
-  keepBoldEtc: true
-}
+test('00.01 - second argument is not a plain object', t => {
+  t.throws(function () {
+    detergent('zzz', 'zzz')
+  })
+  t.throws(function () {
+    detergent('zzz', ['zzz'])
+  })
+})
+
+test('00.02 - second argument object\'s values not throw when set to Boolean', t => {
+  var obj1, obj2
+  t.notThrows(function () {
+    Object.keys(defaultsObj).forEach(function (key1) {
+      obj1 = {}
+      obj1[key1] = true
+      detergent('zzz', clone(obj1))
+    })
+  })
+  t.notThrows(function () {
+    Object.keys(defaultsObj).forEach(function (key2) {
+      obj2 = {}
+      obj2[key2] = false
+      detergent('zzz', clone(obj2))
+    })
+  })
+})
+
+test('00.03 - second argument object\'s values throw when set to non-Boolean', t => {
+  t.throws(function () {
+    detergent('zzz', {removeWidows: 'yyy'})
+  })
+  t.throws(function () {
+    detergent('zzz', {convertEntities: 'yyy'})
+  })
+  t.throws(function () {
+    detergent('zzz', {convertDashes: 'yyy'})
+  })
+  t.throws(function () {
+    detergent('zzz', {convertApostrophes: 'yyy'})
+  })
+  t.throws(function () {
+    detergent('zzz', {replaceLineBreaks: 'yyy'})
+  })
+  t.throws(function () {
+    detergent('zzz', {removeLineBreaks: 'yyy'})
+  })
+  t.throws(function () {
+    detergent('zzz', {useXHTML: 'yyy'})
+  })
+  t.throws(function () {
+    detergent('zzz', {removeSoftHyphens: 'yyy'})
+  })
+  t.throws(function () {
+    detergent('zzz', {dontEncodeNonLatin: 'yyy'})
+  })
+  t.throws(function () {
+    detergent('zzz', {keepBoldEtc: 'yyy'})
+  })
+})
 
 // ==============================
 // 01. INVISIBLES
 // ==============================
 
 // var all settings combinations with removeWidows = true/false overrides
-var allCombinations = mixer(sampleObj)
-// console.log('\n\n all combinations'+allCombinations+'\n\n')
+var allCombinations = mixer(defaultsObj)
 
 test('01.01 - invisibles', t => {
   t.is(detergent('\u0000\u0001\u0002\u0004\u0005\u0006\u0007\u0008\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F\u007F\u0080\u0081\u0082\u0083\u0084\u0086\u0087\u0088\u0089\u008A\u008B\u008C\u008D\u008E\u008F\u0090\u0091\u0092\u0093\u0094\u0095\u0096\u0097\u0098\u0099\u009A\u009B\u009C\u009D\u009E\u009F'),
@@ -39,7 +88,7 @@ test('01.01 - invisibles', t => {
 })
 
 test('01.02 - hairspace to space', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: false
   })
   .forEach(function (elem) {
@@ -54,7 +103,7 @@ test('01.02 - hairspace to space', function (t) {
       '01.02.02 - hairspace changed to space (lots of spaces)'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: true,
     convertEntities: true
   })
@@ -68,7 +117,7 @@ test('01.02 - hairspace to space', function (t) {
 })
 
 test('01.03 - invisible breaks', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     replaceLineBreaks: false,
     removeLineBreaks: false
   })
@@ -84,7 +133,7 @@ test('01.03 - invisible breaks', function (t) {
       '01.03.02 - encoded invisible breaks into \\n\'s'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeLineBreaks: true
   })
   .forEach(function (elem) {
@@ -94,7 +143,7 @@ test('01.03 - invisible breaks', function (t) {
       '01.03.03 - invisible breaks and remove all line breaks on'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     replaceLineBreaks: true,
     removeLineBreaks: false,
     useXHTML: true
@@ -106,7 +155,7 @@ test('01.03 - invisible breaks', function (t) {
       '01.03.04 - replace breaks into XHTML BR\'s'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     replaceLineBreaks: true,
     removeLineBreaks: false,
     useXHTML: false
@@ -125,7 +174,7 @@ test('01.03 - invisible breaks', function (t) {
 // ==============================
 
 test('02.01 - soft hyphens', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeSoftHyphens: true
   })
   .forEach(function (elem) {
@@ -135,7 +184,7 @@ test('02.01 - soft hyphens', function (t) {
       '02.01.01 - remove soft hyphens'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: false,
     removeSoftHyphens: false
   })
@@ -146,7 +195,7 @@ test('02.01 - soft hyphens', function (t) {
       '02.01.02 - don\'t remove soft hyphens, but don\'t encode either'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true,
     removeSoftHyphens: false
   })
@@ -164,7 +213,7 @@ test('02.01 - soft hyphens', function (t) {
 // ==============================
 
 test('03.01 - strip HTML', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: false
   })
   .forEach(function (elem) {
@@ -201,7 +250,7 @@ test('03.01 - strip HTML', function (t) {
 // ==============================
 
 test('04.01 - convert to entities - pound', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true
   })
   .forEach(function (elem) {
@@ -211,7 +260,7 @@ test('04.01 - convert to entities - pound', function (t) {
       '04.01.01 - pound char converted into entity: +entities'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: false
   })
   .forEach(function (elem) {
@@ -224,7 +273,7 @@ test('04.01 - convert to entities - pound', function (t) {
 })
 
 test('04.02 - convert to entities - m-dash', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true
   })
   .forEach(function (elem) {
@@ -234,7 +283,7 @@ test('04.02 - convert to entities - m-dash', function (t) {
       '04.02.01 - M dash char encoded into entity: +entities'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: false
   })
   .forEach(function (elem) {
@@ -247,7 +296,7 @@ test('04.02 - convert to entities - m-dash', function (t) {
 })
 
 test('04.03 - hairspaces', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: false,
     removeWidows: false
   })
@@ -258,7 +307,7 @@ test('04.03 - hairspaces', function (t) {
       '04.03.01 - hairspaces'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true,
     removeWidows: false
   })
@@ -269,7 +318,7 @@ test('04.03 - hairspaces', function (t) {
       '04.03.02 - hairspaces'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true,
     removeWidows: false,
     convertDashes: true
@@ -281,7 +330,7 @@ test('04.03 - hairspaces', function (t) {
       '04.03.03 - hairspaces'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true,
     removeWidows: false,
     convertDashes: false
@@ -293,7 +342,7 @@ test('04.03 - hairspaces', function (t) {
       '04.03.04 - hairspaces'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true,
     removeWidows: true,
     convertDashes: false
@@ -305,7 +354,7 @@ test('04.03 - hairspaces', function (t) {
       '04.03.05 - hairspaces'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true,
     removeWidows: true
   })
@@ -323,7 +372,7 @@ test('04.03 - hairspaces', function (t) {
 // more dashes' tests:
 test('04.04 - dash tests', function (t) {
   // --- PART I ---
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertDashes: true,
     convertEntities: true,
     removeWidows: true
@@ -335,7 +384,7 @@ test('04.04 - dash tests', function (t) {
       '04.04.01 - nbsp, dash'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertDashes: false
   })
   .forEach(function (elem) {
@@ -345,7 +394,7 @@ test('04.04 - dash tests', function (t) {
       '04.04.02 - no nbsp, dash'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true,
     removeWidows: true
   })
@@ -356,7 +405,7 @@ test('04.04 - dash tests', function (t) {
       '04.04.03 - nbsp, dash'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true,
     removeWidows: true
   })
@@ -368,7 +417,7 @@ test('04.04 - dash tests', function (t) {
     )
   })
   // --- PART II ---
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true,
     removeWidows: true
   })
@@ -379,7 +428,7 @@ test('04.04 - dash tests', function (t) {
       '04.04.05 - missing space after m-dash'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true,
     removeWidows: false
   })
@@ -390,7 +439,7 @@ test('04.04 - dash tests', function (t) {
       '04.04.06 - missing space after m-dash'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: false,
     removeWidows: true
   })
@@ -401,7 +450,7 @@ test('04.04 - dash tests', function (t) {
       '04.04.07 - missing space after m-dash'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: false,
     removeWidows: false
   })
@@ -413,7 +462,7 @@ test('04.04 - dash tests', function (t) {
     )
   })
   // --- PART III - hairlines mixed in ---
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true,
     removeWidows: true
   })
@@ -424,7 +473,7 @@ test('04.04 - dash tests', function (t) {
       '04.04.09 - hairline mdash'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true,
     removeWidows: false
   })
@@ -435,7 +484,7 @@ test('04.04 - dash tests', function (t) {
       '04.04.10 - hairline mdash'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: false,
     removeWidows: true
   })
@@ -446,7 +495,7 @@ test('04.04 - dash tests', function (t) {
       '04.04.11 - hairline mdash'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: false,
     removeWidows: false
   })
@@ -458,7 +507,7 @@ test('04.04 - dash tests', function (t) {
     )
   })
   // --- PART IV false positives---
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true
   })
   .forEach(function (elem) {
@@ -468,7 +517,7 @@ test('04.04 - dash tests', function (t) {
       '04.04.13'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: false
   })
   .forEach(function (elem) {
@@ -489,7 +538,7 @@ test('04.04 - dash tests', function (t) {
 
 // more hairspaces protection:
 test('04.05 - hairspace protection', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true,
     removeWidows: true
   })
@@ -500,7 +549,7 @@ test('04.05 - hairspace protection', function (t) {
       '04.05.01'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true,
     removeWidows: false
   })
@@ -511,7 +560,7 @@ test('04.05 - hairspace protection', function (t) {
       '04.05.02'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: false,
     removeWidows: true
   })
@@ -522,7 +571,7 @@ test('04.05 - hairspace protection', function (t) {
       '04.05.03'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: false,
     removeWidows: false
   })
@@ -536,7 +585,7 @@ test('04.05 - hairspace protection', function (t) {
 })
 
 test('04.06 - astral chars conversion', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true
   })
   .forEach(function (elem) {
@@ -546,7 +595,7 @@ test('04.06 - astral chars conversion', function (t) {
       '04.06.01 - trigram char converted into entity'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: false
   })
   .forEach(function (elem) {
@@ -559,7 +608,7 @@ test('04.06 - astral chars conversion', function (t) {
 })
 
 test('04.07 - paired surrogate encoding', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true
   })
   .forEach(function (elem) {
@@ -569,7 +618,7 @@ test('04.07 - paired surrogate encoding', function (t) {
       '04.07.01 - paired surrogate is kept and encoded'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: false
   })
   .forEach(function (elem) {
@@ -609,7 +658,7 @@ test('04.08 - stray low surrogates removed', function (t) {
 })
 
 test('04.09 - German characters', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true
   })
   .forEach(function (elem) {
@@ -619,7 +668,7 @@ test('04.09 - German characters', function (t) {
       '04.09.01 - gr\u00F6\u00DFer encoded'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: false
   })
   .forEach(function (elem) {
@@ -636,7 +685,7 @@ test('04.09 - German characters', function (t) {
 // ==============================
 
 test('05.01 - widows', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: true,
     convertEntities: true
   })
@@ -655,7 +704,7 @@ test('05.01 - widows', function (t) {
 })
 
 test('05.02 - more widows', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: true,
     convertEntities: false
   })
@@ -674,7 +723,7 @@ test('05.02 - more widows', function (t) {
 })
 
 test('05.03 - even more widows', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: false
   })
   .forEach(function (elem) {
@@ -692,7 +741,7 @@ test('05.03 - even more widows', function (t) {
 })
 
 test('05.04 - and a little bit more widows', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: true,
     convertEntities: true,
     replaceLineBreaks: true,
@@ -709,7 +758,7 @@ test('05.04 - and a little bit more widows', function (t) {
 })
 
 test('05.05 - furthermore widows', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: true,
     convertEntities: true,
     replaceLineBreaks: true,
@@ -726,7 +775,7 @@ test('05.05 - furthermore widows', function (t) {
 })
 
 test('05.06 - and some more widows', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: true,
     convertEntities: true,
     replaceLineBreaks: false,
@@ -742,7 +791,7 @@ test('05.06 - and some more widows', function (t) {
 })
 
 test('05.07 - double widows', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: true,
     convertEntities: false,
     replaceLineBreaks: false,
@@ -758,7 +807,7 @@ test('05.07 - double widows', function (t) {
 })
 
 test('05.08 - widows with line breaks', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: true,
     convertEntities: true,
     replaceLineBreaks: false,
@@ -779,7 +828,7 @@ test('05.08 - widows with line breaks', function (t) {
 })
 
 test('05.09 - widows with trailing space', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: true,
     convertEntities: true,
     replaceLineBreaks: true,
@@ -796,7 +845,7 @@ test('05.09 - widows with trailing space', function (t) {
 })
 
 test('05.10 - glues UK postcodes', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: true,
     convertEntities: true
   })
@@ -832,7 +881,7 @@ test('05.10 - glues UK postcodes', function (t) {
       '05.10.06 - improperly formatted UK postcode'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: true,
     convertEntities: false
   })
@@ -868,7 +917,7 @@ test('05.10 - glues UK postcodes', function (t) {
       '05.10.12 - improperly formatted UK postcode'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: false,
     convertEntities: false
   })
@@ -975,7 +1024,7 @@ test('07.02 - excessive whitespace', function (t) {
 }, '07.02 - redundant space between words')
 
 test('07.03 - trailing/leading whitespace', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true
   })
   .forEach(function (elem) {
@@ -1010,7 +1059,7 @@ test('07.03 - trailing/leading whitespace', function (t) {
       '07.03.06 - surrounded with nbsp'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: false
   })
   .forEach(function (elem) {
@@ -1052,7 +1101,7 @@ test('07.03 - trailing/leading whitespace', function (t) {
 // ==============================
 
 test('08.01 - ETX', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeLineBreaks: false,
     replaceLineBreaks: true,
     useXHTML: true
@@ -1064,7 +1113,7 @@ test('08.01 - ETX', function (t) {
       '08.01.01 - replaces ETX with XHTML BR'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeLineBreaks: false,
     replaceLineBreaks: true,
     useXHTML: false
@@ -1076,7 +1125,7 @@ test('08.01 - ETX', function (t) {
       '08.01.02 - replaces ETX with HTML BR'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeLineBreaks: false,
     replaceLineBreaks: false,
     useXHTML: false
@@ -1095,7 +1144,7 @@ test('08.01 - ETX', function (t) {
 // ==============================
 
 test('09.01 - retaining b tags', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     keepBoldEtc: true,
     removeWidows: false
   })
@@ -1116,7 +1165,7 @@ test('09.01 - retaining b tags', function (t) {
       '09.01.03 - B tag is retained - capitalised + wrong slash'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     keepBoldEtc: false,
     removeWidows: false
   })
@@ -1140,7 +1189,7 @@ test('09.01 - retaining b tags', function (t) {
 })
 
 test('09.02 - retaining i tags', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     keepBoldEtc: true,
     removeWidows: false
   })
@@ -1161,7 +1210,7 @@ test('09.02 - retaining i tags', function (t) {
       '09.02.03 - i tag is retained - capitalised + wrong slash'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     keepBoldEtc: false,
     removeWidows: false
   })
@@ -1185,7 +1234,7 @@ test('09.02 - retaining i tags', function (t) {
 })
 
 test('09.03 - retaining STRONG tags', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     keepBoldEtc: true,
     removeWidows: false
   })
@@ -1206,7 +1255,7 @@ test('09.03 - retaining STRONG tags', function (t) {
       '09.03.03 - STRONG tag is retained - dirty capitalisation + wrong slash'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     keepBoldEtc: false,
     removeWidows: false
   })
@@ -1230,7 +1279,7 @@ test('09.03 - retaining STRONG tags', function (t) {
 })
 
 test('09.04 - retaining EM tags', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     keepBoldEtc: true,
     removeWidows: false
   })
@@ -1251,7 +1300,7 @@ test('09.04 - retaining EM tags', function (t) {
       '09.04.03 - EM tag is retained - dirty capitalisation + wrong slash'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     keepBoldEtc: false,
     removeWidows: false
   })
@@ -1279,7 +1328,7 @@ test('09.04 - retaining EM tags', function (t) {
 // ==============================
 
 test('10.01 - convert dashes into M dashes', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertDashes: true,
     removeWidows: false,
     convertEntities: true
@@ -1291,7 +1340,7 @@ test('10.01 - convert dashes into M dashes', function (t) {
       '10.01.01 - converts M dashes with encoding entities: +dashes-widows+entities'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertDashes: true,
     removeWidows: false,
     convertEntities: false
@@ -1303,7 +1352,7 @@ test('10.01 - convert dashes into M dashes', function (t) {
       '10.01.02 - converts M dashes without encoding entities: +dashes-widows-entities'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertDashes: false,
     removeWidows: false
   })
@@ -1321,7 +1370,7 @@ test('10.01 - convert dashes into M dashes', function (t) {
 // ==============================
 
 test('11.01 - replace \\n line breaks with BR', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     replaceLineBreaks: true,
     removeLineBreaks: false,
     useXHTML: true,
@@ -1334,7 +1383,7 @@ test('11.01 - replace \\n line breaks with BR', function (t) {
       '11.01.01 - converts line breaks into XHTML BR\'s'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     replaceLineBreaks: true,
     removeLineBreaks: false,
     useXHTML: false,
@@ -1354,7 +1403,7 @@ test('11.01 - replace \\n line breaks with BR', function (t) {
 // ==============================
 
 test('12    - remove \\n line breaks', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeLineBreaks: true,
     removeWidows: false
   })
@@ -1372,7 +1421,7 @@ test('12    - remove \\n line breaks', function (t) {
 // ==============================
 
 test('13.01 - convert apostrophes into fancy ones', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertApostrophes: true,
     convertEntities: true
   })
@@ -1383,7 +1432,7 @@ test('13.01 - convert apostrophes into fancy ones', function (t) {
       '13.01.01 - converts single apostrophes - with entities'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertApostrophes: true,
     convertEntities: false
   })
@@ -1394,7 +1443,7 @@ test('13.01 - convert apostrophes into fancy ones', function (t) {
       '13.01.02 - converts single apostrophes - no entities'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertApostrophes: false
   })
   .forEach(function (elem) {
@@ -1407,7 +1456,7 @@ test('13.01 - convert apostrophes into fancy ones', function (t) {
 })
 
 test('13.02 - convert double quotes into fancy ones', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertApostrophes: true,
     convertEntities: true
   })
@@ -1418,7 +1467,7 @@ test('13.02 - convert double quotes into fancy ones', function (t) {
       '13.02.01 - converts quotation marks into fancy ones: +entities'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertApostrophes: true,
     convertEntities: false
   })
@@ -1429,7 +1478,7 @@ test('13.02 - convert double quotes into fancy ones', function (t) {
       '13.02.02 - converts quotation marks into fancy ones: -entities'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertApostrophes: false,
     convertEntities: false
   })
@@ -1451,7 +1500,7 @@ test('13.02 - convert double quotes into fancy ones', function (t) {
 
 // N dash - use case #1
 test('14.01 - converts dashes', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertDashes: true,
     convertEntities: true,
     removeWidows: false
@@ -1463,7 +1512,7 @@ test('14.01 - converts dashes', function (t) {
       '14.01.01 - converts dashes into N dashes: +dashes+entities-widows'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertDashes: true,
     convertEntities: false,
     removeWidows: false
@@ -1475,7 +1524,7 @@ test('14.01 - converts dashes', function (t) {
       '14.01.02 - converts dashes into N dashes: +dashes-entities-widows'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertDashes: false,
     removeWidows: false
   })
@@ -1493,7 +1542,7 @@ test('14.01 - converts dashes', function (t) {
 // ==============================
 
 test('15    - doesn\'t encode non-Latin', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     dontEncodeNonLatin: true,
     convertEntities: true,
     removeWidows: false,
@@ -1585,7 +1634,7 @@ test('17.02 - checking if entity references are left intact', function (t) {
 })
 
 test('17.03 - precaution against false positives', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: false
   })
   .forEach(function (elem) {
@@ -1595,7 +1644,7 @@ test('17.03 - precaution against false positives', function (t) {
       '17.03.01 - false positives'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true,
     removeWidows: true
   })
@@ -1606,7 +1655,7 @@ test('17.03 - precaution against false positives', function (t) {
       '17.03.02 - false positives'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: false,
     removeWidows: true
   })
@@ -1624,7 +1673,7 @@ test('17.03 - precaution against false positives', function (t) {
 // ==============================
 
 test('18.01 - fixes: space + full stop combinations', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: false,
     replaceLineBreaks: true,
     removeLineBreaks: false,
@@ -1637,7 +1686,7 @@ test('18.01 - fixes: space + full stop combinations', function (t) {
       '18.01.01 - space - full stop'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: true,
     convertEntities: true,
     replaceLineBreaks: true,
@@ -1651,7 +1700,7 @@ test('18.01 - fixes: space + full stop combinations', function (t) {
       '18.01.02 - space - full stop'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: true,
     convertEntities: false,
     replaceLineBreaks: true,
@@ -1665,7 +1714,7 @@ test('18.01 - fixes: space + full stop combinations', function (t) {
       '18.01.03 - space - full stop'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: false,
     replaceLineBreaks: false,
     removeLineBreaks: false,
@@ -1678,7 +1727,7 @@ test('18.01 - fixes: space + full stop combinations', function (t) {
       '18.01.04 - space - full stop'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: true,
     convertEntities: true,
     replaceLineBreaks: false,
@@ -1692,7 +1741,7 @@ test('18.01 - fixes: space + full stop combinations', function (t) {
       '18.01.05 - space - full stop'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: true,
     convertEntities: false,
     replaceLineBreaks: false,
@@ -1706,7 +1755,7 @@ test('18.01 - fixes: space + full stop combinations', function (t) {
       '18.01.06 - space - full stop'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: false,
     replaceLineBreaks: true,
     removeLineBreaks: false,
@@ -1719,7 +1768,7 @@ test('18.01 - fixes: space + full stop combinations', function (t) {
       '18.01.07 - space - full stop'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: true,
     convertEntities: true,
     replaceLineBreaks: true,
@@ -1733,7 +1782,7 @@ test('18.01 - fixes: space + full stop combinations', function (t) {
       '18.01.08 - space - full stop'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: true,
     convertEntities: false,
     replaceLineBreaks: true,
@@ -1747,7 +1796,7 @@ test('18.01 - fixes: space + full stop combinations', function (t) {
       '18.01.09 - space - full stop'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: false,
     removeLineBreaks: true
   })
@@ -1758,7 +1807,7 @@ test('18.01 - fixes: space + full stop combinations', function (t) {
       '18.01.10 - space - full stop'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: true,
     convertEntities: true,
     removeLineBreaks: true
@@ -1770,7 +1819,7 @@ test('18.01 - fixes: space + full stop combinations', function (t) {
       '18.01.11 - space - full stop'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: true,
     convertEntities: false,
     removeLineBreaks: true
@@ -1808,7 +1857,7 @@ test('18.02 - fixes: full stop + space + line break combinations', function (t) 
 
 test('19.01 - multiple spaces before comma/full stop', function (t) {
   // mixer no.1 — no widows removal
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: false
   })
   .forEach(function (elem) {
@@ -1857,7 +1906,7 @@ test('19.01 - multiple spaces before comma/full stop', function (t) {
   })
 
   // mixer no.2 — widows removal
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: true,
     convertEntities: true
   })
@@ -1912,7 +1961,7 @@ test('19.01 - multiple spaces before comma/full stop', function (t) {
 // ==============================
 
 test('20.01 - m dash sanity check', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: false
   })
   .forEach(function (elem) {
@@ -1927,7 +1976,7 @@ test('20.01 - m dash sanity check', function (t) {
       '20.01.02 - leaves minuses alone'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true
   })
   .forEach(function (elem) {
@@ -1945,7 +1994,7 @@ test('20.01 - m dash sanity check', function (t) {
 })
 
 test('20.02 - minus and number, too short to widow removal', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: false
   })
   .forEach(function (elem) {
@@ -1960,7 +2009,7 @@ test('20.02 - minus and number, too short to widow removal', function (t) {
       '20.02.01'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true
   })
   .forEach(function (elem) {
@@ -1978,7 +2027,7 @@ test('20.02 - minus and number, too short to widow removal', function (t) {
 })
 
 test('20.03 - minus and number, clashing with widow removal', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true,
     removeWidows: true
   })
@@ -1989,7 +2038,7 @@ test('20.03 - minus and number, clashing with widow removal', function (t) {
       '20.03.01'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true,
     removeWidows: false
   })
@@ -2000,7 +2049,7 @@ test('20.03 - minus and number, clashing with widow removal', function (t) {
       '20.03.02'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: false,
     removeWidows: true
   })
@@ -2011,7 +2060,7 @@ test('20.03 - minus and number, clashing with widow removal', function (t) {
       '20.03.03'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: false,
     removeWidows: false
   })
@@ -2032,7 +2081,7 @@ test('20.04 - dashes between words, no spaces', function (t) {
       '20.04.01'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true,
     removeWidows: true
   })
@@ -2043,7 +2092,7 @@ test('20.04 - dashes between words, no spaces', function (t) {
       '20.04.02'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true,
     removeWidows: true
   })
@@ -2054,7 +2103,7 @@ test('20.04 - dashes between words, no spaces', function (t) {
       '20.04.03'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: false
   })
   .forEach(function (elem) {
@@ -2064,7 +2113,7 @@ test('20.04 - dashes between words, no spaces', function (t) {
       '20.04.04'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: false
   })
   .forEach(function (elem) {
@@ -2081,7 +2130,7 @@ test('20.04 - dashes between words, no spaces', function (t) {
 // ==============================
 
 test('21.01 - horizontal ellipsis sanity check', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: false
   })
   .forEach(function (elem) {
@@ -2101,7 +2150,7 @@ test('21.01 - horizontal ellipsis sanity check', function (t) {
       '21.01.03 - leaves the ellipsis alone when it has to (mldr)'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true
   })
   .forEach(function (elem) {
@@ -2128,7 +2177,7 @@ test('21.01 - horizontal ellipsis sanity check', function (t) {
 // =======================================
 
 test('22.01 - ellipsis', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: false
   })
   .forEach(function (elem) {
@@ -2138,7 +2187,7 @@ test('22.01 - ellipsis', function (t) {
       '22.01.01 - converts three full stops to unencoded ellipsis'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true
   })
   .forEach(function (elem) {
@@ -2155,7 +2204,7 @@ test('22.01 - ellipsis', function (t) {
 // ============================================================================
 
 test('23.01 - numeric entities', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true
   })
   .forEach(function (elem) {
@@ -2233,7 +2282,7 @@ test('23.01 - numeric entities', function (t) {
 })
 
 test('24    - wrong named entity QUOT into quot', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true,
     convertApostrophes: false
   })
@@ -2251,7 +2300,7 @@ test('24    - wrong named entity QUOT into quot', function (t) {
 // ============================================================================
 
 test('25.01 - missing space after ndash added (nbsp + ndash)', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true
   })
   .forEach(function (elem) {
@@ -2266,7 +2315,7 @@ test('25.01 - missing space after ndash added (nbsp + ndash)', function (t) {
       '25.01.02 - space after ndash not added where not needed'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: false,
     replaceLineBreaks: false
   })
@@ -2285,7 +2334,7 @@ test('25.01 - missing space after ndash added (nbsp + ndash)', function (t) {
 })
 
 test('25.02 - missing space after ndash added (space + ndash)', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true,
     removeWidows: true
   })
@@ -2296,7 +2345,7 @@ test('25.02 - missing space after ndash added (space + ndash)', function (t) {
       '25.02.01 - missing space after ndash added'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true,
     removeWidows: false
   })
@@ -2316,7 +2365,7 @@ test('25.02 - missing space after ndash added (space + ndash)', function (t) {
 // repetitions
 
 test('26.01 - broken nbsp - repetitions — nnnbbbsssp', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true,
     replaceLineBreaks: false,
     removeLineBreaks: false,
@@ -2329,7 +2378,7 @@ test('26.01 - broken nbsp - repetitions — nnnbbbsssp', function (t) {
       '26.01.01'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: false,
     replaceLineBreaks: false,
     removeLineBreaks: false,
@@ -2342,7 +2391,7 @@ test('26.01 - broken nbsp - repetitions — nnnbbbsssp', function (t) {
       '26.01.02'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true,
     replaceLineBreaks: true,
     removeLineBreaks: false,
@@ -2356,7 +2405,7 @@ test('26.01 - broken nbsp - repetitions — nnnbbbsssp', function (t) {
       '26.01.03'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true,
     replaceLineBreaks: true,
     removeLineBreaks: false,
@@ -2370,7 +2419,7 @@ test('26.01 - broken nbsp - repetitions — nnnbbbsssp', function (t) {
       '26.01.04'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true,
     removeLineBreaks: true,
     removeWidows: false
@@ -2382,7 +2431,7 @@ test('26.01 - broken nbsp - repetitions — nnnbbbsssp', function (t) {
       '26.01.05'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: false,
     removeLineBreaks: true,
     removeWidows: false
@@ -2397,7 +2446,7 @@ test('26.01 - broken nbsp - repetitions — nnnbbbsssp', function (t) {
 })
 
 test('26.02 - nbSp with no semicol', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true
   })
   .forEach(function (elem) {
@@ -2407,7 +2456,7 @@ test('26.02 - nbSp with no semicol', function (t) {
       '26.02.01 - missing semicol/ampers and wrong capitalisation and repetitions'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true
   })
   .forEach(function (elem) {
@@ -2422,7 +2471,7 @@ test('26.02 - nbSp with no semicol', function (t) {
 // NBSP missing letters AMPERSAND OBLIGATORY, SEMICOL — NOT:
 
 test('26.03 - broken nbsp - &nbsp (no semicol)', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true,
     replaceLineBreaks: false,
     removeLineBreaks: false,
@@ -2435,7 +2484,7 @@ test('26.03 - broken nbsp - &nbsp (no semicol)', function (t) {
       '26.03.01 - &nbsp missing p'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true,
     replaceLineBreaks: false,
     removeLineBreaks: false,
@@ -2448,7 +2497,7 @@ test('26.03 - broken nbsp - &nbsp (no semicol)', function (t) {
       '26.03.02 - &nbsp missing s'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true,
     replaceLineBreaks: false,
     removeLineBreaks: false,
@@ -2461,7 +2510,7 @@ test('26.03 - broken nbsp - &nbsp (no semicol)', function (t) {
       '26.03.03 - &nbsp missing b'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true,
     replaceLineBreaks: false,
     removeLineBreaks: false,
@@ -2479,7 +2528,7 @@ test('26.03 - broken nbsp - &nbsp (no semicol)', function (t) {
 // NBSP missing letters SEMICOL OBLIGATORY, AMPERSAND — NOT:
 
 test('26.04 - broken nbsp - nbsp; (no ampersand)', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true,
     replaceLineBreaks: false,
     removeLineBreaks: false,
@@ -2492,7 +2541,7 @@ test('26.04 - broken nbsp - nbsp; (no ampersand)', function (t) {
       '26.04.01 - missing p'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true,
     replaceLineBreaks: false,
     removeLineBreaks: false,
@@ -2505,7 +2554,7 @@ test('26.04 - broken nbsp - nbsp; (no ampersand)', function (t) {
       '26.04.02 - missing s'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true,
     replaceLineBreaks: false,
     removeLineBreaks: false,
@@ -2518,7 +2567,7 @@ test('26.04 - broken nbsp - nbsp; (no ampersand)', function (t) {
       '26.04.03 - missing b'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true,
     replaceLineBreaks: false,
     removeLineBreaks: false,
@@ -2536,7 +2585,7 @@ test('26.04 - broken nbsp - nbsp; (no ampersand)', function (t) {
 // NBSP missing letters AMPERSAND OBLIGATORY, SEMICOL — NOT:
 // [' ', '.', ',', ';', '\xa0', '?', '!']
 test('26.05 - broken nbsp - ?!.,nbsp (no semicol)', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true,
     removeWidows: false
   })
@@ -2559,7 +2608,7 @@ test('26.05 - broken nbsp - ?!.,nbsp (no semicol)', function (t) {
 // ==============================
 
 test('27.01 - recursive entity de-coding', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: false
   })
   .forEach(function (elem) {
@@ -2584,7 +2633,7 @@ test('27.01 - recursive entity de-coding', function (t) {
       '27.01.04 - twice encoded using numeric entities'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true
   })
   .forEach(function (elem) {
@@ -2633,7 +2682,7 @@ test('28.01 - spaces after semicolons', function (t) {
     )
   })
   // must not affect HTML entities:
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: true
   })
   .forEach(function (elem) {
@@ -2666,7 +2715,7 @@ test('29.01 - doesn\'t add spaces within simple URL\'s', function (t) {
 })
 
 test('29.02 - doesn\'t add spaces within urls', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: false,
     replaceLineBreaks: false,
     removeLineBreaks: false
@@ -2696,7 +2745,7 @@ test('29.02 - doesn\'t add spaces within urls', function (t) {
 })
 
 test('29.03 - adds space after semicolon, but not in URLs', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: false
   })
   .forEach(function (elem) {
@@ -2711,7 +2760,7 @@ test('29.03 - adds space after semicolon, but not in URLs', function (t) {
       '29.03.02'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: true,
     convertEntities: true
   })
@@ -2727,7 +2776,7 @@ test('29.03 - adds space after semicolon, but not in URLs', function (t) {
       '29.03.04'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: true,
     convertEntities: false
   })
@@ -2746,7 +2795,7 @@ test('29.03 - adds space after semicolon, but not in URLs', function (t) {
 })
 
 test('29.04 - doesn\'t add spaces within urls, considering emoji and line breaks', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: false,
     convertEntities: false,
     replaceLineBreaks: false,
@@ -2767,7 +2816,7 @@ test('29.04 - doesn\'t add spaces within urls, considering emoji and line breaks
 })
 
 test('29.05 - adds space after semicolon, but not in URLs', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: false
   })
   .forEach(function (elem) {
@@ -2782,7 +2831,7 @@ test('29.05 - adds space after semicolon, but not in URLs', function (t) {
       '29.05.02'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: true,
     convertEntities: true
   })
@@ -2798,7 +2847,7 @@ test('29.05 - adds space after semicolon, but not in URLs', function (t) {
       '29.05.04'
     )
   })
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: true,
     convertEntities: false
   })
@@ -2817,7 +2866,7 @@ test('29.05 - adds space after semicolon, but not in URLs', function (t) {
 })
 
 test('29.06 - non-Latin character after URL', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: false,
     dontEncodeNonLatin: true
   })
@@ -2841,7 +2890,7 @@ test('29.06 - non-Latin character after URL', function (t) {
 })
 
 test('29.07 - sanity checks', function (t) {
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     convertEntities: false
   })
   .forEach(function (elem) {
@@ -2956,7 +3005,7 @@ test('29.09 - long sentences with file names with extensions', function (t) {
     'Some text .gitignore',
     '29.09.01'
   )
-  mixer(sampleObj, {
+  mixer(defaultsObj, {
     removeWidows: false
   })
   .forEach(function (elem) {
