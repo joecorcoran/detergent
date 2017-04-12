@@ -75,3 +75,4 @@ Additionally, the algorithm is now checking, does any of the known extensions fo
 [2.23.0]: https://github.com/code-and-send/detergent/compare/v2.22.0...v2.23.0
 [2.24.0]: https://github.com/code-and-send/detergent/compare/v2.23.0...v2.24.0
 [2.25.0]: https://github.com/code-and-send/detergent/compare/v2.24.0...v2.25.0
+[2.26.0]: https://github.com/code-and-send/detergent/compare/v2.25.0...v2.26.0
