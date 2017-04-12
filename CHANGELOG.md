@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [2.25.0] - 2017-04-07
 ### Improved
-- Tiny rebasing: separated all functions into util.js, added some measures to protect against options object settings in wrong type (anything else that Boolean).
+- Tiny rebasing: separated all functions into util.js, added some measures to protect against options object settings in wrong type (values other type than Boolean).
 
 ## [2.24.0] - 2017-04-05
 ### Improved
