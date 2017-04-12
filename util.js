@@ -19,7 +19,8 @@ var defaultsObj = {
   useXHTML: true,
   removeSoftHyphens: true,
   dontEncodeNonLatin: true,
-  keepBoldEtc: true
+  keepBoldEtc: true,
+  addMissingSpaces: true
 }
 
 function existy (x) { return x != null }

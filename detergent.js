@@ -182,8 +182,9 @@ function detergent (textToClean, o) {
   // ================= xx =================
 
   // enforce spaces after full stops, commas and semicolons
-  cleanedText = doCollapseWhiteSpace(cleanedText)
-  cleanedText = addMissingSpaces(cleanedText)
+  if (o.addMissingSpaces) {
+    cleanedText = addMissingSpaces(cleanedText)
+  }
 
   // ================= xx =================
 

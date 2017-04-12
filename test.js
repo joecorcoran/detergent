@@ -1856,9 +1856,10 @@ test('18.02 - fixes: full stop + space + line break combinations', function (t) 
 // ==============================
 
 test('19.01 - multiple spaces before comma/full stop', function (t) {
-  // mixer no.1 — no widows removal
+  // mixer no.1 — no widows removal, with missing spaces
   mixer(defaultsObj, {
-    removeWidows: false
+    removeWidows: false,
+    addMissingSpaces: true
   })
   .forEach(function (elem) {
     // comma
@@ -1905,10 +1906,11 @@ test('19.01 - multiple spaces before comma/full stop', function (t) {
     )
   })
 
-  // mixer no.2 — widows removal
+  // mixer no.2 — widows removal, with missing spaces
   mixer(defaultsObj, {
     removeWidows: true,
-    convertEntities: true
+    convertEntities: true,
+    addMissingSpaces: true
   })
   .forEach(function (elem) {
     // comma
@@ -1952,6 +1954,107 @@ test('19.01 - multiple spaces before comma/full stop', function (t) {
       detergent('lots of text to trigger widow removal 2.5 here', elem),
       'lots of text to trigger widow removal 2.5&nbsp;here',
       '19.01.16 - alternative decimal notation'
+    )
+  })
+
+  // mixer no.3 — no widows removal, without missing spaces
+  mixer(defaultsObj, {
+    removeWidows: false,
+    addMissingSpaces: false
+  })
+  .forEach(function (elem) {
+    // comma
+    t.is(
+      detergent('some text text text text            ,text  ', elem),
+      'some text text text text,text',
+      '19.01.17 - multiple spaces, comma, no space, text, spaces'
+    )
+    t.is(
+      detergent('some text text text text            ,text', elem),
+      'some text text text text,text',
+      '19.01.18 - multiple spaces, comma, no space, text, no spaces'
+    )
+    t.is(
+      detergent('some text text text text            ,', elem),
+      'some text text text text,',
+      '19.01.19 - multiple spaces, comma, string\'s end'
+    )
+    t.is(
+      detergent('lots of text to trigger widow removal 2,5 here', elem),
+      'lots of text to trigger widow removal 2,5 here',
+      '19.01.20 - alternative decimal notation'
+    )
+    // full stop
+    t.is(
+      detergent('Some text text text text            .Text  ', elem),
+      'Some text text text text.Text',
+      '19.01.21 - multiple spaces, comma, no space, text, spaces'
+    )
+    t.is(
+      detergent('Some text text text text            .Text', elem),
+      'Some text text text text.Text',
+      '19.01.22 - multiple spaces, comma, no space, text, no spaces'
+    )
+    t.is(
+      detergent('some text text text text            .', elem),
+      'some text text text text.',
+      '19.01.23 - multiple spaces, comma, string\'s end'
+    )
+    t.is(
+      detergent('lots of text to trigger widow removal 2.5 here', elem),
+      'lots of text to trigger widow removal 2.5 here',
+      '19.01.24 - alternative decimal notation'
+    )
+  })
+
+  // mixer no.4 — widows removal, without missing spaces
+  mixer(defaultsObj, {
+    removeWidows: true,
+    convertEntities: true,
+    addMissingSpaces: false
+  })
+  .forEach(function (elem) {
+    // comma
+    t.is(
+      detergent('some text text text text            ,text  ', elem),
+      'some text text text&nbsp;text,text',
+      '19.01.25 - multiple spaces, comma, no space, text, spaces'
+    )
+    t.is(
+      detergent('some text text text text            ,text', elem),
+      'some text text text&nbsp;text,text',
+      '19.01.26 - multiple spaces, comma, no space, text, no spaces'
+    )
+    t.is(
+      detergent('some text text text text            ,', elem),
+      'some text text text&nbsp;text,',
+      '19.01.27 - multiple spaces, comma, string\'s end'
+    )
+    t.is(
+      detergent('lots of text to trigger widow removal 2,5 here', elem),
+      'lots of text to trigger widow removal 2,5&nbsp;here',
+      '19.01.28 - alternative decimal notation'
+    )
+    // full stop
+    t.is(
+      detergent('Some text text text text            .Text  ', elem),
+      'Some text text text&nbsp;text.Text',
+      '19.01.29 - multiple spaces, comma, no space, text, spaces'
+    )
+    t.is(
+      detergent('Some text text text text            .Text', elem),
+      'Some text text text&nbsp;text.Text',
+      '19.01.30 - multiple spaces, comma, no space, text, no spaces'
+    )
+    t.is(
+      detergent('Some text text text text            .', elem),
+      'Some text text text&nbsp;text.',
+      '19.01.31 - multiple spaces, comma, string\'s end'
+    )
+    t.is(
+      detergent('lots of text to trigger widow removal 2.5 here', elem),
+      'lots of text to trigger widow removal 2.5&nbsp;here',
+      '19.01.32 - alternative decimal notation'
     )
   })
 })
@@ -2587,7 +2690,8 @@ test('26.04 - broken nbsp - nbsp; (no ampersand)', function (t) {
 test('26.05 - broken nbsp - ?!.,nbsp (no semicol)', function (t) {
   mixer(defaultsObj, {
     convertEntities: true,
-    removeWidows: false
+    removeWidows: false,
+    addMissingSpaces: true
   })
   .forEach(function (elem) {
     t.is(
@@ -2599,6 +2703,24 @@ test('26.05 - broken nbsp - ?!.,nbsp (no semicol)', function (t) {
       detergent('prop nbspprop.nbspprop,nbspprop;nbspprop\xa0nbspprop?nbspprop!nbspprop', elem),
       'prop &nbsp;prop. &nbsp;prop, &nbsp;prop;&nbsp;prop&nbsp;&nbsp;prop?&nbsp;prop!&nbsp;prop',
       '26.05.02 - nbsp missing semicol and amp - sneaky p\'s'
+    )
+  })
+
+  mixer(defaultsObj, {
+    convertEntities: true,
+    removeWidows: false,
+    addMissingSpaces: false
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('aaa nbspaaa.nbspaaa,nbspaaa;nbspaaa\xa0nbspaaa?nbspaaa!nbspaaa', elem),
+      'aaa &nbsp;aaa.&nbsp;aaa,&nbsp;aaa;&nbsp;aaa&nbsp;&nbsp;aaa?&nbsp;aaa!&nbsp;aaa',
+      '26.05.03 - nbsp missing semicol and amp'
+    )
+    t.is(
+      detergent('prop nbspprop.nbspprop,nbspprop;nbspprop\xa0nbspprop?nbspprop!nbspprop', elem),
+      'prop &nbsp;prop.&nbsp;prop,&nbsp;prop;&nbsp;prop&nbsp;&nbsp;prop?&nbsp;prop!&nbsp;prop',
+      '26.05.04 - nbsp missing semicol and amp - sneaky p\'s'
     )
   })
 })
@@ -2665,23 +2787,48 @@ test('27.01 - recursive entity de-coding', function (t) {
 // =================================
 
 test('28.01 - spaces after semicolons', function (t) {
-  // usual:
-  allCombinations.forEach(function (elem) {
+  mixer(defaultsObj, {
+    addMissingSpaces: true
+  })
+  .forEach(function (elem) {
     t.is(
       detergent('aaa;aaa', elem),
       'aaa; aaa',
-      '28.01.01 - missing semicol'
+      '28.01.01 - semicol between letters'
     )
   })
-  // semicol is last character:
-  allCombinations.forEach(function (elem) {
+  mixer(defaultsObj, {
+    addMissingSpaces: false
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('aaa;aaa', elem),
+      'aaa;aaa',
+      '28.01.02 - semicol between letters'
+    )
+  })
+
+  mixer(defaultsObj, {
+    addMissingSpaces: true
+  })
+  .forEach(function (elem) {
     t.is(
       detergent('aaa;aaa;', elem),
       'aaa; aaa;',
-      '28.01.02 - semicol at eol'
+      '28.01.03 - semicol between letters, ends with semicol'
     )
   })
-  // must not affect HTML entities:
+  mixer(defaultsObj, {
+    addMissingSpaces: false
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('aaa;aaa;', elem),
+      'aaa;aaa;',
+      '28.01.04 - semicol between letters, ends with semicol'
+    )
+  })
+
   mixer(defaultsObj, {
     convertEntities: true
   })
@@ -2689,7 +2836,7 @@ test('28.01 - spaces after semicolons', function (t) {
     t.is(
       detergent('aaa&nbsp;aaa', elem),
       'aaa&nbsp;aaa',
-      '28.01.03 - semicol fixes must not affect HTML entities'
+      '28.01.05 - semicol fixes must not affect HTML entities'
     )
   })
 })
@@ -2718,7 +2865,8 @@ test('29.02 - doesn\'t add spaces within urls', function (t) {
   mixer(defaultsObj, {
     removeWidows: false,
     replaceLineBreaks: false,
-    removeLineBreaks: false
+    removeLineBreaks: false,
+    addMissingSpaces: true
   })
   .forEach(function (elem) {
     t.is(
@@ -2742,11 +2890,40 @@ test('29.02 - doesn\'t add spaces within urls', function (t) {
       '29.02.04 - no :// but www instead'
     )
   })
+  mixer(defaultsObj, {
+    removeWidows: false,
+    replaceLineBreaks: false,
+    removeLineBreaks: false,
+    addMissingSpaces: false
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('http://detergent.io is cool', elem),
+      'http://detergent.io is cool',
+      '29.02.05 - url + space + text'
+    )
+    t.is(
+      detergent('http://detergent.io.\nThis is cool', elem),
+      'http://detergent.io.\nThis is cool',
+      '29.02.06 - adds space before capital letter (line break)'
+    )
+    t.is(
+      detergent('http://detergent.io. \nThis is cool', elem),
+      'http://detergent.io.\nThis is cool',
+      '29.02.07 - adds space before capital letter (line break)'
+    )
+    t.is(
+      detergent('Aaaaa.Aaaa www.detergent.io bbbbb.Bbbbb', elem),
+      'Aaaaa.Aaaa www.detergent.io bbbbb.Bbbbb',
+      '29.02.08 - no :// but www instead'
+    )
+  })
 })
 
 test('29.03 - adds space after semicolon, but not in URLs', function (t) {
   mixer(defaultsObj, {
-    removeWidows: false
+    removeWidows: false,
+    addMissingSpaces: true
   })
   .forEach(function (elem) {
     t.is(
@@ -2762,7 +2939,8 @@ test('29.03 - adds space after semicolon, but not in URLs', function (t) {
   })
   mixer(defaultsObj, {
     removeWidows: true,
-    convertEntities: true
+    convertEntities: true,
+    addMissingSpaces: true
   })
   .forEach(function (elem) {
     t.is(
@@ -2778,7 +2956,8 @@ test('29.03 - adds space after semicolon, but not in URLs', function (t) {
   })
   mixer(defaultsObj, {
     removeWidows: true,
-    convertEntities: false
+    convertEntities: false,
+    addMissingSpaces: true
   })
   .forEach(function (elem) {
     t.is(
@@ -2792,6 +2971,56 @@ test('29.03 - adds space after semicolon, but not in URLs', function (t) {
       '29.03.06'
     )
   })
+  mixer(defaultsObj, {
+    removeWidows: false,
+    addMissingSpaces: false
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('This is http://detergent.io.This is cool.', elem),
+      'This is http://detergent.io.This is cool.',
+      '29.03.07'
+    )
+    t.is(
+      detergent('This is http://detergent.io.', elem),
+      'This is http://detergent.io.',
+      '29.03.08'
+    )
+  })
+  mixer(defaultsObj, {
+    removeWidows: true,
+    convertEntities: true,
+    addMissingSpaces: false
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('This is http://detergent.io.This is cool.', elem),
+      'This is http://detergent.io.This is&nbsp;cool.',
+      '29.03.09'
+    )
+    t.is(
+      detergent('This is http://detergent.io.', elem),
+      'This is http://detergent.io.',
+      '29.03.10'
+    )
+  })
+  mixer(defaultsObj, {
+    removeWidows: true,
+    convertEntities: false,
+    addMissingSpaces: false
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('This is http://detergent.io.This is cool.', elem),
+      'This is http://detergent.io.This is\xa0cool.',
+      '29.03.11'
+    )
+    t.is(
+      detergent('This is http://detergent.io.', elem),
+      'This is http://detergent.io.',
+      '29.03.12'
+    )
+  })
 })
 
 test('29.04 - doesn\'t add spaces within urls, considering emoji and line breaks', function (t) {
@@ -2799,7 +3028,8 @@ test('29.04 - doesn\'t add spaces within urls, considering emoji and line breaks
     removeWidows: false,
     convertEntities: false,
     replaceLineBreaks: false,
-    removeLineBreaks: false
+    removeLineBreaks: false,
+    addMissingSpaces: true
   })
   .forEach(function (elem) {
     t.is(
@@ -2813,11 +3043,31 @@ test('29.04 - doesn\'t add spaces within urls, considering emoji and line breaks
       '29.04.02'
     )
   })
+  mixer(defaultsObj, {
+    removeWidows: false,
+    convertEntities: false,
+    replaceLineBreaks: false,
+    removeLineBreaks: false,
+    addMissingSpaces: false
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('Aaaa🦄.bbbbb http://detergent.whatever.a.bd.re.qwe.gf.asdew.v.df.g.er.re ZZZ.🦄YYY', elem),
+      'Aaaa🦄.bbbbb http://detergent.whatever.a.bd.re.qwe.gf.asdew.v.df.g.er.re ZZZ.🦄YYY',
+      '29.04.03'
+    )
+    t.is(
+      detergent('Aaaa.Bbbbb http://detergent.whatever.a.bd.re.qwe.\ngf.Asdew.V.Df,g;er.Re ZZZ.🦄YYY sfhksdf fgkjhk jhfgkh.', elem),
+      'Aaaa.Bbbbb http://detergent.whatever.a.bd.re.qwe.\ngf.Asdew.V.Df,g;er.Re ZZZ.🦄YYY sfhksdf fgkjhk jhfgkh.',
+      '29.04.04'
+    )
+  })
 })
 
 test('29.05 - adds space after semicolon, but not in URLs', function (t) {
   mixer(defaultsObj, {
-    removeWidows: false
+    removeWidows: false,
+    addMissingSpaces: true
   })
   .forEach(function (elem) {
     t.is(
@@ -2833,7 +3083,8 @@ test('29.05 - adds space after semicolon, but not in URLs', function (t) {
   })
   mixer(defaultsObj, {
     removeWidows: true,
-    convertEntities: true
+    convertEntities: true,
+    addMissingSpaces: true
   })
   .forEach(function (elem) {
     t.is(
@@ -2849,7 +3100,8 @@ test('29.05 - adds space after semicolon, but not in URLs', function (t) {
   })
   mixer(defaultsObj, {
     removeWidows: true,
-    convertEntities: false
+    convertEntities: false,
+    addMissingSpaces: true
   })
   .forEach(function (elem) {
     t.is(
@@ -2863,12 +3115,66 @@ test('29.05 - adds space after semicolon, but not in URLs', function (t) {
       '29.05.06'
     )
   })
+
+  // no missing spaces
+
+  mixer(defaultsObj, {
+    removeWidows: false,
+    addMissingSpaces: false
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('This is http://detergent.io;This is cool.', elem),
+      'This is http://detergent.io;This is cool.',
+      '29.05.07'
+    )
+    t.is(
+      detergent('This is http://detergent;io;This is cool.', elem),
+      'This is http://detergent;io;This is cool.',
+      '29.05.08'
+    )
+  })
+  mixer(defaultsObj, {
+    removeWidows: true,
+    convertEntities: true,
+    addMissingSpaces: false
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('This is http://detergent.io;This is cool.', elem),
+      'This is http://detergent.io;This is&nbsp;cool.',
+      '29.05.09'
+    )
+    t.is(
+      detergent('This is http://detergent;io;This is cool.', elem),
+      'This is http://detergent;io;This is&nbsp;cool.',
+      '29.05.10'
+    )
+  })
+  mixer(defaultsObj, {
+    removeWidows: true,
+    convertEntities: false,
+    addMissingSpaces: false
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('This is http://detergent.io;This is cool.', elem),
+      'This is http://detergent.io;This is\xa0cool.',
+      '29.05.11'
+    )
+    t.is(
+      detergent('This is http://detergent;io;This is cool.', elem),
+      'This is http://detergent;io;This is\xa0cool.',
+      '29.05.12'
+    )
+  })
 })
 
 test('29.06 - non-Latin character after URL', function (t) {
   mixer(defaultsObj, {
     removeWidows: false,
-    dontEncodeNonLatin: true
+    dontEncodeNonLatin: true,
+    addMissingSpaces: true
   })
   .forEach(function (elem) {
     t.is(
@@ -2884,6 +3190,31 @@ test('29.06 - non-Latin character after URL', function (t) {
     t.is(
       detergent('This is http://detergent.io;Это хорошо.', elem),
       'This is http://detergent.io; Это хорошо.',
+      '29.06.03'
+    )
+  })
+
+  // not adding the missing spaces
+
+  mixer(defaultsObj, {
+    removeWidows: false,
+    dontEncodeNonLatin: true,
+    addMissingSpaces: false
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('This is http://detergent.io.Это хорошо.', elem),
+      'This is http://detergent.io.Это хорошо.',
+      '29.06.01'
+    )
+    t.is(
+      detergent('This is http://detergent.io,Это хорошо.', elem),
+      'This is http://detergent.io,Это хорошо.',
+      '29.06.02'
+    )
+    t.is(
+      detergent('This is http://detergent.io;Это хорошо.', elem),
+      'This is http://detergent.io;Это хорошо.',
       '29.06.03'
     )
   })
@@ -3035,5 +3366,118 @@ test('30.01 - strips UTF8 BOM', function (t) {
       detergent('unicorn\uFEFFzzz', elem),
       'unicornzzz',
       '30.01.03 - UTF8 BOM in the middle of a string')
+  })
+})
+
+// ==============================
+// 31. o.addMissingSpaces
+// ==============================
+
+test('31.01 - missing spaces addition can be turned off - full stop', function (t) {
+  mixer(defaultsObj, {
+    addMissingSpaces: true
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('Text.More text.', elem),
+      'Text. More text.',
+      '31.01.01'
+    )
+  })
+  mixer(defaultsObj, {
+    addMissingSpaces: false
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('Text.More text.', elem),
+      'Text.More text.',
+      '31.01.02'
+    )
+  })
+})
+
+test('31.02 - missing spaces addition can be turned off - comma', function (t) {
+  mixer(defaultsObj, {
+    addMissingSpaces: true
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('Text,more text.', elem),
+      'Text, more text.',
+      '31.02.01'
+    )
+    t.is(
+      detergent('Text,more text,', elem),
+      'Text, more text,',
+      '31.02.02'
+    )
+  })
+  mixer(defaultsObj, {
+    addMissingSpaces: false
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('Text,more text.', elem),
+      'Text,more text.',
+      '31.02.03'
+    )
+    t.is(
+      detergent('Text,more text,', elem),
+      'Text,more text,',
+      '31.02.04'
+    )
+  })
+})
+
+test('31.03 - missing spaces addition can be turned off - semicol', function (t) {
+  mixer(defaultsObj, {
+    addMissingSpaces: true
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('Text;more text.', elem),
+      'Text; more text.',
+      '31.03.01'
+    )
+    t.is(
+      detergent('text;more text.', elem),
+      'text; more text.',
+      '31.03.02'
+    )
+    t.is(
+      detergent('Text;more text', elem),
+      'Text; more text',
+      '31.03.03'
+    )
+    t.is(
+      detergent('text;more text', elem),
+      'text; more text',
+      '31.03.04'
+    )
+  })
+  mixer(defaultsObj, {
+    addMissingSpaces: false
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('Text;more text.', elem),
+      'Text;more text.',
+      '31.03.05'
+    )
+    t.is(
+      detergent('text;more text.', elem),
+      'text;more text.',
+      '31.03.06'
+    )
+    t.is(
+      detergent('Text;more text', elem),
+      'Text;more text',
+      '31.03.07'
+    )
+    t.is(
+      detergent('text;more text', elem),
+      'text;more text',
+      '31.03.08'
+    )
   })
 })

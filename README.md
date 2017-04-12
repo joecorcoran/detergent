@@ -72,7 +72,8 @@ detergent('text to clean', {
   useXHTML: true,                 // add closing slashes on BR's
   removeSoftHyphens: true,        // remove character which encodes to &#173; or &shy;
   dontEncodeNonLatin: true,       // skip non-latin character encoding
-  keepBoldEtc: true               // any bold, strong, i or em tags are stripped of attributes and retained
+  keepBoldEtc: true,              // any bold, strong, i or em tags are stripped of attributes and retained
+  addMissingSpaces: true          // adds missing spaces after dots/colons/semicolons, unless it's URL
 });
 ```
 
@@ -98,7 +99,7 @@ detergent('clean this text £',{
 
 ## Contributing & testing
 
-Flush the repo onto your SSD and have a butchers at `test.js`. It's very minimalistic testing setup using [AVA](https://github.com/avajs/ava) and [Istanbul CLI](https://github.com/istanbuljs/nyc). Currently the Detergent has ten options and each option can affect the output of the library. This means, we have to test each feature against every possible combination of the settings — that's 2^10=1024 tests for each unit test! I coded up an auxiliary library, [object-boolean-combinations](https://github.com/revelt/object-boolean-combinations) which generates an array of all possible variations and feeds that into AVA. See its readme file to learn more how it works.
+Flush the repo onto your SSD and have a butchers at `test.js`. It's very minimalistic testing setup using [AVA](https://github.com/avajs/ava) and [Istanbul CLI](https://github.com/istanbuljs/nyc). Currently the Detergent has ten options and each option can affect the output of the library. This means, we have to test each feature against every possible combination of the settings — that's 2^11=2048 tests for each unit test! I coded up an auxiliary library, [object-boolean-combinations](https://github.com/revelt/object-boolean-combinations) which generates an array of all possible variations and feeds that into AVA. See its readme file to learn more how it works.
 
 Tests take around 5 minutes to complete:
 
