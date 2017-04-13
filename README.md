@@ -43,17 +43,18 @@ $ npm install --save detergent
 
 Detergent is three things: 1) HTML special character encoder and 2) invisible special character remover, and 3) English grammar style improving tool. Detergent was created to be robust and accept any kinds of text as an input, including HTML code. Yes, you can be lazy and paste "dirty" unencoded HTML into Detergent, and it will decode, clean and encode the HTML.
 
-If you copy-paste text from creative files or Excel spreadsheets or Word into your email templates, you need to clean the text first using Detergent because that text might contain invisible Unicode characters (such as ETX coming from Adobe software) and strange white spaces.
+If you copy-paste text from creative files or Excel spreadsheets or Word into your email templates, you need to clean the text first using Detergent because that text might contain invisible Unicode characters (such as [ETX](https://en.wikipedia.org/wiki/End-of-Text_character) coming from Adobe software) and strange white spaces.
 
 Detergent improves the English style, and all features are optional and automated:
 
-* [widow word](https://en.wikipedia.org/wiki/Widows_and_orphans) prevention adding `&nbsp;` between last two words
-* M-dash and N-dash recognition and automatic replacement
-* Adding fancy apostrophes
+* [widow word](https://en.wikipedia.org/wiki/Widows_and_orphans) prevention adding `&nbsp;` between last [two words](http://practicaltypography.com/widow-and-orphan-control.html)
+* [M-dash and N-dash](http://practicaltypography.com/hyphens-and-dashes.html) recognition and automatic replacement where typographically appropriate
+* Adding fancy [apostrophes](http://practicaltypography.com/apostrophes.html) and [curly quotes](http://practicaltypography.com/straight-and-curly-quotes.html)
+* Adding missing spaces after full stops, commas and semicolons, except when it's a number.
 
 Extra features are:
 
-* You can skip the encoding of non-Latin language letters. Useful when you are deploying Japanese or Chinese emails.
+* You can skip the HTML encoding of non-Latin language letters. Useful when you are deploying Japanese or Chinese emails, because otherwise _everything_ will be HTML-encoded.
 * Detergent is both XHTML and HTML-friendly. You can set which way you want your `<BR>`'s to appear: with closing slash (XHTML) or without (HTML), so your HTML code should be passing the W3C validator.
 * Detergent handles the full range of Unicode code points. In other words, it's emoji-friendly.
 
@@ -115,23 +116,11 @@ If you want to contribute, don't hesitate. If it's a code contribution, please s
 
 > Copyright (c) 2017 Codsen Ltd, Roy Reveltas
 
-> Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+> Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
-> The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+> The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 [travis-img]: https://travis-ci.org/code-and-send/detergent.svg?branch=master
 [travis-url]: https://travis-ci.org/code-and-send/detergent
