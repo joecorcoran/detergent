@@ -66,13 +66,13 @@ Additionally, the algorithm is now checking, does any of the known extensions fo
 - Renamed some tests to match better what's inside
 - The latest AVA (*) is requested with an ignore on the BitHound
 
-[2.17.0]: https://github.com/code-and-send/detergent/compare/v2.16.0...v2.17.0
-[2.18.0]: https://github.com/code-and-send/detergent/compare/v2.17.0...v2.18.0
-[2.19.0]: https://github.com/code-and-send/detergent/compare/v2.18.0...v2.19.0
-[2.20.0]: https://github.com/code-and-send/detergent/compare/v2.19.0...v2.20.0
-[2.21.0]: https://github.com/code-and-send/detergent/compare/v2.20.0...v2.21.0
-[2.22.0]: https://github.com/code-and-send/detergent/compare/v2.21.0...v2.22.0
-[2.23.0]: https://github.com/code-and-send/detergent/compare/v2.22.0...v2.23.0
-[2.24.0]: https://github.com/code-and-send/detergent/compare/v2.23.0...v2.24.0
-[2.25.0]: https://github.com/code-and-send/detergent/compare/v2.24.0...v2.25.0
-[2.26.0]: https://github.com/code-and-send/detergent/compare/v2.25.0...v2.26.0
+[2.17.0]: https://github.com/codsen/detergent/compare/v2.16.0...v2.17.0
+[2.18.0]: https://github.com/codsen/detergent/compare/v2.17.0...v2.18.0
+[2.19.0]: https://github.com/codsen/detergent/compare/v2.18.0...v2.19.0
+[2.20.0]: https://github.com/codsen/detergent/compare/v2.19.0...v2.20.0
+[2.21.0]: https://github.com/codsen/detergent/compare/v2.20.0...v2.21.0
+[2.22.0]: https://github.com/codsen/detergent/compare/v2.21.0...v2.22.0
+[2.23.0]: https://github.com/codsen/detergent/compare/v2.22.0...v2.23.0
+[2.24.0]: https://github.com/codsen/detergent/compare/v2.23.0...v2.24.0
+[2.25.0]: https://github.com/codsen/detergent/compare/v2.24.0...v2.25.0
+[2.26.0]: https://github.com/codsen/detergent/compare/v2.25.0...v2.26.0

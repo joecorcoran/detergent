@@ -4,7 +4,7 @@
 
 > All-in-one: HTML special character encoder, invisible character cleaner and English style improvement tool — and fully customisable
 
-<a href="https://detergent.io" style="float: left; padding: 0 20px 20px 0;"><img src="https://detergent.io/images/code-and-send-detergent-io_108x204.gif" alt="Detergent.io" width="100" align="left"></a>
+<a href="https://detergent.io" style="float: left; padding: 0 20px 20px 0;"><img src="https://detergent.io/images/codsen-detergent-io_108x204.gif" alt="Detergent.io" width="100" align="left"></a>
 
 [![Build Status][travis-img]][travis-url]
 [![Coverage Status][cov-img]][cov-url]
@@ -122,20 +122,20 @@ If you want to contribute, don't hesitate. If it's a code contribution, please s
 
 > THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-[travis-img]: https://travis-ci.org/code-and-send/detergent.svg?branch=master
-[travis-url]: https://travis-ci.org/code-and-send/detergent
+[travis-img]: https://travis-ci.org/codsen/detergent.svg?branch=master
+[travis-url]: https://travis-ci.org/codsen/detergent
 
-[cov-img]: https://coveralls.io/repos/github/code-and-send/detergent/badge.svg?branch=master
-[cov-url]: https://coveralls.io/github/code-and-send/detergent?branch=master
+[cov-img]: https://coveralls.io/repos/github/codsen/detergent/badge.svg?branch=master
+[cov-url]: https://coveralls.io/github/codsen/detergent?branch=master
 
-[overall-img]: https://www.bithound.io/github/code-and-send/detergent/badges/score.svg
-[overall-url]: https://www.bithound.io/github/code-and-send/detergent
+[overall-img]: https://www.bithound.io/github/codsen/detergent/badges/score.svg
+[overall-url]: https://www.bithound.io/github/codsen/detergent
 
-[deps-img]: https://www.bithound.io/github/code-and-send/detergent/badges/dependencies.svg
-[deps-url]: https://www.bithound.io/github/code-and-send/detergent/master/dependencies/npm
+[deps-img]: https://www.bithound.io/github/codsen/detergent/badges/dependencies.svg
+[deps-url]: https://www.bithound.io/github/codsen/detergent/master/dependencies/npm
 
-[dev-img]: https://www.bithound.io/github/code-and-send/detergent/badges/devDependencies.svg
-[dev-url]: https://www.bithound.io/github/code-and-send/detergent/master/dependencies/npm
+[dev-img]: https://www.bithound.io/github/codsen/detergent/badges/devDependencies.svg
+[dev-url]: https://www.bithound.io/github/codsen/detergent/master/dependencies/npm
 
 [downloads-img]: https://img.shields.io/npm/dm/detergent.svg
 [downloads-url]: https://npm-stat.com/charts.html?package=detergent

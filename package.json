@@ -11,7 +11,7 @@
   "engines": {
     "node": ">=4"
   },
-  "repository": "code-and-send/detergent",
+  "repository": "codsen/detergent",
   "keywords": [
     "detergent",
     "email",
@@ -26,12 +26,16 @@
     "encode",
     "style"
   ],
-  "author": "Roy Reveltas <roy@codeandsend.com> (http://codeandsend.com/)",
+  "author": {
+    "name": "Roy Reveltas",
+    "email": "roy@codsen.com",
+    "url": "codsen.com"
+  },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/code-and-send/detergent/issues"
+    "url": "https://github.com/codsen/detergent/issues"
   },
-  "homepage": "https://github.com/code-and-send/detergent#readme",
+  "homepage": "https://github.com/codsen/detergent#readme",
   "dependencies": {
     "curl-quotes": "^0.1.0",
     "easy-replace": "^2.5.1",
