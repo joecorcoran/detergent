@@ -2,7 +2,7 @@
 
 <a href="https://github.com/feross/standard" style="float: right; padding: 0 0 20px 20px;"><img src="https://cdn.rawgit.com/feross/standard/master/sticker.svg" alt="Standard JavaScript" width="100" align="right"></a>
 
-> All-in-one: HTML special character encoder, invisible character cleaner and English style improvement tool — and fully customisable
+> All-in-one: HTML special character encoder, invisible character cleaner and English style improvement tool - and fully customisable
 
 <a href="https://detergent.io" style="float: left; padding: 0 20px 20px 0;"><img src="https://detergent.io/images/codsen-detergent-io_108x204.gif" alt="Detergent.io" width="100" align="left"></a>
 
@@ -78,7 +78,7 @@ detergent('text to clean', {
 });
 ```
 
-The default settings are specifically chosen to be the most common scenario: _decode, encode and apply all available fixes_. This way, when I set up wiring in automated email build systems in Gulp, I don't even set any settings and run on default-ones.
+The default settings are specifically chosen to be the most common scenario. Unless you want something specific, default set is a wise choice.
 
 ## Example
 
@@ -100,9 +100,9 @@ detergent('clean this text £',{
 
 ## Contributing & testing
 
-Flush the repo onto your SSD and have a butchers at `test.js`. It's very minimalistic testing setup using [AVA](https://github.com/avajs/ava) and [Istanbul CLI](https://github.com/istanbuljs/nyc). Currently the Detergent has ten options and each option can affect the output of the library. This means, we have to test each feature against every possible combination of the settings — that's 2^11=2048 tests for each unit test! I coded up an auxiliary library, [object-boolean-combinations](https://github.com/revelt/object-boolean-combinations) which generates an array of all possible variations and feeds that into AVA. See its readme file to learn more how it works.
+Flush the repo onto your SSD and have a butchers at `test.js`. It's very minimalistic testing setup using [AVA](https://github.com/avajs/ava) and [Istanbul CLI](https://github.com/istanbuljs/nyc). Currently the Detergent has eleven options and each option can affect the output of the library. This means, we have to test each feature against every possible combination of the settings - that's 2^11=2048 tests for each unit test! I coded up an auxiliary library, [object-boolean-combinations](https://github.com/revelt/object-boolean-combinations) which generates an array of all possible variations and feeds that into loops ran by AVA. See its readme file to learn more how it works.
 
-Tests take around 5 minutes to complete:
+Tests take around 5 minutes to complete on average laptop:
 
 ```bash
 npm test
@@ -114,7 +114,7 @@ If you want to contribute, don't hesitate. If it's a code contribution, please s
 
 > MIT License (MIT)
 
-> Copyright (c) 2017 Codsen Ltd, Roy Reveltas
+> Copyright (c) 2015-2017 Codsen Ltd, Roy Reveltas
 
 > Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

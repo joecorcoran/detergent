@@ -38,7 +38,7 @@
   "homepage": "https://github.com/codsen/detergent#readme",
   "dependencies": {
     "curl-quotes": "^0.1.0",
-    "easy-replace": "^2.5.1",
+    "easy-replace": "^2.7.6",
     "he": "^1.0.0",
     "lodash.clonedeep": "^4.5.0",
     "lodash.isplainobject": "^4.0.6",
@@ -53,9 +53,9 @@
   "devDependencies": {
     "ava": "*",
     "coveralls": "*",
-    "husky": "^0.13.2",
-    "nyc": "^10.1.2",
-    "object-boolean-combinations": "*",
+    "husky": "^0.13.4",
+    "nyc": "^11.0.2",
+    "object-boolean-combinations": "^1.9.1",
     "standard": "^10.0.0"
   },
   "ava": {
