@@ -400,20 +400,9 @@ test('04.04 - dash tests', function (t) {
   })
   .forEach(function (elem) {
     t.is(
-      detergent('aaaaaaaaaaa \u2014 aaaaaaaaaaaa', elem),
-      'aaaaaaaaaaa&nbsp;&mdash; aaaaaaaaaaaa',
+      detergent('aaaaaaaaaaa \u2014 aaaaaaaaaaaa &mdash; aaaaaaaaaaaa', elem),
+      'aaaaaaaaaaa&nbsp;&mdash; aaaaaaaaaaaa&nbsp;&mdash;&nbsp;aaaaaaaaaaaa',
       '04.04.03 - nbsp, dash'
-    )
-  })
-  mixer(defaultsObj, {
-    convertEntities: true,
-    removeWidows: true
-  })
-  .forEach(function (elem) {
-    t.is(
-      detergent('aaaaaaaaaaa &mdash; aaaaaaaaaaaa', elem),
-      'aaaaaaaaaaa&nbsp;&mdash; aaaaaaaaaaaa',
-      '04.04.04 - nbsp, dash'
     )
   })
   // --- PART II ---
@@ -2312,74 +2301,9 @@ test('23.01 - numeric entities', function (t) {
   })
   .forEach(function (elem) {
     t.is(
-      detergent('&Breve;', elem),
-      '&#x2D8;',
-      '23.01.01 - HTML entity — Breve'
-    )
-    t.is(
-      detergent('&Backslash;', elem),
-      '&#x2216;',
-      '23.01.02 - HTML entity — Backslash'
-    )
-    t.is(
-      detergent('&Cacute;', elem),
-      '&#x106;',
-      '23.01.03 - HTML entity — Cacute'
-    )
-    t.is(
-      detergent('&CircleDot;', elem),
-      '&#x2299;',
-      '23.01.04 - HTML entity — CircleDot'
-    )
-    t.is(
-      detergent('&DD;', elem),
-      '&#x2145;',
-      '23.01.05 - HTML entity — DD'
-    )
-    t.is(
-      detergent('&Diamond;', elem),
-      '&#x22C4;',
-      '23.01.06 - HTML entity — Diamond'
-    )
-    t.is(
-      detergent('&DownArrow;', elem),
-      '&darr;',
-      '23.01.07 - HTML entity — DownArrow'
-    )
-    t.is(
-      detergent('&LT;', elem),
-      '&lt;',
-      '23.01.08 - HTML entity — LT'
-    )
-    t.is(
-      detergent('&RightArrow;', elem),
-      '&rarr;',
-      '23.01.09 - HTML entity — RightArrow'
-    )
-    t.is(
-      detergent('&SmallCircle;', elem),
-      '&#x2218;',
-      '23.01.10 - HTML entity — SmallCircle'
-    )
-    t.is(
-      detergent('&Uarr;', elem),
-      '&#x219F;',
-      '23.01.11 - HTML entity — Uarr'
-    )
-    t.is(
-      detergent('&Verbar;', elem),
-      '&#x2016;',
-      '23.01.12 - HTML entity — Verbar'
-    )
-    t.is(
-      detergent('&angst;', elem),
-      '&#xC5;',
-      '23.01.13 - HTML entity — angst'
-    )
-    t.is(
-      detergent('&zdot;', elem),
-      '&#x17C;',
-      '23.01.14 - HTML entity — zdot'
+      detergent('&Breve;&Backslash;&Cacute;&CircleDot;&DD;&Diamond;&DownArrow;&LT;&RightArrow;&SmallCircle;&Uarr;&Verbar;&angst;&zdot;', elem),
+      '&#x2D8;&#x2216;&#x106;&#x2299;&#x2145;&#x22C4;&darr;&lt;&rarr;&#x2218;&#x219F;&#x2016;&#xC5;&#x17C;',
+      '23.01 - HTML entities'
     )
   })
 })
@@ -2393,7 +2317,7 @@ test('24    - wrong named entity QUOT into quot', function (t) {
     t.is(
       detergent('&QUOT;', elem),
       '&quot;',
-      '24 - HTML entity — QUOT'
+      '24 - HTML entity - QUOT'
     )
   })
 })
