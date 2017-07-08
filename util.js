@@ -663,7 +663,10 @@ function doInterpretErroneousNBSP (inputString) {
     {
       leftOutside: '&',
       searchFor: 'nbsp',
-      rightMaybe: ';'
+      rightMaybe: ';',
+      i: {
+        searchFor: true
+      }
     },
     'nbsp;'
   )
@@ -674,7 +677,10 @@ function doInterpretErroneousNBSP (inputString) {
     {
       leftOutside: [' ', '.', ',', ';', '\xa0', '?', '!'],
       searchFor: 'nbsp',
-      rightOutsideNot: ';'
+      rightOutsideNot: ';',
+      i: {
+        searchFor: true
+      }
     },
     '&nbsp;'
   )
@@ -685,7 +691,10 @@ function doInterpretErroneousNBSP (inputString) {
     {
       leftMaybe: '&',
       searchFor: 'nbsp',
-      rightOutside: ';'
+      rightOutside: ';',
+      i: {
+        searchFor: true
+      }
     },
     '&nbsp'
   )

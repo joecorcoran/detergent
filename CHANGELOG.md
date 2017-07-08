@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.27.0] - 2017-07-08
+### Updated
+- Code refresh: updated all deps, generated up-to-date `package-lock` and did some small code rebasing related to all this.
+
 ## [2.26.0] - 2017-04-12
 ### Added
 - Options key `o.addMissingSpaces` now allows you to control, do you want to add missing spaces after full stops/colons/semicolons, or not. This does not break the API as the new default setting matches previously non-customiseable setting.
@@ -54,7 +58,7 @@ Additionally, the algorithm is now checking, does any of the known extensions fo
 - Tweaks for BitHound to ignore the fact that we are going to use the _latest version_ `AVA`, `Coveralls` and `Standard` no matter what, to reduce maintenance time spent on all my libraries.
 - Some tweaks to completely pass JS Standard (there were redundant regex escapes for example)
 
-## [2.17.0] - 2016-12-21
+## 2.17.0 - 2016-12-21
 ### Added
 - Test coverage and a badge
 - Changelog
@@ -76,3 +80,4 @@ Additionally, the algorithm is now checking, does any of the known extensions fo
 [2.24.0]: https://github.com/codsen/detergent/compare/v2.23.0...v2.24.0
 [2.25.0]: https://github.com/codsen/detergent/compare/v2.24.0...v2.25.0
 [2.26.0]: https://github.com/codsen/detergent/compare/v2.25.0...v2.26.0
+[2.27.0]: https://github.com/codsen/detergent/compare/v2.26.0...v2.27.0

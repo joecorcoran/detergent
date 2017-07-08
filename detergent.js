@@ -107,15 +107,15 @@ function detergent (textToClean, o) {
   // replace all invisible characters that can be interpreted as line breaks
   // see https://en.wikipedia.org/wiki/Newline#Unicode
   if (!o.removeLineBreaks) {
-    lineBreakCharacters.forEach(function (elem) {
-      cleanedText = S(cleanedText).replaceAll(elem, '\n').s
-    })
+    for (let i = 0, len = lineBreakCharacters.length; i < len; i++) {
+      cleanedText = S(cleanedText).replaceAll(lineBreakCharacters[i], '\n').s
+    }
   } else {
-    lineBreakCharacters.forEach(function (elem) {
-      if (elem !== '\u000A') {
-        cleanedText = S(cleanedText).replaceAll(elem, '').s
+    for (let i = 0, len = lineBreakCharacters.length; i < len; i++) {
+      if (lineBreakCharacters[i] !== '\u000A') {
+        cleanedText = S(cleanedText).replaceAll(lineBreakCharacters[i], '').s
       }
-    })
+    }
   }
 
   // ================= xx =================
@@ -254,9 +254,10 @@ function detergent (textToClean, o) {
 
   if (o.convertEntities) {
     // cleanedText = S(cleanedText).replaceAll('&hairsp;', ' ').s
-    Object.keys(numericEnt).forEach(function (key) {
-      cleanedText = S(cleanedText).replaceAll(key, numericEnt[key]).s
-    })
+    let numerics = Object.keys(numericEnt)
+    for (let i = 0, len = numerics.length; i < len; i++) {
+      cleanedText = S(cleanedText).replaceAll(numerics[i], numericEnt[numerics[i]]).s
+    }
   }
 
   // ================= xx =================
