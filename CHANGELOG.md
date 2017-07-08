@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.28.0] - 2017-07-08
+### Removed
+- As the features grew, the "Builds" time on Travis grew too. Currently Travis fails around 50% of the cases because it hits 50 minutes mark while running the end-to-end unit tests. Therefore, I'm removing Travis for good. It makes no sense anyway, as there are no "Builds" for this library, only unit tests, which can be ran locally.
+
 ## [2.27.0] - 2017-07-08
 ### Updated
 - Code refresh: updated all deps, generated up-to-date `package-lock` and did some small code rebasing related to all this.
@@ -81,3 +85,4 @@ Additionally, the algorithm is now checking, does any of the known extensions fo
 [2.25.0]: https://github.com/codsen/detergent/compare/v2.24.0...v2.25.0
 [2.26.0]: https://github.com/codsen/detergent/compare/v2.25.0...v2.26.0
 [2.27.0]: https://github.com/codsen/detergent/compare/v2.26.0...v2.27.0
+[2.28.0]: https://github.com/codsen/detergent/compare/v2.27.0...v2.28.0

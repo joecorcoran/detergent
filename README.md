@@ -6,7 +6,6 @@
 
 <a href="https://detergent.io" style="float: left; padding: 0 20px 20px 0;"><img src="https://detergent.io/images/codsen-detergent-io_108x204.gif" alt="Detergent.io" width="100" align="left"></a>
 
-[![Build Status][travis-img]][travis-url]
 [![Coverage Status][cov-img]][cov-url]
 [![bitHound Overall Score][overall-img]][overall-url]
 [![bitHound Dependencies][deps-img]][deps-url]
@@ -121,9 +120,6 @@ If you want to contribute, don't hesitate. If it's a code contribution, please s
 > The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 > THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-[travis-img]: https://travis-ci.org/codsen/detergent.svg?branch=master
-[travis-url]: https://travis-ci.org/codsen/detergent
 
 [cov-img]: https://coveralls.io/repos/github/codsen/detergent/badge.svg?branch=master
 [cov-url]: https://coveralls.io/github/codsen/detergent?branch=master
