@@ -4,7 +4,7 @@
 
 > All-in-one: HTML special character encoder, invisible character cleaner and English style improvement tool - and fully customisable
 
-<a href="https://detergent.io" style="float: left; padding: 0 20px 20px 0;"><img src="https://detergent.io/images/codsen-detergent-io_108x204.gif" alt="Detergent.io" width="100" align="left"></a>
+<a href="https://detergent.io" style="float: left; padding: 0 20px 20px 0;"><img src="https://cdn.rawgit.com/codsen/detergent/edaacff8/media/detergent_200x200.png" alt="Detergent.io" width="150" align="left"></a>
 
 [![Coverage Status][cov-img]][cov-url]
 [![bitHound Overall Score][overall-img]][overall-url]
