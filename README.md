@@ -14,7 +14,7 @@ All-in-one: HTML special character encoder, invisible character cleaner and Engl
 
 Detergent is a smart HTML entity encoder, specifically tailored for email template development. It is a JavaScript library that prepares text to be pasted into email's or website's HTML code. There is also a web app on [Detergent.io](http://detergent.io) which is driven by this JS library.
 
-For manual HTML character encoding, website [Detergent.io](https://detergent.io) is the best. For automation purposes (for example, automated email template builds using Gulp/Grunt/npm_scripts), this, _JS-library-Detergent_ (this library you see here) is the best.
+For manual HTML character encoding, the website [Detergent.io](https://detergent.io) is the best. For automation purposes (for example, automated email template builds using Gulp/Grunt/npm_scripts), this, _JS-library-Detergent_ (this library you see here) is the best.
 
 If you don't know any JavaScript, calm down, close this web page and continue to use [Detergent.io](https://detergent.io).
 
