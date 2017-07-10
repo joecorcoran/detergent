@@ -2,9 +2,9 @@
 
 <a href="https://github.com/feross/standard" style="float: right; padding: 0 0 20px 20px;"><img src="https://cdn.rawgit.com/feross/standard/master/sticker.svg" alt="Standard JavaScript" width="100" align="right"></a>
 
-> All-in-one: HTML special character encoder, invisible character cleaner and English style improvement tool - and fully customisable
-
 <a href="https://detergent.io" style="float: left; padding: 0 20px 20px 0;"><img src="https://cdn.rawgit.com/codsen/detergent/edaacff8/media/detergent_200x200.png" alt="Detergent.io" width="150" align="left"></a>
+
+All-in-one: HTML special character encoder, invisible character cleaner and English style improvement tool - and fully customisable.
 
 [![Coverage Status][cov-img]][cov-url]
 [![bitHound Overall Score][overall-img]][overall-url]
