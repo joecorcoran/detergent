@@ -5,7 +5,6 @@ const S = require('string')
 const endashes = require('typographic-en-dashes')
 const entityRefs = require('./entity-references.json')
 const er = require('easy-replace')
-const toArray = require('lodash.toarray')
 const upperCase = require('upper-case')
 const lowerCase = require('lower-case')
 
@@ -780,7 +779,7 @@ function addMissingSpaces (input) {
     return notFound
   }
 
-  var x = toArray(input)
+  var x = Array.from(input)
   var onUrlCurrently = false
   for (var i = 0, len = x.length; i < len; i++) {
     //

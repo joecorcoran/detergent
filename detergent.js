@@ -6,7 +6,6 @@ const curl = require('curl-quotes')
 const unicodeDragon = require('unicode-dragon')
 const numericEnt = require('./enforced-numeric-entities-list.json')
 const er = require('easy-replace')
-const objectAssign = require('object-assign')
 const clone = require('lodash.clonedeep')
 const isObj = require('lodash.isplainobject')
 
@@ -43,7 +42,7 @@ function detergent (textToClean, o) {
     throw new Error('detergent(): [THROW_ERROR_ID01] Options object must be a plain object, not ' + typeof o)
   }
   // defaults object is in util.js to keep it DRY
-  o = objectAssign(clone(defaultsObj), o)
+  o = Object.assign(clone(defaultsObj), o)
   Object.keys(o).forEach(function (key, i) {
     if (!isBool(o[key])) {
       throw new Error('detergent(): [THROW_ERROR_ID0' + (2 + i) + '] Options object\'s key ' + key + ' should be Boolean, not ' + typeof key + ', equal to: ' + JSON.stringify(o[key], null, 4))
@@ -69,7 +68,7 @@ function detergent (textToClean, o) {
 
   // ================= xx =================
 
-  // replace all occurencies of broken "&nbsp;" (where ampersand is missing) with a "&nbsp;"
+  // replace all occurencies of broken "nbsp;" (where ampersand is missing) with a "&nbsp;"
   cleanedText = doInterpretErroneousNBSP(cleanedText)
   // all other mis-typed character references — missing ampersand and/or semicolon
   cleanedText = fixMissingAmpsAndSemicols(cleanedText)
@@ -123,6 +122,12 @@ function detergent (textToClean, o) {
   // replace the tabs with spaces
   cleanedText = S(cleanedText).replaceAll('\u0009', ' ').s
   cleanedText = S(cleanedText).replaceAll('\t', ' ').s
+
+  // ================= xx =================
+
+  // add line breaks before <ul> and <li> tags
+  cleanedText = S(cleanedText).replaceAll('</ul', '\n</ul').s
+  cleanedText = S(cleanedText).replaceAll('<li', '\n<li').s
 
   // ================= xx =================
 

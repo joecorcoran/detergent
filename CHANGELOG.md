@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.29.0] - 2017-07-20
+### Added
+- Feature for issue [#14](https://github.com/codsen/detergent/issues/14) - Detergent strips all HTML (except bolt/italic/strong/em) code, but in the process, some content might be misformatted. For example, the content in unordered lists would get bunged up together without spaces. Now that's fixed. By default, every `<li>` will be put onto a new line, as well as closing `</ul>`. If you want everything on one line, set `opts.removeLineBreaks` to `true`.
+### Removed 
+- Some Lodash dependencies, replacing them with native ES6-ones.
+
 ## [2.28.0] - 2017-07-08
 ### Removed
 - As the features grew, the "Builds" time on Travis grew too. Currently Travis fails around 50% of the cases because it hits 50 minutes mark while running the end-to-end unit tests. Therefore, I'm removing Travis for good. It makes no sense anyway, as there are no "Builds" for this library, only unit tests, which can be ran locally.
@@ -86,3 +92,4 @@ Additionally, the algorithm is now checking, does any of the known extensions fo
 [2.26.0]: https://github.com/codsen/detergent/compare/v2.25.0...v2.26.0
 [2.27.0]: https://github.com/codsen/detergent/compare/v2.26.0...v2.27.0
 [2.28.0]: https://github.com/codsen/detergent/compare/v2.27.0...v2.28.0
+[2.29.0]: https://github.com/codsen/detergent/compare/v2.28.0...v2.29.0

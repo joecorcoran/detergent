@@ -7,7 +7,9 @@
   "dependencies": {
     "mute": [
       "ava",
-      "coveralls"
+      "coveralls",
+      "lodash.clonedeep",
+      "lodash.isplainobject"
     ]
   },
   "test": [

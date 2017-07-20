@@ -3405,3 +3405,46 @@ test('31.03 - missing spaces addition can be turned off - semicol', function (t)
     )
   })
 })
+
+// ==============================
+// 32. UL/LI TAGS
+// ==============================
+
+test('32.01 - adds missing spaces after stripping UL & LI tags', function (t) {
+  mixer(defaultsObj, {
+    removeLineBreaks: true,
+    removeWidows: false
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('Text <ul><li>First point</li><li>Second point</li><li>Third point</li></ul>Text straight after', elem),
+      'Text First point Second point Third point Text straight after',
+      '32.01.01'
+    )
+  })
+  mixer(defaultsObj, {
+    removeLineBreaks: false,
+    removeWidows: false,
+    replaceLineBreaks: false
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('Text <ul><li>First point</li><li>Second point</li><li>Third point</li></ul>Text straight after', elem),
+      'Text\nFirst point\nSecond point\nThird point\nText straight after',
+      '32.01.02'
+    )
+  })
+  mixer(defaultsObj, {
+    removeLineBreaks: false,
+    removeWidows: false,
+    replaceLineBreaks: true,
+    useXHTML: true
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('Text <ul><li>First point</li><li>Second point</li><li>Third point</li></ul>Text straight after', elem),
+      'Text<br />\nFirst point<br />\nSecond point<br />\nThird point<br />\nText straight after',
+      '32.01.03'
+    )
+  })
+})
