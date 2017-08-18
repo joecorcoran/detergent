@@ -4,10 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.31.0] - 2017-08-18
+### Added
+- `.npmignore` and added `/media/` to it, along all dotfiles. This will reduce your npm installation footprint.
+- Bunch of new badges to readme.
+
 ## [2.29.0] - 2017-07-20
 ### Added
 - Feature for issue [#14](https://github.com/codsen/detergent/issues/14) - Detergent strips all HTML (except bolt/italic/strong/em) code, but in the process, some content might be misformatted. For example, the content in unordered lists would get bunged up together without spaces. Now that's fixed. By default, every `<li>` will be put onto a new line, as well as closing `</ul>`. If you want everything on one line, set `opts.removeLineBreaks` to `true`.
-### Removed 
+### Removed
 - Some Lodash dependencies, replacing them with native ES6-ones.
 
 ## [2.28.0] - 2017-07-08
@@ -51,7 +56,7 @@ Additionally, the algorithm is now checking, does any of the known extensions fo
 
 ## [2.21.0] - 2017-03-09
 ### Added
-- Removes [byte order mark](https://en.wikipedia.org/wiki/Byte_order_mark#UTF-8) (BOM). 
+- Removes [byte order mark](https://en.wikipedia.org/wiki/Byte_order_mark#UTF-8) (BOM).
 
 ## [2.20.0] - 2017-02-22
 ### Added
@@ -93,3 +98,4 @@ Additionally, the algorithm is now checking, does any of the known extensions fo
 [2.27.0]: https://github.com/codsen/detergent/compare/v2.26.0...v2.27.0
 [2.28.0]: https://github.com/codsen/detergent/compare/v2.27.0...v2.28.0
 [2.29.0]: https://github.com/codsen/detergent/compare/v2.28.0...v2.29.0
+[2.31.0]: https://github.com/codsen/detergent/compare/v2.29.0...v2.31.0

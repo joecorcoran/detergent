@@ -6,11 +6,15 @@
 
 All-in-one: HTML special character encoder, invisible character cleaner and English style improvement tool - and fully customisable.
 
+[![Link to npm page][npm-img]][npm-url]
 [![Coverage Status][cov-img]][cov-url]
 [![bitHound Overall Score][overall-img]][overall-url]
 [![bitHound Dependencies][deps-img]][deps-url]
 [![bitHound Dev Dependencies][dev-img]][dev-url]
+[![Known Vulnerabilities][vulnerabilities-img]][vulnerabilities-url]
 [![Downloads/Month][downloads-img]][downloads-url]
+[![View dependencies as 2D chart][deps2d-img]][deps2d-url]
+
 
 Detergent is a smart HTML entity encoder, specifically tailored for email template development. It is a JavaScript library that prepares text to be pasted into email's or website's HTML code. There is also a web app on [Detergent.io](http://detergent.io) which is driven by this JS library.
 
@@ -121,6 +125,9 @@ If you want to contribute, don't hesitate. If it's a code contribution, please s
 
 > THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+[npm-img]: https://img.shields.io/npm/v/detergent.svg
+[npm-url]: https://www.npmjs.com/package/detergent
+
 [cov-img]: https://coveralls.io/repos/github/codsen/detergent/badge.svg?branch=master
 [cov-url]: https://coveralls.io/github/codsen/detergent?branch=master
 
@@ -135,3 +142,9 @@ If you want to contribute, don't hesitate. If it's a code contribution, please s
 
 [downloads-img]: https://img.shields.io/npm/dm/detergent.svg
 [downloads-url]: https://npm-stat.com/charts.html?package=detergent
+
+[vulnerabilities-img]: https://snyk.io/test/github/codsen/detergent/badge.svg
+[vulnerabilities-url]: https://snyk.io/test/github/codsen/detergent
+
+[deps2d-img]: https://img.shields.io/badge/deps%20in%202D-flat-db0097.svg
+[deps2d-url]: http://npm.anvaka.com/#/view/2d/detergent
