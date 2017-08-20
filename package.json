@@ -8,9 +8,6 @@
     "precommit": "npm test",
     "test": "standard && nyc --reporter=html --reporter=text ava"
   },
-  "engines": {
-    "node": ">=4"
-  },
   "repository": "codsen/detergent",
   "keywords": [
     "detergent",
