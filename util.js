@@ -19,8 +19,12 @@ var defaultsObj = {
   removeSoftHyphens: true,
   dontEncodeNonLatin: true,
   keepBoldEtc: true,
-  addMissingSpaces: true
+  addMissingSpaces: true,
+  convertDotsToEllipsis: true
 }
+
+// first three characters only:
+var knownExtensions = ['jpg', 'jpeg', 'png', 'gif', 'svg', 'jso', 'htm', 'pdf', 'psd', 'tar', 'zip', 'rar', 'otf', 'ttf', 'jsp', 'php', 'rss', 'asp', 'ppt', 'doc', 'txt', 'rtf', 'git']
 
 function existy (x) { return x != null }
 
@@ -758,8 +762,6 @@ function fixMissingAmpsAndSemicols (inputString) {
  * @return {String}        returns cleaned string
  */
 function addMissingSpaces (input) {
-  // first three characters only:
-  var knownExtensions = ['jpg', 'jpeg', 'png', 'gif', 'svg', 'jso', 'htm', 'pdf', 'psd', 'tar', 'zip', 'rar', 'otf', 'ttf', 'jsp', 'php', 'rss', 'asp', 'ppt', 'doc', 'txt', 'rtf', 'git']
   function checkExtensions (first, second, third) {
     var threeCharExt
     var notFound = true
@@ -887,5 +889,6 @@ module.exports = {
   isNotAnUppercaseString: isNotAnUppercaseString,
   isNotALowercaseString: isNotALowercaseString,
   addMissingSpaces: addMissingSpaces,
-  joinPostcodes: joinPostcodes
+  joinPostcodes: joinPostcodes,
+  knownExtensions: knownExtensions
 }

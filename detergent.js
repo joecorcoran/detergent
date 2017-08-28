@@ -6,8 +6,8 @@ const curl = require('curl-quotes')
 const unicodeDragon = require('unicode-dragon')
 const numericEnt = require('./enforced-numeric-entities-list.json')
 const er = require('easy-replace')
-const clone = require('lodash.clonedeep')
 const isObj = require('lodash.isplainobject')
+const checkTypes = require('check-types-mini')
 
 const util = require('./util')
 const doRemoveInvisibles = util.doRemoveInvisibles
@@ -27,6 +27,7 @@ const doInterpretErroneousNBSP = util.doInterpretErroneousNBSP
 const fixMissingAmpsAndSemicols = util.fixMissingAmpsAndSemicols
 const addMissingSpaces = util.addMissingSpaces
 const defaultsObj = util.defaultsObj
+const knownExtensions = util.knownExtensions
 
 /**
  * detergent - main function
@@ -36,25 +37,19 @@ const defaultsObj = util.defaultsObj
  * @return {string}               cleaned text
  */
 function detergent (textToClean, o) {
-  function isBool (something) { return typeof something === 'boolean' }
   var cleanedText = String(textToClean)
   if ((arguments.length > 1) && !isObj(o)) {
     throw new Error('detergent(): [THROW_ERROR_ID01] Options object must be a plain object, not ' + typeof o)
   }
-  // defaults object is in util.js to keep it DRY
-  o = Object.assign(clone(defaultsObj), o)
-  Object.keys(o).forEach(function (key, i) {
-    if (!isBool(o[key])) {
-      throw new Error('detergent(): [THROW_ERROR_ID0' + (2 + i) + '] Options object\'s key ' + key + ' should be Boolean, not ' + typeof key + ', equal to: ' + JSON.stringify(o[key], null, 4))
-    }
-  })
+  // defaults object (`defaultsObj`) is in util.js to keep it DRY
+  // fill any settings with defaults if missing:
+  o = Object.assign({}, defaultsObj, o)
+  // the options object's check:
+  checkTypes(o, defaultsObj, {msg: 'detergent(): [THROW_ERROR_ID02*]', optsVarName: 'opts'})
 
   var lineBreakCharacters = [
     '\u000a', '\u000b', '\u000c', '\u000d', '\u0085', '\u2028', '\u2029', '\u0003'
   ] // CR+LF, (U+000D and U+000A) combination will yield two line breaks on Detergent.
-
-  // first three characters only:
-  var knownExtensions = ['jpg', 'jpeg', 'png', 'gif', 'svg', 'jso', 'htm', 'pdf', 'psd', 'tar', 'zip', 'rar', 'otf', 'ttf', 'jsp', 'php', 'rss', 'asp', 'ppt', 'doc', 'txt', 'rtf', 'git']
 
   //                           ____
   //          massive hammer  |    |
@@ -267,14 +262,21 @@ function detergent (textToClean, o) {
 
   // ================= xx =================
 
-  // (horizontal) ellipsis:
+  // three dots to ellipsis conversion:
 
+  if (o.convertDotsToEllipsis) {
+    if (o.convertEntities) {
+      cleanedText = S(cleanedText).replaceAll('...', '&hellip;').s
+    } else {
+      cleanedText = S(cleanedText).replaceAll('...', '\u2026').s
+    }
+  }
+
+  // following don't concern dots so `o.convertDotsToEllipsis` setting does not matter:
   if (o.convertEntities) {
-    cleanedText = S(cleanedText).replaceAll('...', '&hellip;').s
     cleanedText = S(cleanedText).replaceAll('&mldr;', '&hellip;').s
     cleanedText = S(cleanedText).replaceAll('\u2026', '&hellip;').s
   } else {
-    cleanedText = S(cleanedText).replaceAll('...', '\u2026').s
     cleanedText = S(cleanedText).replaceAll('&mldr;', '\u2026').s
     cleanedText = S(cleanedText).replaceAll('&hellip;', '\u2026').s
   }

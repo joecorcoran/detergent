@@ -7,13 +7,14 @@
 All-in-one: HTML special character encoder, invisible character cleaner and English style improvement tool - and fully customisable.
 
 [![Link to npm page][npm-img]][npm-url]
-[![Coverage Status][cov-img]][cov-url]
 [![bitHound Overall Score][overall-img]][overall-url]
 [![bitHound Dependencies][deps-img]][deps-url]
 [![bitHound Dev Dependencies][dev-img]][dev-url]
+[![Coverage Status][cov-img]][cov-url]
 [![Known Vulnerabilities][vulnerabilities-img]][vulnerabilities-url]
 [![Downloads/Month][downloads-img]][downloads-url]
 [![View dependencies as 2D chart][deps2d-img]][deps2d-url]
+[![Test in browser][runkit-img]][runkit-url]
 
 
 Detergent is a smart HTML entity encoder, specifically tailored for email template development. It is a JavaScript library that prepares text to be pasted into email's or website's HTML code. There is also a web app on [Detergent.io](http://detergent.io) which is driven by this JS library.
@@ -77,7 +78,8 @@ detergent('text to clean', {
   removeSoftHyphens: true,        // remove character which encodes to &#173; or &shy;
   dontEncodeNonLatin: true,       // skip non-latin character encoding
   keepBoldEtc: true,              // any bold, strong, i or em tags are stripped of attributes and retained
-  addMissingSpaces: true          // adds missing spaces after dots/colons/semicolons, unless it's URL
+  addMissingSpaces: true,         // adds missing spaces after dots/colons/semicolons, unless it's URL
+  convertDotsToEllipsis: true     // convert three dots into &hellip; - ellipsis character
 });
 ```
 
@@ -103,9 +105,9 @@ detergent('clean this text £',{
 
 ## Contributing & testing
 
-Flush the repo onto your SSD and have a butchers at `test.js`. It's very minimalistic testing setup using [AVA](https://github.com/avajs/ava) and [Istanbul CLI](https://github.com/istanbuljs/nyc). Currently the Detergent has eleven options and each option can affect the output of the library. This means, we have to test each feature against every possible combination of the settings - that's 2^11=2048 tests for each unit test! I coded up an auxiliary library, [object-boolean-combinations](https://github.com/revelt/object-boolean-combinations) which generates an array of all possible variations and feeds that into loops ran by AVA. See its readme file to learn more how it works.
+Flush the repo onto your SSD and have a butchers at `test.js`. It's very minimalistic testing setup using [AVA](https://github.com/avajs/ava) and [Istanbul CLI](https://github.com/istanbuljs/nyc). Currently, Detergent has twelve options and each option can affect the output of the library. This means, we have to test each feature against every possible combination of the settings - that's 2^12=4096 tests for each unit test! I coded up an auxiliary library, [object-boolean-combinations](https://github.com/revelt/object-boolean-combinations) which generates an array of all possible options' variations and feeds that into loops ran by AVA. See its [readme file](https://github.com/revelt/object-boolean-combinations) to learn more how it works.
 
-Tests take around 5 minutes to complete on average laptop:
+Tests take around 15 minutes to complete on average laptop:
 
 ```bash
 npm test
@@ -146,5 +148,8 @@ If you want to contribute, don't hesitate. If it's a code contribution, please s
 [vulnerabilities-img]: https://snyk.io/test/github/codsen/detergent/badge.svg
 [vulnerabilities-url]: https://snyk.io/test/github/codsen/detergent
 
-[deps2d-img]: https://img.shields.io/badge/deps%20in%202D-flat-db0097.svg
+[deps2d-img]: https://img.shields.io/badge/deps%20in%202D-see_here-08f0fd.svg
 [deps2d-url]: http://npm.anvaka.com/#/view/2d/detergent
+
+[runkit-img]: https://img.shields.io/badge/runkit-test_in_browser-ff9900.svg
+[runkit-url]: https://npm.runkit.com/detergent

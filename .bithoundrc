@@ -6,10 +6,10 @@
   },
   "dependencies": {
     "mute": [
-      "ava",
       "coveralls",
-      "lodash.clonedeep",
-      "lodash.isplainobject"
+      "husky",
+      "lodash.isplainobject",
+      "nyc"
     ]
   },
   "test": [

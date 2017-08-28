@@ -8,7 +8,6 @@ const mixer = require('object-boolean-combinations')
 const entityTest = require('./entity-test.json')
 const util = require('./util')
 const defaultsObj = util.defaultsObj
-const clone = require('lodash.clonedeep')
 
 // ==============================
 // 0. THROWS
@@ -23,21 +22,30 @@ test('00.01 - second argument is not a plain object', t => {
   })
 })
 
-test('00.02 - second argument object\'s values not throw when set to Boolean', t => {
-  var obj1, obj2
-  t.notThrows(function () {
-    Object.keys(defaultsObj).forEach(function (key1) {
-      obj1 = {}
-      obj1[key1] = true
-      detergent('zzz', clone(obj1))
+test('00.02 - various situations in options object', t => {
+  t.throws(function () {
+    detergent('zzz', {
+      keepBoldEtc: 1 // value not Bool - throw
+    })
+  })
+  t.throws(function () {
+    detergent('zzz', {
+      keepBoldEtc: 'true' // string as value - throw
+    })
+  })
+  t.throws(function () {
+    detergent('zzz', {
+      keepBoldEtc: true,
+      zzz: true // rogue key
     })
   })
   t.notThrows(function () {
-    Object.keys(defaultsObj).forEach(function (key2) {
-      obj2 = {}
-      obj2[key2] = false
-      detergent('zzz', clone(obj2))
+    detergent('zzz', {
+      keepBoldEtc: true // valid key - fine
     })
+  })
+  t.notThrows(function () {
+    detergent('zzz', {}) // empty options object - fine
   })
 })
 
@@ -2223,7 +2231,7 @@ test('20.04 - dashes between words, no spaces', function (t) {
 
 test('21.01 - horizontal ellipsis sanity check', function (t) {
   mixer(defaultsObj, {
-    convertEntities: false
+    convertEntities: false // o.convertDotsToEllipsis does not matter as there are no dots here
   })
   .forEach(function (elem) {
     t.is(
@@ -2243,7 +2251,7 @@ test('21.01 - horizontal ellipsis sanity check', function (t) {
     )
   })
   mixer(defaultsObj, {
-    convertEntities: true
+    convertEntities: true // o.convertDotsToEllipsis does not matter as there are no dots here
   })
   .forEach(function (elem) {
     t.is(
@@ -2265,12 +2273,13 @@ test('21.01 - horizontal ellipsis sanity check', function (t) {
 })
 
 // =======================================
-// 22. three dots converted to ellipsis symbol
+// 22. three dots converted (or not) to an ellipsis symbol
 // =======================================
 
 test('22.01 - ellipsis', function (t) {
   mixer(defaultsObj, {
-    convertEntities: false
+    convertEntities: false,
+    convertDotsToEllipsis: true
   })
   .forEach(function (elem) {
     t.is(
@@ -2280,13 +2289,29 @@ test('22.01 - ellipsis', function (t) {
     )
   })
   mixer(defaultsObj, {
-    convertEntities: true
+    convertEntities: true,
+    convertDotsToEllipsis: true
   })
   .forEach(function (elem) {
     t.is(
       detergent('...', elem),
       '&hellip;',
       '22.01.02 - converts three full stops to encoded ellipsis'
+    )
+  })
+  mixer(defaultsObj, {
+    convertDotsToEllipsis: false // `o.convertEntities` does not matter - dots must not be touched
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('...', elem),
+      '...',
+      '22.01.03 - does not touch the dots when asked not to'
+    )
+    t.is(
+      detergent('aaaaa...', elem),
+      'aaaaa...',
+      '22.01.04 - some letters as well'
     )
   })
 })
