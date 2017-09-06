@@ -5,10 +5,8 @@ const S = require('string')
 const endashes = require('typographic-en-dashes')
 const entityRefs = require('./entity-references.json')
 const er = require('easy-replace')
-const upperCase = require('upper-case')
-const lowerCase = require('lower-case')
 
-var defaultsObj = {
+const defaultsObj = {
   removeWidows: true,
   convertEntities: true,
   convertDashes: true,
@@ -21,53 +19,6 @@ var defaultsObj = {
   keepBoldEtc: true,
   addMissingSpaces: true,
   convertDotsToEllipsis: true
-}
-
-// first three characters only:
-var knownExtensions = ['jpg', 'jpeg', 'png', 'gif', 'svg', 'jso', 'htm', 'pdf', 'psd', 'tar', 'zip', 'rar', 'otf', 'ttf', 'jsp', 'php', 'rss', 'asp', 'ppt', 'doc', 'txt', 'rtf', 'git']
-
-function existy (x) { return x != null }
-
-// delete all useless invisible characters, unicode ranges C0 and C1 (with few exceptions):
-
-/**
- * doRemoveInvisibles - delete every character in the incoming "inputString" which is present in the "invisibleCharacters" array
- *
- * @param  {string} inputString text to clean
- * @return {string}             result
- */
-function doRemoveInvisibles (inputString) {
-  var invisibleCharacters = [
-    // C0 group. All, except: line feed u000A, vertical tab u000B, form feed u000C, carriage return u000D, ETX u0003 (Photoshop/Illustrator uses them) and tab u0009.
-    '\u0000', '\u0001', '\u0002', '\u0004', '\u0005', '\u0006', '\u0007', '\u0008',
-    '\u000e', '\u000f',
-    '\u0010', '\u0011', '\u0012', '\u0013', '\u0014', '\u0015', '\u0016', '\u0017', '\u0018', '\u0019',
-    '\u001a', '\u001b', '\u001c', '\u001d', '\u001e', '\u001f',
-    // gap - space is not in, but delete 007F will be removed
-    '\u007f',
-    // C1 group
-    '\u0080', '\u0081', '\u0082', '\u0083', '\u0084', '\u0086', '\u0087', '\u0088', '\u0089',
-    '\u008a', '\u008b', '\u008c', '\u008d', '\u008e', '\u008f',
-    '\u0090', '\u0091', '\u0092', '\u0093', '\u0094', '\u0095', '\u0096', '\u0097', '\u0098', '\u0099',
-    '\u009a', '\u009b', '\u009c', '\u009d', '\u009e', '\u009f',
-    // BOM
-    '\uFEFF'
-  ]
-  invisibleCharacters.forEach(function (element) {
-    inputString = S(inputString).replaceAll(element, '').s
-  })
-  return inputString
-}
-
-/**
- * doRemoveSoftHyphens - delete all soft hyphens from a string
- *
- * @param  {string} inputString text to clean
- * @return {string}             result
- */
-function doRemoveSoftHyphens (inputString) {
-  inputString = S(inputString).replaceAll('\u00AD', '').s
-  return inputString
 }
 
 /**
@@ -150,7 +101,7 @@ function decryptBoldItalic (inputString) {
  */
 function trimTrailingSpaces (input) {
   var lines = S(input).lines()
-  for (var i = 0, len = lines.length; i < len; i++) {
+  for (var i = lines.length; i--;) {
     while (S(lines[i]).right(1).s === ' ') {
       lines[i] = S(lines[i]).chompRight(' ').s
     }
@@ -159,34 +110,6 @@ function trimTrailingSpaces (input) {
     }
   }
   return lines.join('\n')
-}
-
-/**
- * trimTrailingLineBreaks - remove spaces from the front and end of each line
- * @param input {string} incoming string
- * @return {string}
- */
-function trimTrailingLineBreaks (input) {
-  while (S(input).right(1).s === '\n') {
-    input = S(input).chompRight('\n').s
-  }
-  while (S(input).left(1).s === '\n') {
-    input = S(input).chompLeft('\n').s
-  }
-  return input
-}
-
-/**
- * doCollapseWhiteSpace - will loop until every double space is replaced with single space
- *
- * @param  {string} inputString incoming string
- * @return {string}             result
- */
-function doCollapseWhiteSpace (inputString) {
-  while (S(inputString).contains('  ')) {
-    inputString = S(inputString).replaceAll('  ', ' ').s
-  }
-  return inputString
 }
 
 /**
@@ -268,8 +191,6 @@ function doConvertEntities (inputString, dontEncodeNonLatin) {
  * @return {string}             result
  */
 function doRemoveWidows (inputString) {
-  // first, trim the trailing white space
-  // inputString = inputString.trim()
   var outputString
 
   // var paragraphsArray = inputString.split('\n')
@@ -323,8 +244,8 @@ function doRemoveWidowDashes (inputString) {
   var outputString = S(inputString).replaceAll(' \u2013', '\u00A0\u2013').s
   outputString = S(outputString).replaceAll(' \u2014', '\u00A0\u2014').s
 
-  outputString = S(outputString).replaceAll(' &ndash;', '&nbsp;&ndash;').s
-  outputString = S(outputString).replaceAll(' &mdash;', '&nbsp;&mdash;').s
+  // outputString = S(outputString).replaceAll(' &ndash;', '&nbsp;&ndash;').s
+  // outputString = S(outputString).replaceAll(' &mdash;', '&nbsp;&mdash;').s
   return outputString
 }
 
@@ -358,67 +279,6 @@ function doConvertDashes (inputString, widows) {
     // adding non-breaking space before mdashes:
     inputString = S(inputString).replaceAll(' \u2014', '\u00A0\u2014 ').s
   }
-  return inputString
-}
-
-/**
- * doAddSpaceAfterDashes - add space after hyphens and dashes if text follows
- *
- * @param  {string} inputString
- * @return {string}
- */
-function doAddSpaceAfterDashes (inputString) {
-  // add space after m dash if there's preceding-one
-  inputString = er(
-    inputString,
-    {
-      leftOutside: ' ',
-      searchFor: '\u2014',
-      rightMaybe: ' '
-    },
-    '\u2014 '
-  )
-  // add space after n dash if there's preceding-one
-  inputString = er(
-    inputString,
-    {
-      leftOutside: ' ',
-      searchFor: '\u2013',
-      rightMaybe: ' '
-    },
-    '\u2013 '
-  )
-  // add space after m dash if there's nbsp or space in front of it
-  inputString = er(
-    inputString,
-    {
-      leftOutside: ['\xa0', ' '],
-      searchFor: '\u2014',
-      rightMaybe: ' '
-    },
-    '\u2014 '
-  )
-  // add space after n dash if there's nbsp or space in front of it
-  inputString = er(
-    inputString,
-    {
-      leftOutside: ['\xa0', ' '],
-      searchFor: '\u2013',
-      rightMaybe: ' '
-    },
-    '\u2013 '
-  )
-  // add space after minus/dash character if there's nbsp or space in front of it
-  inputString = er(
-    inputString,
-    {
-      leftOutside: ['\xa0', ' '],
-      searchFor: '-',
-      rightMaybe: [' ', '-'],
-      rightOutsideNot: ['$', '£', '€', '₽', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
-    },
-    '- '
-  )
   return inputString
 }
 
@@ -710,22 +570,22 @@ function isNumeric (obj) {
 }
 
 function isLetter (str) {
-  return upperCase(str) !== lowerCase(str)
+  return (typeof str === 'string') && (str.length === 1) && (str.toUpperCase() !== str.toLowerCase())
 }
 
-function isNotAnUppercaseString (str) {
+function isLowercaseLetter (str) {
   if (!isLetter(str)) {
-    return true
+    return false
   } else {
-    return lowerCase(str) === str
+    return (str === str.toLowerCase()) && (str !== str.toUpperCase())
   }
 }
 
-function isNotALowercaseString (str) {
+function isUppercaseLetter (str) {
   if (!isLetter(str)) {
-    return true
+    return false
   } else {
-    return upperCase(str) === str
+    return (str === str.toUpperCase()) && (str !== str.toLowerCase())
   }
 }
 
@@ -752,114 +612,6 @@ function fixMissingAmpsAndSemicols (inputString) {
   return inputString
 }
 
-/**
- * addMissingSpaces - adds missing spaces after dots/colons/semicolons, unless it's URL
- * space and colon don't have restrictions for following characters
- * space after semicolon will be added only if ['&', '\xa0'] don't follow it
- * algorithm will look for "://" to acticate URL ignoring
- *
- * @param  {String} input  accepts any string
- * @return {String}        returns cleaned string
- */
-function addMissingSpaces (input) {
-  function checkExtensions (first, second, third) {
-    var threeCharExt
-    var notFound = true
-    if (existy(first) && existy(second) && existy(third)) {
-      threeCharExt = '' + first + second + third
-      for (var i = 0, len = knownExtensions.length; i < len; i++) {
-        if (
-          threeCharExt[0].toLowerCase() === knownExtensions[i][0] &&
-          threeCharExt[1].toLowerCase() === knownExtensions[i][1] &&
-          threeCharExt[2].toLowerCase() === knownExtensions[i][2]
-        ) {
-          notFound = false
-          break
-        }
-      }
-    }
-    return notFound
-  }
-
-  var x = Array.from(input)
-  var onUrlCurrently = false
-  for (var i = 0, len = x.length; i < len; i++) {
-    //
-    // situation detections
-    // ====================
-    if ((x[i] === ':') && existy(x[i + 2]) && (x[i + 1] === '/') && (x[i + 2] === '/')) {
-      onUrlCurrently = true
-    } else if ((x[i] === 'w') && existy(x[i + 2]) && (x[i + 1] === 'w') && (x[i + 2] === 'w')) {
-      onUrlCurrently = true
-    }
-    if ((x[i] === ' ') || (x[i] === '\n')) {
-      onUrlCurrently = false
-    }
-
-    //
-    // action
-    // ======
-
-    // add missing space after full stop or comma
-    if (!onUrlCurrently &&
-      (
-        (
-          (x[i] === '.') && isNotALowercaseString(x[i + 1]) &&
-          checkExtensions(x[i + 1], x[i + 2], x[i + 3])
-        ) ||
-        (
-          x[i] === ','
-        )
-      ) &&
-      !isNumeric(x[i + 1]) &&
-      (x[i + 1] !== ' ') &&
-      (x[i + 1] !== '\n') &&
-      (x[i + 1] !== undefined)
-    ) {
-      // dot/comma, not on URL, not followed by number = add space afterwards
-      x.splice(i + 1, 0, ' ')
-      len++
-    } else if (
-      onUrlCurrently &&
-      ((x[i] === '.') || (x[i] === ',')) &&
-      existy(x[i] + 2) &&
-      isNotALowercaseString(x[i + 1]) &&
-      isNotAnUppercaseString(x[i + 2])
-    ) {
-      // dot at the end of URL, there's capital case letter and lowercase letter after it
-      x.splice(i + 1, 0, ' ')
-      len++
-    }
-
-    // add missing space after semicolon
-    if (!onUrlCurrently &&
-      (x[i] === ';') &&
-      !isNumeric(x[i + 1]) &&
-      (x[i + 1] !== ' ') &&
-      (x[i + 1] !== '\n') &&
-      (x[i + 1] !== undefined) &&
-      (x[i + 1] !== '&') &&
-      (x[i + 1] !== '\xa0')
-    ) {
-      // dot, not on URL, not followed by number = add space afterwards
-      x.splice(i + 1, 0, ' ')
-      len++
-    } else if (
-      onUrlCurrently &&
-      (x[i] === ';') &&
-      existy(x[i] + 2) &&
-      isNotALowercaseString(x[i + 1]) &&
-      isNotAnUppercaseString(x[i + 2]) &&
-      (x[i + 1] !== '&') &&
-      (x[i + 1] !== '\xa0')
-    ) {
-      x.splice(i + 1, 0, ' ')
-      len++
-    }
-  }
-  return x.join('')
-}
-
 // find postcodes, replace the space within them with '\u00A0'
 function joinPostcodes (str) {
   str = str.replace(/([A-Z]{1,2}[0-9][0-9A-Z]?)\s?([0-9][A-Z]{2})/g, '$1\u00A0$2')
@@ -867,28 +619,20 @@ function joinPostcodes (str) {
 }
 
 module.exports = {
-  defaultsObj: defaultsObj,
-  doRemoveInvisibles: doRemoveInvisibles,
-  doRemoveSoftHyphens: doRemoveSoftHyphens,
-  doDecodeBRs: doDecodeBRs,
-  encryptBoldItalic: encryptBoldItalic,
-  decryptBoldItalic: decryptBoldItalic,
-  trimTrailingSpaces: trimTrailingSpaces,
-  trimTrailingLineBreaks: trimTrailingLineBreaks,
-  doCollapseWhiteSpace: doCollapseWhiteSpace,
-  fixedCharCodeAt: fixedCharCodeAt,
-  doConvertEntities: doConvertEntities,
-  doRemoveWidows: doRemoveWidows,
-  doRemoveWidowDashes: doRemoveWidowDashes,
-  doConvertDashes: doConvertDashes,
-  doAddSpaceAfterDashes: doAddSpaceAfterDashes,
-  doInterpretErroneousNBSP: doInterpretErroneousNBSP,
-  fixMissingAmpsAndSemicols: fixMissingAmpsAndSemicols,
-  isNumeric: isNumeric,
-  isLetter: isLetter,
-  isNotAnUppercaseString: isNotAnUppercaseString,
-  isNotALowercaseString: isNotALowercaseString,
-  addMissingSpaces: addMissingSpaces,
-  joinPostcodes: joinPostcodes,
-  knownExtensions: knownExtensions
+  defaultsObj,
+  doDecodeBRs,
+  encryptBoldItalic,
+  decryptBoldItalic,
+  trimTrailingSpaces,
+  fixedCharCodeAt,
+  doConvertEntities,
+  doRemoveWidows,
+  doRemoveWidowDashes,
+  doConvertDashes,
+  doInterpretErroneousNBSP,
+  fixMissingAmpsAndSemicols,
+  isNumeric,
+  isLetter,
+  isLowercaseLetter,
+  isUppercaseLetter
 }

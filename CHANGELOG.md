@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.32.0] - 2017-09-06
+
+The previous algorithm was aiming first to be easy to read and easy to code up. In this rebase, the first is efficiency and correctness. And code readability is least important.
+
+I separated the operations into three stages: **the first stage** is blanket operations to prepare text, like decoding and broken code patching. **Second stage** is new, we traverse the string character-by-character and perform all the operations that can be performed at such level. **Third stage** is the rest of operations, a set of consecutive functions mutating the result one-after-another until it's done.
+
+This second stage relieved us from roughly half of the blanked functions that previously mutated the string again and again. Now, all deletion/insertion procedures are recorded during (a single) traversal in Step 2, then string is crunched in one go. It's done using combo of [string-slices-array-push](https://github.com/codsen/string-slices-array-push) and [string-replace-slices-array](https://github.com/codsen/string-replace-slices-array).
+
+### Changed
+- ✨ Reviewed and rewrote as much code as I could according to the best of my best current undestanding of performance and best practices. Detergent is nearly two years old and all that time I have been learning things.
+### Added
+- ✨ More extensions to be recognised
+### Removed
+- 💥 `lower-case` depenency
+- 💥 `upper-case` depenency
+
 ## [2.31.0] - 2017-08-28
 ### Added
 - ✨ `opts.convertDotsToEllipsis` - now you can customise, do you want three dots converted to horizontal ellipsis, `&hellip;`, or not.
@@ -107,3 +123,4 @@ Additionally, the algorithm is now checking, does any of the known extensions fo
 [2.29.0]: https://github.com/codsen/detergent/compare/v2.28.0...v2.29.0
 [2.30.0]: https://github.com/codsen/detergent/compare/v2.29.0...v2.30.0
 [2.31.0]: https://github.com/codsen/detergent/compare/v2.30.0...v2.31.0
+[2.32.0]: https://github.com/codsen/detergent/compare/v2.31.0...v2.32.0

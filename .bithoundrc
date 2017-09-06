@@ -7,9 +7,11 @@
   "dependencies": {
     "mute": [
       "coveralls",
+      "faucet",
       "husky",
       "lodash.isplainobject",
-      "nyc"
+      "nyc",
+      "tap-bail"
     ]
   },
   "test": [

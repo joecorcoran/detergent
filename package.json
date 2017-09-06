@@ -6,7 +6,8 @@
   "scripts": {
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "precommit": "npm test",
-    "test": "standard && nyc --reporter=html --reporter=text ava"
+    "test": "standard && nyc --reporter=html --reporter=text node test",
+    "t": "node test | tap-bail | faucet"
   },
   "repository": "codsen/detergent",
   "keywords": [
@@ -34,24 +35,27 @@
   },
   "homepage": "https://github.com/codsen/detergent#readme",
   "dependencies": {
-    "check-types-mini": "^2.4.0",
+    "check-types-mini": "^2.4.1",
     "curl-quotes": "^0.1.0",
-    "easy-replace": "^2.10.0",
-    "he": "^1.0.0",
+    "easy-replace": "^2.10.2",
+    "he": "^1.1.1",
     "lodash.isplainobject": "*",
-    "lower-case": "^1.1.4",
-    "string": "^3.3.1",
+    "string": "^3.3.3",
+    "string-collapse-white-space": "^2.1.0",
+    "string-replace-slices-array": "^1.3.1",
+    "string-slices-array-push": "^1.3.3",
     "typographic-en-dashes": "^1.0.1",
-    "unicode-dragon": "^0.1.3",
-    "upper-case": "^1.1.3"
+    "unicode-dragon": "^0.1.3"
   },
   "devDependencies": {
-    "ava": "^0.22.0",
     "coveralls": "*",
+    "faucet": "*",
     "husky": "*",
     "nyc": "*",
-    "object-boolean-combinations": "^1.9.1",
-    "standard": "^10.0.0"
+    "object-boolean-combinations": "^1.9.3",
+    "standard": "^10.0.3",
+    "tap-bail": "*",
+    "tape": "^4.8.0"
   },
   "ava": {
     "verbose": true
