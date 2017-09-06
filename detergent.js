@@ -109,6 +109,9 @@ function detergent (str, o) {
 
   var onUrlCurrently = false
   var numCode
+  var scriptTagStarts = null
+  var allOK = true // global flipswitch that's activated where we need to skip
+  // all the checking, for example within <script> tags.
   // ================= xx =================
   // We can't traverse backwards because of URL detection.
   // It would not work easily that way.
@@ -129,7 +132,7 @@ function detergent (str, o) {
     // for performance reasons, we won't iterate the invisibles array, but if-else
     // over the values.
     numCode = str[i].codePointAt(0)
-    if (numCode < 32) {
+    if ((numCode < 32) && allOK) {
       if (numCode < 9) {
         if (numCode === 3) {
           // that's \u0003, END OF TEXT - replace with line break
@@ -157,7 +160,7 @@ function detergent (str, o) {
         // numCodes: [14;31] - remove these control chars
         rangesArr.add(i, i + 1)
       }
-    } else if ((numCode > 126) && (numCode < 160)) {
+    } else if ((numCode > 126) && (numCode < 160) && allOK) {
       // C1 group
       if (numCode !== 133) {
         // over thirty characters, so they are statistically more likely to happen:
@@ -166,10 +169,10 @@ function detergent (str, o) {
         // only codepoint 133, statistically less probable so comes second:
         rangesArr.add(i, i + 1, o.removeLineBreaks ? '' : '\n')
       }
-    } else if ((numCode === 8232) || (numCode === 8233)) {
+    } else if (((numCode === 8232) || (numCode === 8233)) && allOK) {
       // '\u2028', '\u2029'
       rangesArr.add(i, i + 1, o.removeLineBreaks ? '' : '\n')
-    } else if ((numCode === 44) || (numCode === 59)) {
+    } else if (((numCode === 44) || (numCode === 59)) && allOK) {
       // IF COMMA (,) OR SEMICOLON (;)
       if (str[i - 1] === ' ') {
         // march backwards
@@ -180,7 +183,7 @@ function detergent (str, o) {
           }
         }
       }
-    } else if (numCode === 58) {
+    } else if ((numCode === 58) && allOK) {
       // IF COLON (:)
       //
       // URL detection
@@ -188,7 +191,7 @@ function detergent (str, o) {
       if (existy(str[i + 2]) && (str[i + 1] === '/') && (str[i + 2] === '/')) {
         onUrlCurrently = true
       }
-    } else if (numCode === 119) {
+    } else if ((numCode === 119) && allOK) {
       // IF LETTER W
       //
       // URL detection
@@ -199,7 +202,7 @@ function detergent (str, o) {
     } else if (numCode === 32) {
       // IF SPACE CHARACTER
       onUrlCurrently = false
-    } else if (numCode === 8212) {
+    } else if ((numCode === 8212) && allOK) {
       // IF M DASH
       //
       // add a space after m dash, '\u2014' if there's preceding-one
@@ -209,7 +212,7 @@ function detergent (str, o) {
       ) {
         rangesArr.add(i + 1, i + 1, ' ')
       }
-    } else if (numCode === 8211) {
+    } else if ((numCode === 8211) && allOK) {
       // IF N DASH
       //
       // add a space after n dash, '\u2013' if there's preceding-one
@@ -219,7 +222,7 @@ function detergent (str, o) {
       ) {
         rangesArr.add(i + 1, i + 1, ' ')
       }
-    } else if (numCode === 45) {
+    } else if ((numCode === 45) && allOK) {
       // IF MINUS SIGN, codepoint 45
       // add space after minus/dash character if there's nbsp or space in front of it,
       // but the next character is not currency or digit.
@@ -244,6 +247,38 @@ function detergent (str, o) {
       ) {
         rangesArr.add(i, i, o.removeLineBreaks ? ' ' : '\n') // adding on current index will still insert right in front of it
         // to add after, add on next index
+      }
+      // Catch opening script tag, "<script"
+      if (str[i + 1] + str[i + 2] + str[i + 3] + str[i + 4] + str[i + 5] + str[i + 6] === 'script') {
+        scriptTagStarts = i
+        allOK = false
+      }
+    } else if (numCode === 47) {
+      // IF RIGHT SLASH, /
+      // Catch closing script tag, "/script"
+      // Specifically we don't rely on left bracket because there might be spaces
+      // between opening < and right slash (of "/script").
+      // But we don't care about opening part of the tag, it will go anyway.
+      // We care about closing </script> closing bracket, ">". We'll delete until here.
+      if (
+        (scriptTagStarts !== null) &&
+        (str[i + 1] + str[i + 2] + str[i + 3] + str[i + 4] + str[i + 5] + str[i + 6] === 'script')
+      ) {
+        allOK = true
+        if (str[i + 7] === '>') {
+          rangesArr.add(scriptTagStarts, i + 8)
+        } else if (str[i + 7] === undefined) {
+          rangesArr.add(scriptTagStarts, i + 7)
+        } else {
+          // traverse forward and find the bloody closing bracket
+          for (let y = i + 7, leny = str.length; y < leny; y++) {
+            if ((str[y] === '>') || str[y + 1] === undefined) {
+              rangesArr.add(scriptTagStarts, y + 1)
+              break
+            }
+          }
+        }
+        scriptTagStarts = null
       }
     } else if (numCode === 8202) {
       // replace all hairspace chars, '\u200A' with spaces
@@ -354,7 +389,8 @@ function detergent (str, o) {
         (str[i + 1] !== ' ') &&
         (str[i + 1] !== '\n') &&
         (str[i + 1] !== '&') &&
-        (str[i + 1] !== '\xa0')
+        (str[i + 1] !== '\xa0') &&
+        allOK
       ) {
         rangesArr.add(i + 1, i + 1, ' ')
       }

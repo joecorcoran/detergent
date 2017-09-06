@@ -3711,6 +3711,78 @@ test('32.01 - adds missing spaces after stripping UL & LI tags', function (t) {
 })
 
 // ==============================
+// 33. Stripping script tags with their contents
+// ==============================
+
+test('33.01 - strips <script> tags with contents between opening and closing tag', function (t) {
+  mixer({
+    removeLineBreaks: false,
+    removeWidows: true,
+    convertDotsToEllipsis: true
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('a<script>var i = 0;</script>b', elem),
+      'ab',
+      '33.01.01 - tightly surrounded by letters'
+    )
+    t.is(
+      detergent('<script>var i = 0;</script>b', elem),
+      'b',
+      '33.01.02'
+    )
+    t.is(
+      detergent('a<script>var i = 0;</script>', elem),
+      'a',
+      '33.01.03'
+    )
+    t.is(
+      detergent('<script>var i = 0;</script>', elem),
+      '',
+      '33.01.04 - total wipeout'
+    )
+  })
+  t.end()
+})
+
+test('33.02 - strips <script> tags with whitespace within closing tags', function (t) {
+  mixer({
+    removeLineBreaks: false,
+    removeWidows: true,
+    convertDotsToEllipsis: true
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('a<script>var i = 0;</script        >b', elem),
+      'ab',
+      '33.02'
+    )
+  })
+  t.end()
+})
+
+test('33.03 - sneaky case', function (t) {
+  mixer({
+    removeLineBreaks: false,
+    removeWidows: true,
+    convertDotsToEllipsis: true
+  })
+  .forEach(function (elem) {
+    t.is(
+      detergent('a<script>var i = 0;</script        ', elem),
+      'a',
+      '33.03.01'
+    )
+    t.is(
+      detergent('a<script>var i = 0;</script', elem),
+      'a',
+      '33.03.02'
+    )
+  })
+  t.end()
+})
+
+// ==============================
 // 99. UTIL
 // ==============================
 
