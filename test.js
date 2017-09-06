@@ -9,6 +9,10 @@ const util = require('./util')
 const defaultsObj = util.defaultsObj
 const obc = require('object-boolean-combinations')
 
+const isLetter = util.isLetter
+const isLowercaseLetter = util.isLowercaseLetter
+const isUppercaseLetter = util.isUppercaseLetter
+
 function mixer (ref) {
   return obc(defaultsObj, ref)
 }
@@ -3703,5 +3707,96 @@ test('32.01 - adds missing spaces after stripping UL & LI tags', function (t) {
       '32.01.03'
     )
   })
+  t.end()
+})
+
+// ==============================
+// 99. UTIL
+// ==============================
+
+test('99.01 - UTIL - isLowercaseLetter() - detects the case of the given character', function (t) {
+  t.is(
+    isLowercaseLetter('a'),
+    true,
+    '99.01.01'
+  )
+  t.is(
+    isLowercaseLetter('A'),
+    false,
+    '99.01.02'
+  )
+  t.is(
+    isLowercaseLetter('1'),
+    false,
+    '99.01.03'
+  )
+  t.is(
+    isLowercaseLetter('Д'),
+    false,
+    '99.01.04'
+  )
+  t.is(
+    isLowercaseLetter('ж'),
+    true,
+    '99.01.05'
+  )
+  t.end()
+})
+
+test('99.02 - UTIL - isUppercaseLetter() - detects the case of the given character', function (t) {
+  t.is(
+    isUppercaseLetter('a'),
+    false,
+    '99.02.01'
+  )
+  t.is(
+    isUppercaseLetter('A'),
+    true,
+    '99.02.02'
+  )
+  t.is(
+    isUppercaseLetter('1'),
+    false,
+    '99.02.03'
+  )
+  t.is(
+    isUppercaseLetter('Д'),
+    true,
+    '99.02.04'
+  )
+  t.is(
+    isUppercaseLetter('ж'),
+    false,
+    '99.02.05'
+  )
+  t.end()
+})
+
+test('99.03 - detects is the character a letter', function (t) {
+  t.is(
+    isLetter('a'),
+    true,
+    '99.03.01'
+  )
+  t.is(
+    isLetter('A'),
+    true,
+    '99.03.02'
+  )
+  t.is(
+    isLetter(' '),
+    false,
+    '99.03.03'
+  )
+  t.is(
+    isLetter(''),
+    false,
+    '99.03.04'
+  )
+  t.is(
+    isLetter(1),
+    false,
+    '99.03.05'
+  )
   t.end()
 })
