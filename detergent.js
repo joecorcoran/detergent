@@ -110,6 +110,7 @@ function detergent (str, o) {
   var onUrlCurrently = false
   var numCode
   var scriptTagStarts = null
+  let lastIndexOfTheLastOfDotsInRow = null
   var allOK = true // global flipswitch that's activated where we need to skip
   // all the checking, for example within <script> tags.
   // ================= xx =================
@@ -146,7 +147,9 @@ function detergent (str, o) {
         rangesArr.add(i, i + 1, ' ')
       } else if (numCode === 10) {
         // 10 - "\u000A" - line feed, LF
-        rangesArr.add(i, i + 1, o.removeLineBreaks ? ' ' : '\n')
+        if (o.removeLineBreaks) {
+          rangesArr.add(i, i + 1, ' ')
+        }
         //
         // URL detection:
         //
@@ -201,7 +204,35 @@ function detergent (str, o) {
       }
     } else if (numCode === 32) {
       // IF SPACE CHARACTER
-      onUrlCurrently = false
+    } else if (numCode === 46) {
+      // IF DOT CHARACTER
+      // THERE'S MORE LOGIC BELOW IN STEP #2 BTW
+      //
+      if (
+        str[i + 2] !== undefined &&
+        ((str[i + 1] + str[i + 2]) === '..') &&
+        ((lastIndexOfTheLastOfDotsInRow === null) || (lastIndexOfTheLastOfDotsInRow < i))
+      ) {
+        if (
+          (
+            (str[i + 3] === undefined) || (str[i + 3] !== '.')
+          )
+        ) {
+          // there are only three dots, that's cool
+          if (o.convertDotsToEllipsis) {
+            rangesArr.add(i, i + 3, '\u2026')
+          }
+        } else {
+          // there's bunch of dots, so let's bail and make sure all this train of
+          // dots is immune from conversion to ellipses
+          for (let y = i + 3; y < len; y++) {
+            if ((str[y] !== '.') || (str[y + 1] === undefined)) {
+              lastIndexOfTheLastOfDotsInRow = y
+              break
+            }
+          }
+        }
+      }
     } else if ((numCode === 8212) && allOK) {
       // IF M DASH
       //
@@ -237,7 +268,7 @@ function detergent (str, o) {
         // add space after it:
         rangesArr.add(i + 1, i + 1, ' ')
       }
-    } else if (numCode === 60) {
+    } else if ((numCode === 60) && allOK) {
       // IF LESS THAN SIGN, <
       // add line breaks in front of </ul> and <li>.
       // This is to make HTML lists look nicer after tag-stripping.
@@ -253,7 +284,7 @@ function detergent (str, o) {
         scriptTagStarts = i
         allOK = false
       }
-    } else if (numCode === 47) {
+    } else if ((numCode === 47) && !allOK) {
       // IF RIGHT SLASH, /
       // Catch closing script tag, "/script"
       // Specifically we don't rely on left bracket because there might be spaces
@@ -271,7 +302,7 @@ function detergent (str, o) {
           rangesArr.add(scriptTagStarts, i + 7)
         } else {
           // traverse forward and find the bloody closing bracket
-          for (let y = i + 7, leny = str.length; y < leny; y++) {
+          for (let y = i + 7; y < len; y++) {
             if ((str[y] === '>') || str[y + 1] === undefined) {
               rangesArr.add(scriptTagStarts, y + 1)
               break
@@ -279,6 +310,11 @@ function detergent (str, o) {
           }
         }
         scriptTagStarts = null
+      }
+    } else if ((numCode === 8230) && allOK) {
+      // IF UNENCODED HORIZONTAL ELLIPSIS CHARACTER &hellip;
+      if (!o.convertDotsToEllipsis) {
+        rangesArr.add(i, i + 1, '...')
       }
     } else if (numCode === 8202) {
       // replace all hairspace chars, '\u200A' with spaces
@@ -294,6 +330,10 @@ function detergent (str, o) {
       if (o.removeSoftHyphens) {
         rangesArr.add(i, i + 1)
       }
+    }
+
+    if (lastIndexOfTheLastOfDotsInRow < i) {
+      lastIndexOfTheLastOfDotsInRow = null
     }
 
     // PART II.
@@ -358,7 +398,12 @@ function detergent (str, o) {
         }
 
         // 2. REMOVING SPACES BEFORE IT:
-        if ((str[i - 1] !== undefined) && (str[i - 1].trim() === '')) {
+        if (
+          (str[i - 1] !== undefined) &&
+          (str[i - 1].trim() === '') &&
+          (str[i + 1] !== '.') &&
+          ((str[i - 2] === undefined) || (str[i - 2] !== '.')) // that's for cases: "aaa. . " < observe second dot.
+        ) {
           // march backwards
           for (y = i - 1; y--;) {
             if (str[y].trim() !== '') {
@@ -397,7 +442,6 @@ function detergent (str, o) {
       // -----
     }
   }
-
   // apply the result:
   if (existy(rangesArr.current()) && rangesArr.current().length > 0) {
     str = replaceSlicesArray(str, rangesArr.current())
@@ -417,7 +461,7 @@ function detergent (str, o) {
 
   // ================= xx =================
 
-  // now BR's are secure, let's strip all the remaining HTML
+  // now that tags are secure, let's strip all the remaining HTML
   str = S(str).stripTags().s
 
   // ================= xx =================
@@ -453,6 +497,8 @@ function detergent (str, o) {
   // optionally, encode non-ASCII characters into named entities (on by default)
   if (o.convertEntities) {
     str = doConvertEntities(str, o.dontEncodeNonLatin)
+    str = S(str).replaceAll('&mldr;', '&hellip;').s
+    str = S(str).replaceAll('&apos;', '\'').s
   }
 
   // ================= xx =================
@@ -462,38 +508,10 @@ function detergent (str, o) {
   // in numeric-one:
 
   if (o.convertEntities) {
-    let numerics = Object.keys(numericEnt)
+    var numerics = Object.keys(numericEnt)
     for (y = numerics.length; y--;) { // loop backwards for better efficiency
       str = S(str).replaceAll(numerics[y], numericEnt[numerics[y]]).s
     }
-  }
-
-  // ================= xx =================
-
-  // three dots to ellipsis conversion:
-
-  if (o.convertDotsToEllipsis) {
-    if (o.convertEntities) {
-      str = S(str).replaceAll('...', '&hellip;').s
-    } else {
-      str = S(str).replaceAll('...', '\u2026').s
-    }
-  }
-
-  // following don't concern dots so `o.convertDotsToEllipsis` setting does not matter:
-  if (o.convertEntities) {
-    str = S(str).replaceAll('&mldr;', '&hellip;').s
-    str = S(str).replaceAll('\u2026', '&hellip;').s
-  } else {
-    str = S(str).replaceAll('&mldr;', '\u2026').s
-    str = S(str).replaceAll('&hellip;', '\u2026').s
-  }
-
-  // ================= xx =================
-
-  // now restore any encrypted b, strong, em and i tags - on by default
-  if (o.keepBoldEtc) {
-    str = decryptBoldItalic(str)
   }
 
   // ================= xx =================
@@ -509,8 +527,12 @@ function detergent (str, o) {
 
   // ================= xx =================
 
-  // also, restore single apostrophes if any were encoded:
-  str = S(str).replaceAll('&apos;', '\'').s
+  // now restore any encrypted b, strong, em and i tags - on by default
+  if (o.keepBoldEtc) {
+    str = decryptBoldItalic(str)
+  }
+
+  // ================= xx =================
 
   // final trims:
   str = doCollapseWhiteSpace(str)

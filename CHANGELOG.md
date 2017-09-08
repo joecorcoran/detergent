@@ -4,21 +4,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [2.32.0] - 2017-09-06
+## [2.32.0] - 2017-09-07
 
-The previous algorithm was aiming first to be easy to read and easy to code up. In this rebase, the first is efficiency and correctness. And code readability is least important.
+The previous algorithm was not aiming for anything specific, which led to a goal of easy to read and develop code. Rest was secondary (correctness aside of course). In this rebase issue, the main aim is efficiency (besides correctness): both when ran by JS engine as well as algorithm's in general.
 
-I separated the operations into three stages: **the first stage** is blanket operations to prepare text, like decoding and broken code patching. **Second stage** is new, we traverse the string character-by-character and perform all the operations that can be performed at such level. **Third stage** is the rest of operations, a set of consecutive functions mutating the result one-after-another until it's done.
+I implemented JS optimisations like `for` looping backward (optimisation for JS engine) and general ones like cutting down on operations and making them only when it's the best time to do so. I reviewed all locations of all functions and weighed are they necessary at all (or can they be replaced by something more efficient).
 
-This second stage relieved us from roughly half of the blanked functions that previously mutated the string again and again. Now, all deletion/insertion procedures are recorded during (a single) traversal in Step 2, then string is crunched in one go. It's done using combo of [string-slices-array-push](https://github.com/codsen/string-slices-array-push) and [string-replace-slices-array](https://github.com/codsen/string-replace-slices-array).
+I separated all the operations performed on input into three stages: **the first stage** is blanket operations to prepare text, like decoding and broken code patching. **Second stage** is new, we traverse the string character-by-character and perform all the operations that can be performed at such level. **Third stage** is the rest, a set of consecutive functions mutating the result one-after-another until it's done.
 
-### Changed
-- ✨ Reviewed and rewrote as much code as I could according to the best of my best current undestanding of performance and best practices. Detergent is nearly two years old and all that time I have been learning things.
+This second stage relieved us from roughly half of the blanked functions that previously mutated the string again and again. Now, all deletion/insertion procedures are recorded during (a single) traversal in Step 2; then a string is crunched in one go. It's done using combo of [string-slices-array-push](https://github.com/codsen/string-slices-array-push) and [string-replace-slices-array](https://github.com/codsen/string-replace-slices-array).
+
 ### Added
-- ✨ More extensions to be recognised
+- ✨ Horizontal ellipsis is converted only when there are three dots in one lump, not more and setting is on. Gung-ho regex replacements would not do this correctly by the way.
+- ✨ Horizontal ellipsis switch makes the journey strictly either way: either all kinds of what could be interpreted as ellipsis are converted to fancy &hellip; (or unencoded character if the encoding is turned off) OR those above are converted to dot dot dot. There are no gray cases. Unlike before.
+- ✨ Script tags are now stripped together with their contents. Solves #15, thanks @nacimgoura
+- ✨ More tests to thoroughly prove that single quotes in any format (`'`) are not encoded. Ever. They can be converted to fancy single quote, but in a single straight shape, they should always stay the same.
 ### Removed
-- 💥 `lower-case` depenency
-- 💥 `upper-case` depenency
+- 💥 `upper-case` dependency. It was buggy, by the way, reporting '1' as uppercase. For those concerned that didn't affect Detergent's correctness.
+- 💥 `lower-case` dependency. It was buggy as well. Same thing.
 
 ## [2.31.0] - 2017-08-28
 ### Added

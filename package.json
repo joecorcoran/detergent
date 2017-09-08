@@ -52,7 +52,7 @@
     "faucet": "*",
     "husky": "*",
     "nyc": "*",
-    "object-boolean-combinations": "^1.9.3",
+    "object-boolean-combinations": "^1.9.4",
     "standard": "^10.0.3",
     "tap-bail": "*",
     "tape": "^4.8.0"

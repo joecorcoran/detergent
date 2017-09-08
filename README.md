@@ -68,18 +68,18 @@ Optionally, you can customise the Detergent's functionality by providing an opti
 
 ```js
 detergent('text to clean', {
-  removeWidows: true,             // replace the last space in paragraph with &nbsp;
-  convertEntities: true,          // encode all non-ASCII chars
-  convertDashes: true,            // typographically-correct the n/m-dashes
-  convertApostrophes: true,       // typographically-correct the apostrophes
-  replaceLineBreaks: true,        // replace all line breaks with BR's
-  removeLineBreaks: false,        // put everything on one line
-  useXHTML: true,                 // add closing slashes on BR's
-  removeSoftHyphens: true,        // remove character which encodes to &#173; or &shy;
-  dontEncodeNonLatin: true,       // skip non-latin character encoding
-  keepBoldEtc: true,              // any bold, strong, i or em tags are stripped of attributes and retained
-  addMissingSpaces: true,         // adds missing spaces after dots/colons/semicolons, unless it's URL
-  convertDotsToEllipsis: true     // convert three dots into &hellip; - ellipsis character
+  removeWidows: 1,             // replace the last space in paragraph with &nbsp;
+  convertEntities: 1,          // encode all non-ASCII chars
+  convertDashes: 1,            // typographically-correct the n/m-dashes
+  convertApostrophes: 1,       // typographically-correct the apostrophes
+  replaceLineBreaks: 1,        // replace all line breaks with BR's
+  removeLineBreaks: 0,         // put everything on one line
+  useXHTML: 1,                 // add closing slashes on BR's
+  removeSoftHyphens: 1,        // remove character which encodes to &#173; or &shy;
+  dontEncodeNonLatin: 1,       // skip non-latin character encoding
+  keepBoldEtc: 1,              // any bold, strong, i or em tags are stripped of attributes and retained
+  addMissingSpaces: 1,         // adds missing spaces after dots/colons/semicolons, unless it's URL
+  convertDotsToEllipsis: 1     // convert three dots into &hellip; - ellipsis character
 });
 ```
 
@@ -98,7 +98,7 @@ Using custom settings object:
 
 ```js
 detergent('clean this text £',{
-    convertEntities: false
+  convertEntities: 0
 });
 // > 'clean this text £'
 ```
