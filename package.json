@@ -6,7 +6,7 @@
   "scripts": {
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "precommit": "npm test",
-    "test": "standard && nyc --reporter=html --reporter=text node test | faucet",
+    "test": "standard && nyc --reporter=html --reporter=text node test",
     "t": "node test | tap-bail | faucet"
   },
   "repository": "codsen/detergent",
