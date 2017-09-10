@@ -1123,7 +1123,7 @@ test('05.10 - glues UK postcodes', function (t) {
   t.end()
 })
 
-test.only('05.11 - nbsp\'s not added within hidden HTML tags', function (t) {
+test('05.11 - nbsp\'s not added within hidden HTML tags', function (t) {
   allCombinations.forEach(function (opts) {
     t.is(
       detergent('aaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1br /@@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1br /@@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1br /@@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1br /@@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', opts).res,
