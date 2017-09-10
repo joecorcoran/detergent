@@ -539,7 +539,12 @@ function detergent (str, o) {
   str = trimTrailingSpaces(str)
 
   // ================= xx =================
-  return str
+  return {
+    res: str
+  }
 }
 
-module.exports = detergent
+module.exports = {
+  detergent,
+  opts: defaultsObj
+}

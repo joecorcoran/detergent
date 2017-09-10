@@ -1,7 +1,5 @@
 # Detergent
 
-<a href="https://github.com/feross/standard" style="float: right; padding: 0 0 20px 20px;"><img src="https://cdn.rawgit.com/feross/standard/master/sticker.svg" alt="Standard JavaScript" width="100" align="right"></a>
-
 <a href="https://detergent.io" style="float: left; padding: 0 20px 20px 0;"><img src="https://cdn.rawgit.com/codsen/detergent/edaacff8/media/detergent_200x200.png" alt="Detergent.io" width="150" align="left"></a>
 
 All-in-one: HTML special character encoder, invisible character cleaner and English style improvement tool - and fully customisable.
@@ -29,6 +27,12 @@ If you don't know any JavaScript, calm down, close this web page and continue to
 $ npm install --save detergent
 ```
 
+```js
+const detergent = require('detergent').detergent
+// there's also default options object which you can require via:
+// const detergentDefaultOptions = require('detergent').opts
+```
+
 ## Table of Contents
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
@@ -37,8 +41,12 @@ $ npm install --save detergent
 
 - [Rationale](#rationale)
 - [API](#api)
+  - [API - Input for `detergent()`](#api---input-for-detergent)
+  - [Options object](#options-object)
+  - [API - Output object](#api---output-object)
 - [Example](#example)
 - [Contributing & testing](#contributing--testing)
+- [Why Tape and not AVA for a unit tests](#why-tape-and-not-ava-for-a-unit-tests)
 - [Licence](#licence)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -64,56 +72,108 @@ Extra features are:
 
 ## API
 
-Optionally, you can customise the Detergent's functionality by providing an options object. Here's an overview of the default settings object's values.
+Since `v.3` release, the main function is exported in a plain object under key `detergent`, so please import it like that:
+
+```js
+const detergent = require('detergent').detergent;
+// you can request the default options object as well:
+const defaultOpts = require('detergent').opts;
+```
+
+### API - Input for `detergent()`
+
+Input argument   | Type     | Obligatory? | Description
+-----------------|----------|-------------|-----------
+`input`          | String   | yes         | The string you want to clean.
+`options`        | Object   | no          | Options object. See its key arrangement below.
+
+### Options object
+
+options object's key    | Type of its value | Default     | Description
+------------------------|-------------------|-------------|----------------------
+{                       |                   |             |
+`removeWidows`          | Boolean           | True        | replace the last space in paragraph with `&nbsp;`
+`convertEntities`       | Boolean           | True        | encode all non-ASCII chars
+`convertDashes`         | Boolean           | True        | typographically-correct the n/m-dashes
+`convertApostrophes`    | Boolean           | True        | typographically-correct the apostrophes
+`replaceLineBreaks`     | Boolean           | True        | replace all line breaks with `br`'s
+`removeLineBreaks`      | Boolean           | False       | put everything on one line
+`useXHTML`              | Boolean           | True        | add closing slashes on `br`'s
+`removeSoftHyphens`     | Boolean           | True        | remove character which encodes to `&#173;` or `&shy;`
+`dontEncodeNonLatin`    | Boolean           | True        | skip non-latin character encoding
+`keepBoldEtc`           | Boolean           | True        | any `bold`, `strong`, `i` or `em` tags are stripped of attributes and retained
+`addMissingSpaces`      | Boolean           | True        | adds missing spaces after dots/colons/semicolons, unless it's URL
+`convertDotsToEllipsis` | Boolean           | True        | convert three dots into `&hellip;` - ellipsis character
+}                       |                   |             |
+
+Here it is in one place:
 
 ```js
 detergent('text to clean', {
-  removeWidows: 1,             // replace the last space in paragraph with &nbsp;
-  convertEntities: 1,          // encode all non-ASCII chars
-  convertDashes: 1,            // typographically-correct the n/m-dashes
-  convertApostrophes: 1,       // typographically-correct the apostrophes
-  replaceLineBreaks: 1,        // replace all line breaks with BR's
-  removeLineBreaks: 0,         // put everything on one line
-  useXHTML: 1,                 // add closing slashes on BR's
-  removeSoftHyphens: 1,        // remove character which encodes to &#173; or &shy;
-  dontEncodeNonLatin: 1,       // skip non-latin character encoding
-  keepBoldEtc: 1,              // any bold, strong, i or em tags are stripped of attributes and retained
-  addMissingSpaces: 1,         // adds missing spaces after dots/colons/semicolons, unless it's URL
-  convertDotsToEllipsis: 1     // convert three dots into &hellip; - ellipsis character
+  removeWidows: true,
+  convertEntities: true,
+  convertDashes: true,
+  convertApostrophes: true,
+  replaceLineBreaks: true,
+  removeLineBreaks: false,
+  useXHTML: true,
+  removeSoftHyphens: true,
+  dontEncodeNonLatin: true,
+  keepBoldEtc: true,
+  addMissingSpaces: true,
+  convertDotsToEllipsis: true
 });
 ```
 
 The default settings are specifically chosen to be the most common scenario. Unless you want something specific, default set is a wise choice.
+
+You can also set the options to numeric `0` or `1`, that's shorter than Boolean `true` or `false`.
+
+### API - Output object
+
+output object's key | Type of its value | Description
+--------------------|-------------------|-----------
+{                   |                   |
+`res`               | String            | The cleaned string
+}                   |                   |
 
 ## Example
 
 Simple encoding using default settings:
 
 ```js
-detergent('clean this text £');
+const detergent = require('detergent').detergent;
+let res = detergent('clean this text £').res;
+console.log(res);
 // > 'clean this text &pound;'
 ```
 
 Using custom settings object:
 
 ```js
-detergent('clean this text £',{
+const detergent = require('detergent').detergent;
+let result = detergent('clean this text £',{
   convertEntities: 0
-});
+}).res;
+console.log(result);
 // > 'clean this text £'
 ```
 
 ## Contributing & testing
 
-Flush the repo onto your SSD and have a butchers at `test.js`. It's very minimalistic testing setup using [AVA](https://github.com/avajs/ava) and [Istanbul CLI](https://github.com/istanbuljs/nyc). Currently, Detergent has twelve options and each option can affect the output of the library. This means, we have to test each feature against every possible combination of the settings - that's 2^12=4096 tests for each unit test! I coded up an auxiliary library, [object-boolean-combinations](https://github.com/revelt/object-boolean-combinations) which generates an array of all possible options' variations and feeds that into loops ran by AVA. See its [readme file](https://github.com/revelt/object-boolean-combinations) to learn more how it works.
+Flush the repo onto your SSD and have a butchers at `test.js`. It's very minimalistic testing setup using [Tape](https://www.npmjs.com/package/tape) and [Istanbul CLI](https://github.com/istanbuljs/nyc). Currently, Detergent has twelve options and each option can affect the output of the library. This means, we have to test each feature against every possible combination of the settings - that's 2^12=4096 tests for each unit test! I coded up an auxiliary library, [object-boolean-combinations](https://github.com/codsen/object-boolean-combinations) which generates an array of all possible options' variations and feeds that into loops ran by Tape. See its [readme file](https://github.com/codsen/object-boolean-combinations) to learn more how it works.
 
-Tests take around 15 minutes to complete on average laptop:
+Tests take around 15 minutes to complete on average laptop because there are around 250,000 assertions done:
 
 ```bash
 npm test
 ```
 
 If you want to contribute, don't hesitate. If it's a code contribution, please supplement `test.js` with tests covering your code. This library uses JS Standard notation and follows the Semver rules.
+
+## Why Tape and not AVA for a unit tests
+
+Normally I choose AVA but it does not show the output for each assertion when it is `for`-looped, so when I use AVA it looks like nothing's happening for long periods of time. Tape, on other hand, outputs something for each assertion, no matter how it's happening, test `t.` being loop'ed or not. Last time I measured performance, AVA was 10% faster than tape. However, _perceived_ speed is that matters.
 
 ## Licence
 

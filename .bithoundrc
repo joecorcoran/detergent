@@ -10,7 +10,6 @@
       "faucet",
       "husky",
       "lodash.isplainobject",
-      "nyc",
       "tap-bail"
     ]
   },

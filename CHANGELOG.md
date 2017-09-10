@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.0.0] - 2017-09-10
+### 2 Things Changed
+- ✨💥✨ Main exports of the module is not the main `detergent()` function, but an object which contains `detergent()` function and default options object as two separate keys:
+
+```js
+module.exports = {
+  detergent: detergent,
+  opts: defaultsObj
+}
+```
+
+This means, from now on, import Deterent like this:
+
+```js
+const detergent = require('detergent').detergent;
+```
+
+I'm building a new front-end for detergent.io and I want to automate the options list, that's why I need the `opts` exported.
+
+- ✨💥✨ The result of the main function `detergent()` is now not a string but an object. Result is now placed under key `res`. This is done so I can place additional info in the future, what was added or removed exactly, what kinds of invisible characters were encountered and so on. 
+
 ## [2.32.0] - 2017-09-07
 
 The previous algorithm was not aiming for anything specific, which led to a goal of easy to read and develop code. Rest was secondary (correctness aside of course). In this rebase issue, the main aim is efficiency (besides correctness): both when ran by JS engine as well as algorithm's in general.
@@ -127,3 +148,4 @@ Additionally, the algorithm is now checking, does any of the known extensions fo
 [2.30.0]: https://github.com/codsen/detergent/compare/v2.29.0...v2.30.0
 [2.31.0]: https://github.com/codsen/detergent/compare/v2.30.0...v2.31.0
 [2.32.0]: https://github.com/codsen/detergent/compare/v2.31.0...v2.32.0
+[3.0.0]: https://github.com/codsen/detergent/compare/v2.32.0...v3.0.0
