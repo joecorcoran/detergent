@@ -8,7 +8,7 @@ var curl = require('curl-quotes');
 var unicodeDragon = require('unicode-dragon');
 var numericEnt = require('./enforced-numeric-entities-list.json');
 var isObj = require('lodash.isplainobject');
-var checkTypes = require('check-types-mini');
+var checkTypes = require('check-types-mini/es5');
 var doCollapseWhiteSpace = require('string-collapse-white-space');
 var isNumeric = require('is-numeric');
 
