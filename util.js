@@ -328,18 +328,21 @@ function doConvertDashes(originalStr, widows) {
     str,
     {
       leftOutside: ' ',
+      searchFor: '\u2014',
+      rightOutsideNot: ' ',
+    },
+    '\u2014 ',
+  )
+  str = er(
+    str,
+    {
+      leftOutside: ' ',
       searchFor: '-',
       rightMaybe: '-',
       rightOutsideNot: ['$', '£', '€', '₽', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
     },
     '\u2014 ',
   )
-
-  // add space after m dash provisionally
-  str = S(str).replaceAll(' \u2014', ' \u2014 ').s
-  // add space after m dash provisionally
-  str = S(str).replaceAll(' &mdash;', ' &mdash; ').s
-
   if (widows) {
     // adding non-breaking space before ndashes:
     str = S(str).replaceAll(' \u2013', '\u00A0\u2013 ').s
@@ -467,8 +470,7 @@ function doInterpretErroneousNBSP(originalStr) {
   str = er(
     str,
     {
-      leftOutsideNot: 'n',
-      leftMaybe: '&',
+      leftOutsideNot: ['n', '&'],
       searchFor: 'bsp;',
     },
     '&nbsp;',
@@ -489,8 +491,7 @@ function doInterpretErroneousNBSP(originalStr) {
     str,
     {
       searchFor: '&ang',
-      rightMaybe: ';',
-      rightOutsideNot: 's',
+      rightOutsideNot: ['s', ';'],
     },
     '&ang;',
   )
@@ -508,8 +509,7 @@ function doInterpretErroneousNBSP(originalStr) {
     str,
     {
       searchFor: '&pi',
-      rightMaybe: ';',
-      rightOutsideNot: 'v',
+      rightOutsideNot: ['v', ';'],
     },
     '&pi;',
   )
@@ -518,7 +518,7 @@ function doInterpretErroneousNBSP(originalStr) {
     str,
     {
       searchFor: '&Pi',
-      rightMaybe: ';',
+      rightOutsideNot: ';',
     },
     '&Pi;',
   )
@@ -527,8 +527,7 @@ function doInterpretErroneousNBSP(originalStr) {
     str,
     {
       searchFor: '&sigma',
-      rightMaybe: ';',
-      rightOutsideNot: 'f',
+      rightOutsideNot: ['f', ';'],
     },
     '&sigma;',
   )
@@ -537,8 +536,7 @@ function doInterpretErroneousNBSP(originalStr) {
     str,
     {
       searchFor: '&sub',
-      rightMaybe: ';',
-      rightOutsideNot: 'e',
+      rightOutsideNot: ['e', ';'],
     },
     '&sub;',
   )
@@ -547,8 +545,7 @@ function doInterpretErroneousNBSP(originalStr) {
     str,
     {
       searchFor: '&sup',
-      rightMaybe: ';',
-      rightOutsideNot: ['f', 'e', '1', '2', '3'],
+      rightOutsideNot: ['f', 'e', '1', '2', '3', ';'],
     },
     '&sup;',
   )
@@ -557,7 +554,7 @@ function doInterpretErroneousNBSP(originalStr) {
     str,
     {
       searchFor: '&piv',
-      rightMaybe: ';',
+      rightOutsideNot: ';',
     },
     '&piv;',
   )
@@ -566,8 +563,7 @@ function doInterpretErroneousNBSP(originalStr) {
     str,
     {
       searchFor: '&theta',
-      rightMaybe: ';',
-      rightOutsideNot: 'sym',
+      rightOutsideNot: ['sym', ';'],
     },
     '&theta;',
   )
@@ -595,7 +591,7 @@ function doInterpretErroneousNBSP(originalStr) {
     {
       leftOutside: '&',
       searchFor: 'nbsp',
-      rightMaybe: ';',
+      rightOutsideNot: ';',
       i: {
         searchFor: true,
       },
@@ -621,7 +617,7 @@ function doInterpretErroneousNBSP(originalStr) {
   str = er(
     str,
     {
-      leftMaybe: '&',
+      leftOutsideNot: '&',
       searchFor: 'nbsp',
       rightOutside: ';',
       i: {
