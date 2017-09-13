@@ -20,7 +20,7 @@ const {
   doDecodeBRs,
   encryptBoldItalic,
   decryptBoldItalic,
-  trimTrailingSpaces,
+  trimLines,
   doConvertEntities,
   doRemoveWidows,
   doRemoveWidowDashes,
@@ -473,7 +473,7 @@ function detergent(inputStr, inputOpts) {
   // ================= xx =================
 
   // trim leading and trailing white space on each line
-  str = trimTrailingSpaces(str)
+  str = trimLines(str)
 
   // ================= xx =================
 
@@ -542,7 +542,7 @@ function detergent(inputStr, inputOpts) {
 
   // final trims:
   str = doCollapseWhiteSpace(str)
-  str = trimTrailingSpaces(str)
+  str = trimLines(str)
 
   // ================= xx =================
   return {

@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.1.0] - 2017-09-13
+### Added
+- ✨ Widow removal now detects Jinja/Nunjucks code. For example, if the input string starts with `{` and ends with `}`, it will automatically deactivate.
+
 ## [3.0.0] - 2017-09-13
 ### 3 Things Changed
 - ✨💥✨ Main exports of the module is not the main `detergent()` function, but an object which contains `detergent()` function and default options object as two separate keys:
@@ -150,3 +154,4 @@ Additionally, the algorithm is now checking, does any of the known extensions fo
 [2.31.0]: https://github.com/codsen/detergent/compare/v2.30.0...v2.31.0
 [2.32.0]: https://github.com/codsen/detergent/compare/v2.31.0...v2.32.0
 [3.0.0]: https://github.com/codsen/detergent/compare/v2.32.0...v3.0.0
+[3.1.0]: https://github.com/codsen/detergent/compare/v3.0.0...v3.1.0

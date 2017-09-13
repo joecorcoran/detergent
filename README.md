@@ -1,6 +1,6 @@
-# Detergent
-
 <a href="https://detergent.io" style="float: left; padding: 0 20px 20px 0;"><img src="https://cdn.rawgit.com/codsen/detergent/edaacff8/media/detergent_200x200.png" alt="Detergent.io" width="200" align="left"></a>
+
+# Detergent
 
 All-in-one: HTML special character encoder, invisible character cleaner and English style improvement tool - and fully customisable.
 
@@ -29,8 +29,8 @@ $ npm install --save detergent
 
 ```js
 // ES6 flavour:
-const detergent = require('detergent').detergent
-// or use ES6 destructuring:
+const { detergent } = require('detergent')
+// or grab everything:
 const { detergent, opts: exportedOpts } = require('./detergent.js')
 // this would give you `detergent` function and `exportedOpts` plain object with default settings.
 
@@ -81,9 +81,9 @@ Extra features are:
 Since `v.3` release, the main function is exported in a plain object under key `detergent`, so please import it like that:
 
 ```js
-const detergent = require('detergent').detergent;
+const { detergent } = require('detergent')
 // or request everything:
-const { detergent, opts: exportedOpts } = require('./detergent.js')
+const { detergent, opts: exportedOpts } = require('detergent')
 // this gives extra plain object `exportedOpts` with default options. Handy when
 // developing front-ends that consume the Detergent.
 ```
@@ -101,17 +101,17 @@ options object's key    | Type of its value | Default     | Description
 ------------------------|-------------------|-------------|----------------------
 {                       |                   |             |
 `removeWidows`          | Boolean           | True        | replace the last space in paragraph with `&nbsp;`
-`convertEntities`       | Boolean           | True        | encode all non-ASCII chars
+`convertEntities`       | Boolean           | True        | encode all non-[ASCII](https://en.wikipedia.org/wiki/ASCII) chars
 `convertDashes`         | Boolean           | True        | typographically-correct the n/m-dashes
 `convertApostrophes`    | Boolean           | True        | typographically-correct the apostrophes
 `replaceLineBreaks`     | Boolean           | True        | replace all line breaks with `br`'s
-`removeLineBreaks`      | Boolean           | False       | put everything on one line
+`removeLineBreaks`      | Boolean           | False       | put everything on one line (removes any line breaks, inserting space where necessary)
 `useXHTML`              | Boolean           | True        | add closing slashes on `br`'s
 `removeSoftHyphens`     | Boolean           | True        | remove character which encodes to `&#173;` or `&shy;`
-`dontEncodeNonLatin`    | Boolean           | True        | skip non-latin character encoding
+`dontEncodeNonLatin`    | Boolean           | True        | skip non-latin character encoding (for example, [CJK](https://en.wikipedia.org/wiki/CJK_characters), Alefbet Ivri or Arabic abjad)
 `keepBoldEtc`           | Boolean           | True        | any `bold`, `strong`, `i` or `em` tags are stripped of attributes and retained
 `addMissingSpaces`      | Boolean           | True        | adds missing spaces after dots/colons/semicolons, unless it's URL
-`convertDotsToEllipsis` | Boolean           | True        | convert three dots into `&hellip;` - ellipsis character
+`convertDotsToEllipsis` | Boolean           | True        | convert three dots into `&hellip;` - ellipsis character. When set to `false`, all encoded ellipses will be converted to three dots.
 }                       |                   |             |
 
 Here it is in one place:
@@ -137,6 +137,8 @@ The default settings are specifically chosen to be the most common scenario. Unl
 
 You can also set the options to numeric `0` or `1`, that's shorter than Boolean `true` or `false`.
 
+If you introduce any other keys from mentioned above, it will cause an error `throw`n. That's done to prevent mis-configurations, cases when you thought you set something but actually there was a typo and that setting was wrong. This is a production tool, so the stricter the settings with more errors, the better.
+
 ### API - Output object
 
 output object's key | Type of its value | Description
@@ -150,8 +152,8 @@ output object's key | Type of its value | Description
 Simple encoding using default settings:
 
 ```js
-const detergent = require('detergent').detergent;
-let res = detergent('clean this text £').res;
+const { detergent } = require('detergent');
+let { res } = detergent('clean this text £');
 console.log(res);
 // > 'clean this text &pound;'
 ```
@@ -159,11 +161,11 @@ console.log(res);
 Using custom settings object:
 
 ```js
-const detergent = require('detergent').detergent;
-let result = detergent('clean this text £',{
+const { detergent } = require('detergent');
+let { res } = detergent('clean this text £', {
   convertEntities: 0
-}).res;
-console.log(result);
+});
+console.log(res);
 // > 'clean this text £'
 ```
 
@@ -179,7 +181,7 @@ Tests take around 15 minutes to complete on average laptop because there are aro
 npm test
 ```
 
-If you want to contribute, don't hesitate. If it's a code contribution, please supplement `test.js` with tests covering your code. This library uses `airbnb-base` rules preset of `eslint` with two exceptions^ and follows the Semver rules.
+If you want to contribute, don't hesitate. If it's a code contribution, please supplement `test.js` with tests covering your code. This library uses `airbnb-base` rules preset of `eslint` with few exceptions^ and follows the [Semver rules](http://semver.org/).
 
 <small>^ 1. No semicolons. 2. Allow plus-plus in `for` loops. See `./eslintrc`</small>
 

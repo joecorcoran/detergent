@@ -88,11 +88,11 @@ function decryptBoldItalic(input) {
 }
 
 /**
- * trimTrailingSpaces - remove spaces from the front and end of each line
+ * trimLines - remove spaces from the front and end of each line
  * @param input {string} incoming string
  * @return {string}
  */
-function trimTrailingSpaces(input) {
+function trimLines(input) {
   const lines = S(input).lines()
   for (let i = lines.length; i--;) {
     while (S(lines[i]).right(1).s === ' ') {
@@ -290,7 +290,9 @@ function doRemoveWidows(inputString) {
       part1.length > 0 &&
       !S(part2).startsWith('/') &&
       !S(part1).endsWith('br') &&
-      !S(part1).endsWith('hr')
+      !S(part1).endsWith('hr') &&
+      !S(part1).startsWith('{') &&
+      !S(part2).endsWith('}')
     ) {
       return `${part1}\u00A0${part2}`
     }
@@ -311,9 +313,6 @@ function doRemoveWidows(inputString) {
 function doRemoveWidowDashes(inputString) {
   let outputString = S(inputString).replaceAll(' \u2013', '\u00A0\u2013').s
   outputString = S(outputString).replaceAll(' \u2014', '\u00A0\u2014').s
-
-  // outputString = S(outputString).replaceAll(' &ndash;', '&nbsp;&ndash;').s
-  // outputString = S(outputString).replaceAll(' &mdash;', '&nbsp;&mdash;').s
   return outputString
 }
 
@@ -681,7 +680,7 @@ module.exports = {
   doDecodeBRs,
   encryptBoldItalic,
   decryptBoldItalic,
-  trimTrailingSpaces,
+  trimLines,
   fixedCharCodeAt,
   doConvertEntities,
   doRemoveWidows,

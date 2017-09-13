@@ -895,7 +895,7 @@ test('05.04 - and a little bit more widows', (t) => {
     })
 })
 
-test('05.05 - furthermore widows', (t) => {
+test('05.05 - and furthermore... widows!', (t) => {
   mixer({
     removeWidows: 1,
     convertEntities: 1,
@@ -930,7 +930,7 @@ test('05.06 - and some more widows', (t) => {
     })
 })
 
-test('05.07 - double widows', (t) => {
+test('05.07 - double widows!!!', (t) => {
   mixer({
     removeWidows: 1,
     convertEntities: 0,
@@ -1128,6 +1128,26 @@ test('05.11 - nbsp\'s not added within hidden HTML tags', (t) => {
       detergent('aaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1hr @@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1hr @@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1hr @@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1hr @@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', opts).res,
       'aaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1hr @@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1hr @@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1hr @@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@@@1hr @@@2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
       '05.11.04 - hr tag, html style',
+    )
+  })
+})
+
+test('05.12 - widow removal detects template code (Jinja/Nunjucks)', (t) => {
+  allCombinations.forEach((opts) => {
+    t.is(
+      detergent('{% if something %}', opts).res,
+      '{% if something %}',
+      '05.12.01 - four chunks',
+    )
+    t.is(
+      detergent('{{ something }}', opts).res,
+      '{{ something }}',
+      '05.12.02 - three chunks',
+    )
+    t.is(
+      detergent('{% if something else and also another thing %}', opts).res,
+      '{% if something else and also another thing %}',
+      '05.12.03 - nine chunks',
     )
   })
 })
