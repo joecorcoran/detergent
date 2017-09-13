@@ -4,8 +4,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [3.0.0] - 2017-09-10
-### 2 Things Changed
+## [3.0.0] - 2017-09-13
+### 3 Things Changed
 - ✨💥✨ Main exports of the module is not the main `detergent()` function, but an object which contains `detergent()` function and default options object as two separate keys:
 
 ```js
@@ -23,7 +23,8 @@ const detergent = require('detergent').detergent;
 
 I'm building a new front-end for detergent.io and I want to automate the options list, that's why I need the `opts` exported.
 
-- ✨💥✨ The result of the main function `detergent()` is now not a string but an object. Result is now placed under key `res`. This is done so I can place additional info in the future, what was added or removed exactly, what kinds of invisible characters were encountered and so on. 
+- ✨💥✨ The result of the main function `detergent()` is now not a string but an object. Result is now placed under key `res`. This is done so I can place additional info in the future, what was added or removed exactly, what kinds of invisible characters were encountered and so on.
+- ✨ Removed `JS Standard` and switched to raw `eslint` with `airbnb-base` config preset with 2 overrides: 1. no semicolons. 2. allowing plus-plus in `for` loops. For posterity JS Standard is using half-year old version of ESLint and its config is too relaxed, it's ignoring many good practice rules.
 
 ## [2.32.0] - 2017-09-07
 

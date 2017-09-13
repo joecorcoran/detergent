@@ -1,35 +1,37 @@
-'use strict'
-
 const he = require('he')
 const S = require('string')
 const curl = require('curl-quotes')
 const unicodeDragon = require('unicode-dragon')
 const numericEnt = require('./enforced-numeric-entities-list.json')
 const isObj = require('lodash.isplainobject')
-const checkTypes = require('check-types-mini')
+const checkTypes = require('check-types-mini/es5')
 const doCollapseWhiteSpace = require('string-collapse-white-space')
+const isNumeric = require('is-numeric')
 
 // preparing for ops on input as a string:
 const Slices = require('string-slices-array-push/es5') // ranges managing library
-const replaceSlicesArray = require('string-replace-slices-array/es5') // applies ranges onto a string
-var rangesArr = new Slices() // the main container to gather the ranges. Slices is a JS class.
+const replaceSlicesArray = require('string-replace-slices-array/es5')
+// applies ranges onto a string
+const rangesArr = new Slices() // the main container to gather the ranges. Slices is a JS class.
 
 const util = require('./util')
-const doDecodeBRs = util.doDecodeBRs
-const encryptBoldItalic = util.encryptBoldItalic
-const decryptBoldItalic = util.decryptBoldItalic
-const trimTrailingSpaces = util.trimTrailingSpaces
-const doConvertEntities = util.doConvertEntities
-const doRemoveWidows = util.doRemoveWidows
-const doRemoveWidowDashes = util.doRemoveWidowDashes
-const doConvertDashes = util.doConvertDashes
-const doInterpretErroneousNBSP = util.doInterpretErroneousNBSP
-const fixMissingAmpsAndSemicols = util.fixMissingAmpsAndSemicols
-const defaultsObj = util.defaultsObj
-const isUppercaseLetter = util.isUppercaseLetter
-const isLowercaseLetter = util.isLowercaseLetter
-const isLetter = util.isLetter
-const isNumeric = util.isNumeric
+
+const {
+  doDecodeBRs,
+  encryptBoldItalic,
+  decryptBoldItalic,
+  trimTrailingSpaces,
+  doConvertEntities,
+  doRemoveWidows,
+  doRemoveWidowDashes,
+  doConvertDashes,
+  doInterpretErroneousNBSP,
+  fixMissingAmpsAndSemicols,
+  defaultsObj,
+  isUppercaseLetter,
+  isLowercaseLetter,
+  isLetter,
+} = util
 
 /**
  * detergent - main function
@@ -38,25 +40,28 @@ const isNumeric = util.isNumeric
  * @param  {object} o             an optional options object
  * @return {string}               cleaned text
  */
-function detergent (str, o) {
-  var i, y, len
-  function existy (x) { return x != null }
-  str = String(str)
-  if ((arguments.length > 1) && !isObj(o)) {
-    throw new Error('detergent(): [THROW_ERROR_ID01] Options object must be a plain object, not ' + typeof o)
+function detergent(inputStr, inputOpts) {
+  let i
+  let y
+  let len
+  function existy(x) { return x != null }
+  let str = String(inputStr)
+  if ((arguments.length > 1) && !isObj(inputOpts)) {
+    throw new Error(`detergent(): [THROW_ERROR_ID01] Options object must be a plain object, not ${typeof inputOpts}`)
   }
   // defaults object (`defaultsObj`) is in util.js to keep it DRY
   // fill any settings with defaults if missing:
-  o = Object.assign({}, defaultsObj, o)
-  for (var prop in o) {
-    if (o[prop] === 1) {
-      o[prop] = true
-    } else if (o[prop] === 0) {
-      o[prop] = false
+  const o = Object.assign({}, defaultsObj, inputOpts)
+  Object.keys(o).forEach((opt) => {
+    if (o[opt] === 1) {
+      o[opt] = true
+    } else if (o[opt] === 0) {
+      o[opt] = false
     }
-  }
+  })
+
   // the options object's check:
-  checkTypes(o, defaultsObj, {msg: 'detergent(): [THROW_ERROR_ID02*]', optsVarName: 'opts'})
+  checkTypes(o, defaultsObj, { msg: 'detergent(): [THROW_ERROR_ID02*]', optsVarName: 'opts' })
 
   //                           ____
   //          massive hammer  |    |
@@ -107,11 +112,11 @@ function detergent (str, o) {
   // missing semicolon on HTML entity should be restored before it's decoded -
   // there's relationship between lump of characters.
 
-  var onUrlCurrently = false
-  var numCode
-  var scriptTagStarts = null
+  let onUrlCurrently = false
+  let numCode
+  let scriptTagStarts = null
   let lastIndexOfTheLastOfDotsInRow = null
-  var allOK = true // global flipswitch that's activated where we need to skip
+  let allOK = true // global flipswitch that's activated where we need to skip
   // all the checking, for example within <script> tags.
   // ================= xx =================
   // We can't traverse backwards because of URL detection.
@@ -225,7 +230,7 @@ function detergent (str, o) {
         } else {
           // there's bunch of dots, so let's bail and make sure all this train of
           // dots is immune from conversion to ellipses
-          for (let y = i + 3; y < len; y++) {
+          for (y = i + 3; y < len; y++) {
             if ((str[y] !== '.') || (str[y + 1] === undefined)) {
               lastIndexOfTheLastOfDotsInRow = y
               break
@@ -302,7 +307,7 @@ function detergent (str, o) {
           rangesArr.add(scriptTagStarts, i + 7)
         } else {
           // traverse forward and find the bloody closing bracket
-          for (let y = i + 7; y < len; y++) {
+          for (y = i + 7; y < len; y++) {
             if ((str[y] === '>') || str[y + 1] === undefined) {
               rangesArr.add(scriptTagStarts, y + 1)
               break
@@ -339,11 +344,11 @@ function detergent (str, o) {
     // PART II.
     // add missing space after full stop or comma except on extensions and URL's
     if (str[i] === '.') {
-      var first = existy(str[i + 1]) ? str[i + 1].toLowerCase() : ''
-      var second = existy(str[i + 2]) ? str[i + 2].toLowerCase() : ''
-      var third = existy(str[i + 3]) ? str[i + 3].toLowerCase() : ''
-      var fourth = existy(str[i + 4]) ? str[i + 4].toLowerCase() : ''
-      var nextThreeChars = first + second + third
+      const first = existy(str[i + 1]) ? str[i + 1].toLowerCase() : ''
+      const second = existy(str[i + 2]) ? str[i + 2].toLowerCase() : ''
+      const third = existy(str[i + 3]) ? str[i + 3].toLowerCase() : ''
+      const fourth = existy(str[i + 4]) ? str[i + 4].toLowerCase() : ''
+      const nextThreeChars = first + second + third
       if (
         ((first + second) !== 'js') &&
         (nextThreeChars !== 'jpg') &&
@@ -378,7 +383,8 @@ function detergent (str, o) {
           o.addMissingSpaces &&
           (str[i + 1] !== undefined) &&
           (
-            // - When it's not within a URL, the requirement for next letter to be uppercase letter. This prevents both numbers with decimal digits and short url's like "detergent.io"
+            // - When it's not within a URL, the requirement for next letter to be uppercase letter.
+            //   This prevents both numbers with decimal digits and short url's like "detergent.io"
             // - When it's within URL, it's stricter:
             //   next letter has to be an uppercase letter, followed by lowercase letter.
             (!onUrlCurrently && isUppercaseLetter(str[i + 1])) ||
@@ -508,7 +514,7 @@ function detergent (str, o) {
   // in numeric-one:
 
   if (o.convertEntities) {
-    var numerics = Object.keys(numericEnt)
+    const numerics = Object.keys(numericEnt)
     for (y = numerics.length; y--;) { // loop backwards for better efficiency
       str = S(str).replaceAll(numerics[y], numericEnt[numerics[y]]).s
     }
@@ -540,11 +546,11 @@ function detergent (str, o) {
 
   // ================= xx =================
   return {
-    res: str
+    res: str,
   }
 }
 
 module.exports = {
   detergent,
-  opts: defaultsObj
+  opts: defaultsObj,
 }

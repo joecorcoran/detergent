@@ -1,16 +1,16 @@
 {
   "critics": {
     "lint": {
-      "engine": "standard"
+      "engine": "eslint"
     }
   },
   "dependencies": {
     "mute": [
+      "clear-cli",
       "coveralls",
-      "faucet",
       "husky",
       "lodash.isplainobject",
-      "tap-bail"
+      "nodemon"
     ]
   },
   "test": [

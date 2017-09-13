@@ -1,13 +1,15 @@
 {
   "name": "detergent",
-  "version": "2.32.0",
+  "version": "3.0.0",
   "description": "All-in-one: HTML special character encoder, invisible character cleaner and English style improvement tool",
-  "main": "detergent.js",
+  "main": "es5/detergent.js",
   "scripts": {
+    "build": "babel detergent.js --presets babel-preset-es2015 --out-dir es5",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "precommit": "npm test",
-    "test": "standard && nyc --reporter=html --reporter=text node test",
-    "t": "node test | tap-bail | faucet"
+    "prepare": "npm run build",
+    "test": "clear && ./node_modules/.bin/eslint detergent.js util.js test.js && nyc --reporter=html --reporter=text ava && npm run build",
+    "watch": "nodemon --quiet --watch . --exec npm run test"
   },
   "repository": "codsen/detergent",
   "keywords": [
@@ -35,27 +37,33 @@
   },
   "homepage": "https://github.com/codsen/detergent#readme",
   "dependencies": {
-    "check-types-mini": "^2.4.1",
+    "check-types-mini": "^2.5.0",
     "curl-quotes": "^0.1.0",
     "easy-replace": "^2.11.0",
     "he": "^1.1.1",
+    "is-numeric": "0.0.5",
     "lodash.isplainobject": "*",
+    "ranges-is-index-within": "^1.1.0",
     "string": "^3.3.3",
     "string-collapse-white-space": "^2.1.0",
     "string-replace-slices-array": "^1.3.1",
-    "string-slices-array-push": "^1.3.4",
+    "string-slices-array-push": "^1.4.0",
     "typographic-en-dashes": "^1.0.1",
     "unicode-dragon": "^0.1.3"
   },
   "devDependencies": {
+    "ava": "^0.22.0",
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "clear-cli": "*",
     "coveralls": "*",
-    "faucet": "*",
+    "eslint": "^4.6.1",
+    "eslint-config-airbnb-base": "^12.0.0",
+    "eslint-plugin-import": "^2.7.0",
     "husky": "*",
+    "nodemon": "*",
     "nyc": "^11.2.1",
-    "object-boolean-combinations": "^1.9.4",
-    "standard": "^10.0.3",
-    "tap-bail": "*",
-    "tape": "^4.8.0"
+    "object-boolean-combinations": "^1.9.4"
   },
   "ava": {
     "verbose": true

@@ -1,6 +1,6 @@
 # Detergent
 
-<a href="https://detergent.io" style="float: left; padding: 0 20px 20px 0;"><img src="https://cdn.rawgit.com/codsen/detergent/edaacff8/media/detergent_200x200.png" alt="Detergent.io" width="150" align="left"></a>
+<a href="https://detergent.io" style="float: left; padding: 0 20px 20px 0;"><img src="https://cdn.rawgit.com/codsen/detergent/edaacff8/media/detergent_200x200.png" alt="Detergent.io" width="200" align="left"></a>
 
 All-in-one: HTML special character encoder, invisible character cleaner and English style improvement tool - and fully customisable.
 
@@ -28,10 +28,17 @@ $ npm install --save detergent
 ```
 
 ```js
+// ES6 flavour:
 const detergent = require('detergent').detergent
-// there's also default options object which you can require via:
-// const detergentDefaultOptions = require('detergent').opts
+// or use ES6 destructuring:
+const { detergent, opts: exportedOpts } = require('./detergent.js')
+// this would give you `detergent` function and `exportedOpts` plain object with default settings.
+
+// ES5 flavour, transpiled using Babel `babel-preset-es2015`:
+var detergent = require('detergent/es5').detergent
 ```
+
+Main source `./detergent.js` is in ES6 but if you want transpiled ES5 version, just append `/es5` on the `require`d path.
 
 ## Table of Contents
 
@@ -46,7 +53,6 @@ const detergent = require('detergent').detergent
   - [API - Output object](#api---output-object)
 - [Example](#example)
 - [Contributing & testing](#contributing--testing)
-- [Why Tape and not AVA for a unit tests](#why-tape-and-not-ava-for-a-unit-tests)
 - [Licence](#licence)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -76,8 +82,10 @@ Since `v.3` release, the main function is exported in a plain object under key `
 
 ```js
 const detergent = require('detergent').detergent;
-// you can request the default options object as well:
-const defaultOpts = require('detergent').opts;
+// or request everything:
+const { detergent, opts: exportedOpts } = require('./detergent.js')
+// this gives extra plain object `exportedOpts` with default options. Handy when
+// developing front-ends that consume the Detergent.
 ```
 
 ### API - Input for `detergent()`
@@ -161,19 +169,19 @@ console.log(result);
 
 ## Contributing & testing
 
-Flush the repo onto your SSD and have a butchers at `test.js`. It's very minimalistic testing setup using [Tape](https://www.npmjs.com/package/tape) and [Istanbul CLI](https://github.com/istanbuljs/nyc). Currently, Detergent has twelve options and each option can affect the output of the library. This means, we have to test each feature against every possible combination of the settings - that's 2^12=4096 tests for each unit test! I coded up an auxiliary library, [object-boolean-combinations](https://github.com/codsen/object-boolean-combinations) which generates an array of all possible options' variations and feeds that into loops ran by Tape. See its [readme file](https://github.com/codsen/object-boolean-combinations) to learn more how it works.
+Flush the repo onto your SSD and have a butchers at `test.js`. It's using [AVA](https://www.npmjs.com/package/ava) to run unit tests and [Istanbul CLI](https://github.com/istanbuljs/nyc) to calculate the unit test code coverage. Currently, Detergent has twelve options and each option can affect the output of the library. This means, we have to test each feature against every possible (relevant) combination of the settings - that's 2^12=4096 tests for each unit test! (in worst case). Some unit tests are specific-enough not to require _all_ the settings permutations tested, for example [BOM](https://en.wikipedia.org/wiki/Byte_order_mark) removal.
 
-Tests take around 15 minutes to complete on average laptop because there are around 250,000 assertions done:
+I coded up an auxiliary library, [object-boolean-combinations](https://github.com/codsen/object-boolean-combinations) which generates an array of all possible options' variations and feeds that into loops ran by AVA. See its [readme file](https://github.com/codsen/object-boolean-combinations) to learn more how it works.
+
+Tests take around 15 minutes to complete on average laptop because there are around 250,000 assertions:
 
 ```bash
 npm test
 ```
 
-If you want to contribute, don't hesitate. If it's a code contribution, please supplement `test.js` with tests covering your code. This library uses JS Standard notation and follows the Semver rules.
+If you want to contribute, don't hesitate. If it's a code contribution, please supplement `test.js` with tests covering your code. This library uses `airbnb-base` rules preset of `eslint` with two exceptions^ and follows the Semver rules.
 
-## Why Tape and not AVA for a unit tests
-
-Normally I choose AVA but it does not show the output for each assertion when it is `for`-looped, so when I use AVA it looks like nothing's happening for long periods of time. Tape, on other hand, outputs something for each assertion, no matter how it's happening, test `t.` being loop'ed or not. Last time I measured performance, AVA was 10% faster than tape. However, _perceived_ speed is that matters.
+<small>^ 1. No semicolons. 2. Allow plus-plus in `for` loops. See `./eslintrc`</small>
 
 ## Licence
 
