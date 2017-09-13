@@ -20,8 +20,6 @@ const defaultsObj = {
   convertDotsToEllipsis: true,
 }
 
-function existy(x) { return x != null }
-
 /**
  * doDecodeBRs - replace all BR tags with new line symbol
  *
@@ -103,36 +101,6 @@ function trimLines(input) {
     }
   }
   return lines.join('\n')
-}
-
-/**
- * fixedCharCodeAt - used as charCodeAt() replacement when it is unknown whether
- * non-Basic-Multilingual-Plane characters exist before the specified index position.
- * Source: https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/String/charCodeAt
- *
- * @param str  {string} incoming string
- * @param idx  {Number} offset by one digit position. Theoretically, this second
- * para could be used to identify the high surrogate. We are not using it here at Detergent.
- * @return {string}     description
- */
-function fixedCharCodeAt(str, originalIdx) {
-  // ex. fixedCharCodeAt('\uD800\uDC00', 0) // 65536
-  const idx = existy(originalIdx) ? originalIdx : 0
-  const code = str.charCodeAt(idx)
-  let hi
-  let low
-
-  // High surrogate (could change last hex to 0xDB7F to treat high
-  // private surrogates as single characters)
-  if ((code >= 0xD800) && (code <= 0xDBFF)) {
-    hi = code
-    low = str.charCodeAt(idx + 1)
-    // if (isNaN(low)) {
-    // throw 'High surrogate not followed by low surrogate in fixedCharCodeAt()'
-    // }
-    return ((hi - 0xD800) * 0x400) + (low - 0xDC00) + 0x10000
-  }
-  return code
 }
 
 /**
@@ -677,7 +645,6 @@ module.exports = {
   encryptBoldItalic,
   decryptBoldItalic,
   trimLines,
-  fixedCharCodeAt,
   doConvertEntities,
   doRemoveWidows,
   doRemoveWidowDashes,

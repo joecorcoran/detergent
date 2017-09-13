@@ -2079,6 +2079,20 @@ test('18.02 - fixes: full stop + space + line break combinations', (t) => {
   )
 })
 
+test('18.03 - checking line feed being replaced with space', (t) => {
+  mixer({
+    removeLineBreaks: 1,
+    convertDotsToEllipsis: 1,
+  })
+    .forEach((opts) => {
+      t.is(
+        detergent('aaaa\u000Abbbbb', opts).res,
+        'aaaa bbbbb',
+        '18.03',
+      )
+    })
+})
+
 // ==============================
 // 19. multiple spaces before comma or full stop
 // ==============================

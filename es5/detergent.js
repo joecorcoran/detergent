@@ -23,7 +23,7 @@ var util = require('./util');
 var doDecodeBRs = util.doDecodeBRs,
     encryptBoldItalic = util.encryptBoldItalic,
     decryptBoldItalic = util.decryptBoldItalic,
-    trimTrailingSpaces = util.trimTrailingSpaces,
+    trimLines = util.trimLines,
     doConvertEntities = util.doConvertEntities,
     doRemoveWidows = util.doRemoveWidows,
     doRemoveWidowDashes = util.doRemoveWidowDashes,
@@ -391,7 +391,7 @@ function detergent(inputStr, inputOpts) {
   // ================= xx =================
 
   // trim leading and trailing white space on each line
-  str = trimTrailingSpaces(str);
+  str = trimLines(str);
 
   // ================= xx =================
 
@@ -461,7 +461,7 @@ function detergent(inputStr, inputOpts) {
 
   // final trims:
   str = doCollapseWhiteSpace(str);
-  str = trimTrailingSpaces(str);
+  str = trimLines(str);
 
   // ================= xx =================
   return {
