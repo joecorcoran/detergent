@@ -28,17 +28,14 @@ $ npm install --save detergent
 ```
 
 ```js
-// ES6 flavour:
+// use ES6 destructuring:
 const { detergent } = require('detergent')
 // or grab everything:
-const { detergent, opts: exportedOpts } = require('./detergent.js')
+const { detergent, opts: exportedOpts } = require('detergent')
 // this would give you `detergent` function and `exportedOpts` plain object with default settings.
-
-// ES5 flavour, transpiled using Babel `babel-preset-es2015`:
-var detergent = require('detergent/es5').detergent
 ```
 
-Main source `./detergent.js` is in ES6 but if you want transpiled ES5 version, just append `/es5` on the `require`d path.
+Main source `./detergent.js` is in ES6 but transpiled version is served as a main export, `./detergent-es5.js`.
 
 ## Table of Contents
 
