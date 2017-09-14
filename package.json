@@ -2,9 +2,9 @@
   "name": "detergent",
   "version": "3.1.0",
   "description": "All-in-one: HTML special character encoder, invisible character cleaner and English style improvement tool",
-  "main": "es5/detergent.js",
+  "main": "detergent-es5.js",
   "scripts": {
-    "build": "babel detergent.js --presets babel-preset-es2015 --out-dir es5",
+    "build": "babel detergent.js --presets babel-preset-es2015 --out-file detergent-es5.js",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "precommit": "npm test",
     "prepare": "npm run build",
